@@ -1,0 +1,54 @@
+---
+title: "Health Benefit Main"
+author: "Alon Shepon"
+date: "10/8/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Calculation of Burden of disease for fish consumption reduction/increase
+
+## Deriving national level distribution of micronutrients
+This stage will be done using the SPADE software (https://www.rivm.nl/en/spade) which analyzes existing HCES data and translates 24h recall into average distributions. Currently we will have estimates for a handful of countries, in all continents, from which we will infer on the distributions for all countries.
+
+## Deriving national level DALYs of micronutrient deficiences and seafood omega n-3 burdens
+This will be derived from the GBD Lancet papers per country and age-sex group
+
+Initial thoughts: The approach I suggest is a result of the following points: The calculation is a country by country global analysis. DALYs is the preferred metric because it allows us to sum burdens and also compare overall results with the GBD global metrics. We should try to use existing data and simplify our calculations. Trying to build new relative risk curves and calculating DALYs by our own and per country is time consuming and complicated. Lets try to leverage existing referenced data.
+
+I suggest using the GBD project global values as they are the best country by country estimate of the global burden of disease we have. The GBD project (Afshin 2019 and James 2018) has per country DALYs for vitamin A, iodine and iron deficiencies (and other nutrient deficiencies) and low seafood consumption (PUFA->heart disease) - four risk factors associated with fish. While not comprehensive of all outcomes we combed from the literature, it seems to include both micronutrient contribution and low PUFA derived from fish. Another potential source of micronutrient deficiency DALY burden per country is this. We then perform the following calculation per country, and for each of the four risks, deriving the delta of DALYs (changes in health burden) as response to moving from the reference scenario (ref) to the alternative scenario (alt):
+$$
+                                    ∆DALY=DALY*(R_{alt}/R{ref}-1)$$
+                                    
+Where DALY is the value derived from the GBD per country and per health risk, and Ralt and RRref are the population level relative risk for the alternative (“shocked”) and reference (“baseline”) scenarios, respectively. 
+If those future scenarios and not present (e.g. changes in fish management practices can lead to an increase of fish avaliability in 2030), then 
+$$                ∆DALY_{2030}=Population_{2030}*DALY_{present}*(R_{alt}/R{ref}-1)$$
+This above calculation assumes that in year 2030 all health burdens distribute similarly to present but only grow due to population rise.
+R is equal to:
+$$
+                         R_{ref/alt} = ∫(Intake_{ref/alt}*RR_{ref/alt})$$
+RR curves are the relative risk curve for each of the 4 risk factors. For PUFA it can be derived from the GBD source or any other one we want to use (for example the Thomsen paper used the Mozaffarian and Rimm 2006 curve and simplify it to a descending linear curve, until a consumption level of 250 mg/cap/d EPA+DHA).
+For the micronutrient calculation, I suggest building the RR distributions by taking country level EAR value and constructing a descending risk curve based on the CDF (cumulative distribution function) of a normal distribution. IOM suggest using a CV of 10%-15% when there is no sufficient data on the requirements. Multiplying intake distribution with these RR curves and integrating will result in the prevalence of inadequacy (probability method for calculating deficiency), in effect a population-level risk (RR). As the above reference indicates, as long as the requirement distribution is symmetrical (not for iron) the results are insensitive to the shape and SD of the requirement curve. As for intakes, these are derived by taking the average nutrients/PUFA from the FAO model (for both scenarios) and building a distributions around them based on the shape deduced from SPADE it; using Monte Carlo we can then assess how changes in the tail of this distribution affect the overall calcs.
+
+Overall health burden resulting from the perturbation in consumption will be the sum of all burdens examined for each country: $$∑∆DALY_{i}.$$
+
+This approach allows comparison across the different risks and assess their relative contribution to the total health burden following a shock. For example in developing countries one might expect that the DALY values from micronutrient deficiencies will be sensitive to shocks more than in developed countries and possibly on par with changes in EPA+DHA contribution to health.
+
+
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
