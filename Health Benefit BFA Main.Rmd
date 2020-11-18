@@ -1,9 +1,9 @@
----
+
 title: "BFA Burden of Health Calculations"
 author: "Alon Shepon"
 date: "10/27/2020"
 output:
-  word_document: default
+  html_document: default
   pdf_document: default
   header-includes: |
     \usepackage{tikz,pgfplots}
@@ -13,7 +13,7 @@ output:
     \fancyfoot[CO,CE]{So is this}
     \fancyfoot[LE,RO]{\thepage}
   latex_engine: xelatex
-  html_document: default
+  word_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -94,5 +94,4 @@ Therefore the change (in percentage) in micronutrient deficiency prevalence for 
 $$
                                     ∆SEV_{c,a,s,r}=(SEV^{alt}_{c,a,s,r}/SEV^{ref}_{c,a,s,r}-1)*100
                                     $$
-
 
