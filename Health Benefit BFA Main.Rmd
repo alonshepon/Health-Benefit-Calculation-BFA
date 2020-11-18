@@ -1,54 +1,98 @@
 ---
-title: "Health Benefit Main"
+title: "BFA Burden of Health Calculations"
 author: "Alon Shepon"
-date: "10/8/2020"
-output: html_document
+date: "10/27/2020"
+output:
+  word_document: default
+  pdf_document: default
+  header-includes: |
+    \usepackage{tikz,pgfplots}
+    \usepackage{fancyhdr}
+    \pagestyle{fancy}
+    \fancyhead[CO,CE]{This is fancy}
+    \fancyfoot[CO,CE]{So is this}
+    \fancyfoot[LE,RO]{\thepage}
+  latex_engine: xelatex
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+options(tinytex.verbose = TRUE)
+
+library("ggplot2")
+library("cowplot")
+library("latex2exp")
+library("tidyverse")
+library("tinytex")
 ```
 
-## Calculation of Burden of disease for fish consumption reduction/increase
+# Calculation of Burden of disease for changes in fish consumption
 
-## Deriving national level distribution of micronutrients
+The GBD project is the most comprehensive methodology to assess health burden across countries, age and sex groups and various forms of disease and risks. The GBD project  has calculated the burden of malnutrition for vitamin A, zinc, iron (and other nutrient deficiencies) and low seafood consumption (PUFA->heart disease) (Murray 2020, Afshin 2019 and James 2018) - four risk factors associated with fish. While not comprehensive of all outcomes associated with consuming fish (in the health literature) e.g. omega n-3 impact on child development), it seems to include both micronutrient contribution and low omega n-3 derived from fish. Using the DALYs metrics, our results can be compared to other GBD global metrics results, enabling us to assess the magnitude of health burdens associated with reduced or increased fish consumption in future alternatives. Last, because fish is an important animal sourced food, increased consumption of fish is likely to result in changes in red meat consumption. Red meat consumption constitutes an important health burden, which can also be assessed in order to capture the full burdens of the above analysis. 
+
+### calculating fish-associated burden of disease (DALYs) in 2030 for omega n-3
+
+1. Build GBD dataset. As a first step, we coalesced the GBD historical data for all countries per age-sex groups and for the specific risks and causes associated with fish consumption that exist in the GBD database, namely low omega n-3 consumption.
+
+```{r echo=FALSE}
+#source("read_excel_data_DALY.R")
+```
+2. Extract and upload population data from present till 2030 per age-sex location group.
+
+
+3. Using that historical data we extrapolated the burden of disease in year 2030 for low seafood consumption (hereafter DALY2030) for each age-sex-location using a moving regression. The following code also plots the results per country (population adjusted).  
+
+```{r echo=FALSE}
+#source("calculate_DALYs2030.R")
+```
+
+4. Deriving average micronutrient intakes from the Aglink Cosimo:
+This FAO model will simulate consumption of fish in future scenarios based on price elasticities, supply and demand curves and will output average nutrient intakes for reference and alternative futures per age-sex-location group.
+
+5. Deriving national level distribution of micronutrients from SPADE:
 This stage will be done using the SPADE software (https://www.rivm.nl/en/spade) which analyzes existing HCES data and translates 24h recall into average distributions. Currently we will have estimates for a handful of countries, in all continents, from which we will infer on the distributions for all countries.
 
-## Deriving national level DALYs of micronutrient deficiences and seafood omega n-3 burdens
-This will be derived from the GBD Lancet papers per country and age-sex group
+```{r echo=FALSE}
+#build I distribution intakes from the Aglink Cosimo model and distribution shapes from the SPADE results
+```
 
-Initial thoughts: The approach I suggest is a result of the following points: The calculation is a country by country global analysis. DALYs is the preferred metric because it allows us to sum burdens and also compare overall results with the GBD global metrics. We should try to use existing data and simplify our calculations. Trying to build new relative risk curves and calculating DALYs by our own and per country is time consuming and complicated. Lets try to leverage existing referenced data.
+6. Calulate relative risk curves for omega n-3. RR curves For omega n-3 are derived from the new GBD 2020 spline curves (As a comparison, the Thomsen paper used the Mozaffarian and Rimm 2006 curve and simplified it to a descending linear curve, until a consumption level of 250 mg/cap/d EPA+DHA).
 
-I suggest using the GBD project global values as they are the best country by country estimate of the global burden of disease we have. The GBD project (Afshin 2019 and James 2018) has per country DALYs for vitamin A, iodine and iron deficiencies (and other nutrient deficiencies) and low seafood consumption (PUFA->heart disease) - four risk factors associated with fish. While not comprehensive of all outcomes we combed from the literature, it seems to include both micronutrient contribution and low PUFA derived from fish. Another potential source of micronutrient deficiency DALY burden per country is this. We then perform the following calculation per country, and for each of the four risks, deriving the delta of DALYs (changes in health burden) as response to moving from the reference scenario (ref) to the alternative scenario (alt):
+```{r echo=FALSE}
+#source("RR_functions")
+```
+7. Deriving age-sex-location changes in DALYs of seafood omega n-3 burdens due to perturbations in 2030. We compute the changes in DALYs (changes in health burden) per age-sex-location for omega n-3 as response to moving from the reference scenario (BAU) to the alternative-perturbed scenario (alt) in year 2030 using the following equation:
 $$
-                                    ∆DALY=DALY*(R_{alt}/R{ref}-1)$$
+                                    ∆DALY_{a,s,l,r}=DALY^{2030}_{a,s,l,r}*(SEV^{alt}_{a,s,l,r}/SEV^{BAU}_{a,s,l,r}-1)
+                                    $$
                                     
-Where DALY is the value derived from the GBD per country and per health risk, and Ralt and RRref are the population level relative risk for the alternative (“shocked”) and reference (“baseline”) scenarios, respectively. 
-If those future scenarios and not present (e.g. changes in fish management practices can lead to an increase of fish avaliability in 2030), then 
-$$                ∆DALY_{2030}=Population_{2030}*DALY_{present}*(R_{alt}/R{ref}-1)$$
-This above calculation assumes that in year 2030 all health burdens distribute similarly to present but only grow due to population rise.
-R is equal to:
+Where $DALY_{2030,a,s,l,r}$ is the DALY per age (a), sex (s), location (l) and risk (r) value for year 2030 derived above, and $SEV^{alt}_{a,s,l,r}$ and $SEV^{ref}_{a,s,l,r}$ are the population level average weighted exposure to risk for the alternative (“perturbed”) and reference (“baseline”) scenarios, respectively. SEVs are summary exposure values and they reflect excess average weighted prevelance of exposure (or inadequancy in this case). A SEV of 0 means that the population is not exposed to any risk, while a value of 1 means the entire population is exposed to a risk.
+This value is equal to:
 $$
-                         R_{ref/alt} = ∫(Intake_{ref/alt}*RR_{ref/alt})$$
-RR curves are the relative risk curve for each of the 4 risk factors. For PUFA it can be derived from the GBD source or any other one we want to use (for example the Thomsen paper used the Mozaffarian and Rimm 2006 curve and simplify it to a descending linear curve, until a consumption level of 250 mg/cap/d EPA+DHA).
-For the micronutrient calculation, I suggest building the RR distributions by taking country level EAR value and constructing a descending risk curve based on the CDF (cumulative distribution function) of a normal distribution. IOM suggest using a CV of 10%-15% when there is no sufficient data on the requirements. Multiplying intake distribution with these RR curves and integrating will result in the prevalence of inadequacy (probability method for calculating deficiency), in effect a population-level risk (RR). As the above reference indicates, as long as the requirement distribution is symmetrical (not for iron) the results are insensitive to the shape and SD of the requirement curve. As for intakes, these are derived by taking the average nutrients/PUFA from the FAO model (for both scenarios) and building a distributions around them based on the shape deduced from SPADE it; using Monte Carlo we can then assess how changes in the tail of this distribution affect the overall calcs.
+                         SEV^{BAU/alt}_{a,s,l,r} = \int(I^{BAU/alt}_{a,s,l,r}*RR_{a,s,l,r})$$
+                         
 
-Overall health burden resulting from the perturbation in consumption will be the sum of all burdens examined for each country: $$∑∆DALY_{i}.$$
+Usually SEV is derived by dividing the above term with the maximal risk $R_{max}$; however in our calculation the maximal risk is 1 (no consumption). As consumption increases, RR effectively decreases.
 
-This approach allows comparison across the different risks and assess their relative contribution to the total health burden following a shock. For example in developing countries one might expect that the DALY values from micronutrient deficiencies will be sensitive to shocks more than in developed countries and possibly on par with changes in EPA+DHA contribution to health.
+### calculating fish-associated changes in risk (SEVs) associated with micronutrients intake changes for year 2030 
+
+For the micronutrient calculation, we calculated RR distributions by taking country level EAR values and constructing a descending risk curve based on the CDF (cumulative distribution function) of a normal distribution. IOM suggest using a CV of 10%-15% when there is no sufficient data on the requirements. As for intakes, these are derived by taking the average full-diets micronutrients from the FAO model (for both scenarios) and building a distributions around them based on the shape deduced from SPADE; using Monte Carlo we can then assess how changes in the tail of this distribution affect the overall calcs.
+
+Multiplying calculated intake distribution with the above micronutrient RR curves and integrating will result in SEV per age-sex-location-micronutrient, which is actually the prevelance of micronutrient deficiency in that group. This method of calculating the prevalence of inadequacy is basically the probability method for calculating deficiency on a population-level. As the above reference indicates, as long as the requirement distribution is symmetrical (not for iron) the results are insensitive to the shape and SD of the requirement curve. The following equation details the calculation of SEV for micronutrient intakes for the baseline (BAU) and alternative (alt) scenario
+
+$$
+                         SEV^{BAU/alt}_{a,s,l,m} = \int(I^{BAU/alt}_{a,s,l,m}*RR_{a,s,l,m})$$
+
+Overall risk of micronutrient deficiencies resulting from the perturbation in fish consumption can be either the average of all risks (micronutrients, marked as r) examined for each country per age(a)-sex(s)-location(l) groups or the maximum risk: $$SEV{a,s,l}=average(SEV_{a,s,l,m}).$$
+or
+$$SEV^{BAU/alt}_{a,s,l}=max(SEV^{BAU/alt}_{a,s,l,r}).$$
 
 
+Therefore the change (in percentage) in micronutrient deficiency prevalence for each sex-age-location-micronutient group following a perturbation (increase/decrease consumption of fish) will be
 
-```{r cars}
-summary(cars)
-```
+$$
+                                    ∆SEV_{c,a,s,r}=(SEV^{alt}_{c,a,s,r}/SEV^{ref}_{c,a,s,r}-1)*100
+                                    $$
 
-## Including Plots
 
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
