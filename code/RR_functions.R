@@ -1,5 +1,12 @@
-## required packages
 
+# Read data
+################################################################################
+
+# Clear workspace
+rm(list = ls())
+
+# Packages
+library(tidyverse)
 library(dosresmeta)
 library(rms)
 library(openxlsx)
@@ -9,6 +16,24 @@ library(MASS)
 library(ggplot2)
 library(fitdistrplus)
 library(Hmisc)
+
+# Directories (outside repository)
+datadir1 <- "/Users/cfree/Dropbox/Health Benefits calculations/Data/IHME/definitions" # Chris Free's computer
+datadir2 <- "/Users/cfree/Dropbox/Health Benefits calculations/Data/EAR/" # Chris Free's computer
+
+# Directories (in repository)
+outputdir <- "output"
+plotdir <- "figures"
+codedir <- "code"
+
+# Read RR GBD 2019
+omega_N_raw_2019 <- readxl::read_excel(file.path(datadir1, "omega_RR_2019.XLSX"))
+EAR_requirements <- readxl::read_excel(file.path(datadir2, "EAR_requirements_GBDgroups.xlsx"))
+
+
+# Read data
+################################################################################
+
 
 #---------age groups
 #5 1-4 years 
@@ -41,10 +66,6 @@ ggplot(df, aes(x)) +                    # basic graphical object
   geom_line(aes(y=y1), colour="red") +  # first layer
   geom_line(aes(y=y2), colour="green")  # second layer
 ggsave("j.png")
-#--------------------------RR GBD 2019
-omega_N_raw_2019<-read.xlsx("d:/Dropbox (Personal)/Dropbox (Personal)/Nutrient Gaps/Health Benefits calculations/Data/IHME/definitions/omega_RR_2019.XLSX")
-EAR_requirements<-read.xlsx("d:/Dropbox (Personal)/Dropbox (Personal)/Nutrient Gaps/Health Benefits calculations/Data/EAR/EAR_requirements_GBDgroups.xlsx")
-
 
 
 omega_n3_RR<-function(val,age,omega_N_raw_2019){
