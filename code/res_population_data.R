@@ -1,31 +1,85 @@
-library(openxlsx)
-library(dbplyr)
+
+# Read data
+################################################################################
+
+# Clear workspace
+rm(list = ls())
+
+# Packages
 library(tidyverse)
-population_male<-read.xlsx("d:/Dropbox (Personal)/Dropbox (Personal)/Nutrient Gaps/Health Benefits calculations/Data/population/WPP2019_POP_F07_2_POPULATION_BY_AGE_MALE.xlsx")
-population_female<-read.xlsx("d:/Dropbox (Personal)/Dropbox (Personal)/Nutrient Gaps/Health Benefits calculations/Data/population/WPP2019_POP_F07_3_POPULATION_BY_AGE_FEMALE.xlsx")
 
-#extract population level data per age-sex-country for 2017 
+# Directories (outside repository)
+datadir <- "/Users/cfree/Dropbox/Health Benefits calculations/Data/population_sources/" # Chris Free's computer
 
-population_male_cut<-population_male%>% filter(`Region,.subregion,.country.or.area.*` %in% countries_level_3$location_name) %>%select(c(3,seq(8,29))) %>%
-  rename(country=`Region,.subregion,.country.or.area.*`,year=`Reference.date.(as.of.1.July)`,`5`=`0-4`,`6`=`5-9`,`7`=`10-14`,`8`=`15-19`,`9`=`20-24`,`10`=`25-29`,
-         `11`=`30-34`,`12`=`35-39`,`13`=`40-44`,`14`=`45-49`,`15`=`50-54`,`16`=`55-59`,`17`=`60-64`,`18`=`65-69`,
-         `19`=`70-74`,`20`=`75-79`,`30`=`80-84`,`31`=`85-89`,`32`=`90-94`,`33`=`95-99`,`34`=`100+`) %>% 
-  gather(age,population,c(`5`,`6`,`7`,`8`,`9`,`10`,`11`,`12`,`13`,`14`,`15`,`16`,`17`,`18`,`19`,`20`,`30`,`31`,`32`,`33`,`34`))
-population_male_cut$age <- as.numeric(as.character(population_male_cut$age))
-population_male_cut<-population_male_cut%>%mutate(sex=as.numeric(1)*1)
+# Directories (in repository)
+outputdir <- "output"
+plotdir <- "figures"
+codedir <- "code"
 
-population_female_cut<-population_female%>% filter(`Region,.subregion,.country.or.area.*` %in% countries_level_3$location_name) %>%select(c(3,seq(8,29))) %>%
-  rename(country=`Region,.subregion,.country.or.area.*`,year=`Reference.date.(as.of.1.July)`,`5`=`0-4`,`6`=`5-9`,`7`=`10-14`,`8`=`15-19`,`9`=`20-24`,`10`=`25-29`,
-         `11`=`30-34`,`12`=`35-39`,`13`=`40-44`,`14`=`45-49`,`15`=`50-54`,`16`=`55-59`,`17`=`60-64`,`18`=`65-69`,
-         `19`=`70-74`,`20`=`75-79`,`30`=`80-84`,`31`=`85-89`,`32`=`90-94`,`33`=`95-99`,`34`=`100+`) %>% 
-  gather(age,population,c(`5`,`6`,`7`,`8`,`9`,`10`,`11`,`12`,`13`,`14`,`15`,`16`,`17`,`18`,`19`,`20`,`30`,`31`,`32`,`33`,`34`))
-population_female_cut$age <- as.numeric(as.character(population_female_cut$age))
-population_female_cut<-population_male_cut%>%mutate(sex=as.numeric(1)*2)
+# Read country key
+country_key_level3 <- readRDS(file.path(outputdir, "countries_level3.rds"))
 
-#----merge male and female into one file
-population_all <- rbind(population_female_cut, population_male_cut)
-population_all<-population_all %>% rename(location_name=country)
-setwd("d:/Dropbox (Personal)/Dropbox (Personal)/Nutrient Gaps/Health Benefits calculations/code/Health Benefit claculation BFA/Health-Benefit-Calculation-BFA")
-saveRDS(population_all, file = "population_all.rds")
+# Read population data
+pop_m_orig <- readxl::read_excel(file.path(datadir, "WPP2019_POP_F07_2_POPULATION_BY_AGE_MALE.xlsx"))
+pop_f_orig <- readxl::read_excel(file.path(datadir, "WPP2019_POP_F07_3_POPULATION_BY_AGE_FEMALE.xlsx"))
+
+# !!!! WARNING !!!!
+# 1. The filter to country is based on countries_level3 -- this better be correct
+# 2. This script exports data with the same name as data produced elsewhere 
+
+
+# Format data
+################################################################################
+
+# Format male population data
+pop_m <- pop_m_orig %>% 
+  # Rename columns
+  janitor::clean_names("snake") %>% 
+  rename(country=region_subregion_country_or_area, year=reference_date_as_of_1_july) %>% 
+  # Reduce to columns of interest
+  select(country, year, x0_4:x100) %>% 
+  # Reduce to countries
+  filter(country %in% country_key_level3$location_name) %>% 
+  # Gather population sizes
+  gather(key="age_group", value="npeople", 3:ncol(.)) %>% 
+  # Convert population size to numeric
+  mutate(npeople=npeople %>% as.numeric()) %>% 
+  # Format age group
+  mutate(age_group=age_group %>% gsub("x", "", .) %>% gsub("_", "-", .),
+         age_group=recode(age_group, "100"="100+")) %>% 
+  # Add sex
+  mutate(sex="male") %>% 
+  # Arrange
+  select(country, sex, age_group, npeople)
+  
+# Format male population data
+pop_f <- pop_f_orig %>% 
+  # Rename columns
+  janitor::clean_names("snake") %>% 
+  rename(country=region_subregion_country_or_area, year=reference_date_as_of_1_july) %>% 
+  # Reduce to columns of interest
+  select(country, year, x0_4:x100) %>% 
+  # Reduce to countries
+  filter(country %in% country_key_level3$location_name) %>% 
+  # Gather population sizes
+  gather(key="age_group", value="npeople", 3:ncol(.)) %>% 
+  # Convert population size to numeric
+  mutate(npeople=npeople %>% as.numeric()) %>% 
+  # Format age group
+  mutate(age_group=age_group %>% gsub("x", "", .) %>% gsub("_", "-", .),
+         age_group=recode(age_group, "100"="100+")) %>% 
+  # Add sex
+  mutate(sex="female") %>% 
+  # Arrange
+  select(country, sex, age_group, npeople)
+
+# Merge male/female population data
+pop <- bind_rows(pop_m, pop_f)
+
+# Export data
+################################################################################
+
+# Export data
+saveRDS(pop, file = file.path(outputdir, "population_all_other.rds"))
 
 

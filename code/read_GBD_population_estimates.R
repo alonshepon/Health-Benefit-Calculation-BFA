@@ -1,13 +1,41 @@
-library(openxlsx)
+
+# Read data
+################################################################################
+
+# Clear workspace
+rm(list = ls())
+
+# Packages
 library(tidyverse)
-setwd("d:/Dropbox (Personal)/Dropbox (Personal)/Nutrient Gaps/Health Benefits calculations/Data/population/")
-my_files<-list.files(pattern="*.CSV")
-nba<-lapply(my_files,function(i){
-  x=read.csv(i)
-  x$file
-  x})
-nba<-do.call("rbind.data.frame",nba)
-population_all<-nba%>%select(-c("age_group_name","measure_id","measure_name","metric_id","metric_name","sex_name"))
-##------------save data
-setwd("d:/Dropbox (Personal)/Dropbox (Personal)/Nutrient Gaps/Health Benefits calculations/code/Health Benefit claculation BFA/Health-Benefit-Calculation-BFA")
-saveRDS(population_all, file = "population_all.rds")
+
+# Directories (outside repository)
+datadir <- "/Users/cfree/Dropbox/Health Benefits calculations/Data/population/" # Chris Free's computer
+
+# Directories (in repository)
+outputdir <- "output"
+plotdir <- "figures"
+codedir <- "code"
+
+# Build data
+################################################################################
+
+# Files to merge
+files_merge <- list.files(datadir, pattern="*.CSV")
+
+# Merge files
+data_merged <- purrr::map_df(files_merge, function(x){
+  fdata <- read.csv(file.path(datadir, x), as.is=T)
+})
+
+# Format merged data
+data <- data_merged %>% 
+  # Remove columns
+  select(-c(age_group_name, measure_id, measure_name, metric_id, metric_name, sex_name))
+
+# Export data
+################################################################################
+
+# Export data
+saveRDS(data, file = file.path(outputdir, "population_all.rds"))
+
+

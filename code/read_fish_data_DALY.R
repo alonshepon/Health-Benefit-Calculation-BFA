@@ -1,39 +1,77 @@
-library(openxlsx)
+
+# Read data
+################################################################################
+
+# Clear workspace
+rm(list = ls())
+
+# Packages
 library(tidyverse)
-setwd("d:/Dropbox (Personal)/Dropbox (Personal)/Nutrient Gaps/Health Benefits calculations/Data/IHME/excels/")
-my_files<-list.files(pattern="*.csv")
-nba<-lapply(my_files,function(i){
-x=read.csv(i)
-x$file
-x})
-nba<-do.call("rbind.data.frame",nba)
 
-##------------add country location
-countries_code<-read.xlsx("d:/Dropbox (Personal)/Dropbox (Personal)/Nutrient Gaps/Health Benefits calculations/Data/IHME/definitions/IHME_GBD_2017_GBD_LOCATIONS_HIERARCHY_Y2018M11D18.XLSX")
-countries_all_level_concise<-countries_code[,c("location_id","location_name")]
-countries_level_3<-countries_code%>%filter(level==3)
+# Directories (outside repository)
+ihmedir <- "/Users/cfree/Dropbox/Health Benefits calculations/Data/IHME" # Chris Free's computer
 
-##---------------HDI
-countries_hdi<-read.xlsx("d:/Dropbox (Personal)/Dropbox (Personal)/Nutrient Gaps/Health Benefits calculations/Data/IHME/definitions/human-development-index.xlsx")
-countries_hdi<-countries_hdi %>% filter(Year==2017)
-##-------------SDI
-countries_SDI<-read.xlsx("d:/Dropbox (Personal)/Dropbox (Personal)/Nutrient Gaps/Health Benefits calculations/Data/IHME/definitions/IHME_GBD_2019_SDI_1990_2019_Y2020M10D15.XLSX")
-countries_SDI<-countries_SDI %>% rename("SDI"="2017") 
-countries_SDI<-countries_SDI[,c("Location","SDI")]  
-countries_SDI$SDI<-as.numeric(as.character(countries_SDI$SDI))  
-countries_SDI<-countries_SDI %>%  mutate(group.SDI=cut((SDI), breaks=c(0,0.35,0.75,1), labels = c("low","middle","high")))
+# Directories (in repository)
+outputdir <- "output"
+plotdir <- "figures"
+codedir <- "code"
+
+# Read country codes
+country_codes_orig <- readxl::read_excel(file.path(ihmedir, "definitions", "IHME_GBD_2017_GBD_LOCATIONS_HIERARCHY_Y2018M11D18.XLSX"))
+
+# Read HDI info
+hdi_orig <- readxl::read_excel(file.path(ihmedir, "definitions", "human-development-index.xlsx"))
+
+# Read SDI info
+sdi_orig <- readxl::read_excel(file.path(ihmedir, "definitions", "IHME_GBD_2019_SDI_1990_2019_Y2020M10D15.XLSX"))
+
+# THERE ARE PROBLEMS HERE - MULTIPLE MATCHES OF SDI
+
+# Build data
+################################################################################
+
+# IHME CSVs to merge
+ihme_csvs <- list.files(file.path(ihmedir, "excels"), pattern=".csv")
+
+# Merge IHME CSVs
+data1 <- purrr::map_df(ihme_csvs, function(x){
+  fdata <- read.csv(file.path(ihmedir, "excels", x), as.is=T)
+})
+
+# Prepare country codes for merge
+country_codes_2col <- country_codes_orig %>% 
+  select(location_id, location_name)
+country_codes_level3  <- country_codes_orig %>%
+  filter(level==3)
+
+# Prepare HDI data for merge
+hdi <- hdi_orig %>% 
+  filter(Year==2017)
+
+# Prepare SDI data for merge
+sdi <- sdi_orig %>% 
+  # Columns of interest
+  select(Location, "2017") %>% 
+  # Rename columns
+  rename(location=Location, sdi="2017") %>% 
+  # Add category
+  mutate(sdi_group=cut(sdi, breaks=c(0,0.35,0.75,1), labels = c("low","middle","high")))
+
+# Add SDI/HDI to data
+data2 <- data1 %>% 
+  # Add location name
+  left_join(country_codes_2col, by=c("location"="location_id")) %>% 
+  # Add HDI
+  left_join(hdi, by=c("location_name"="Entity")) %>% 
+  # Add SDI (THIS ADDS COLUMNS - PROBEMATIC!!!!!!!!!!!!!!!!!!!!!!!!!!!)
+  left_join(sdi, by=c("location_name"="location"))
 
 
-countries_all_level_concise<-merge(x=countries_all_level_concise,y=countries_hdi,by.x="location_name",by.y="Entity",all.x=TRUE)
-countries_all_level_concise<-countries_all_level_concise[,c(1,2,5)]
-countries_all_level_concise<-merge(x=countries_all_level_concise,y=countries_SDI,by.x="location_name",by.y="Location",all.x=TRUE)
+# Export data
+################################################################################
 
-##-----------merge data on countries and DALYs
-nba<-merge(x=nba,y=countries_all_level_concise,by.x="location",by.y="location_id",all.x=TRUE)
+# Export data
+saveRDS(data2, file = file.path(outputdir, "my_data.rds"))
+saveRDS(country_codes_orig, file = file.path(outputdir, "countries_code.rds"))
+saveRDS(country_codes_level3, file = file.path(outputdir, "countries_level3.rds"))
 
-##------------save data
-setwd("d:/Dropbox (Personal)/Dropbox (Personal)/Nutrient Gaps/Health Benefits calculations/code/Health Benefit claculation BFA/Health-Benefit-Calculation-BFA")
-saveRDS(nba, file = "my_data.rds")
-saveRDS(countries_code,file="countries_code.rds")
-saveRDS(countries_level_3,file="countries_level3.rds")
-rm(list=ls())

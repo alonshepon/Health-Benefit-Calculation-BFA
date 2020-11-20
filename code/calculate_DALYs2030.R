@@ -1,21 +1,38 @@
 
-library("ggplot2")
-library("cowplot")
-library("latex2exp")
-library("tidyverse")
-library("dplyr")
-library("viridis")
-library("hrbrthemes")
-#------------read DALY data
-a<-readRDS(file = "my_data.rds")
-b<-readRDS(file = "my_meat_data.rds")
-#------------read Population data
-population_all<-readRDS(file = "population_all.rds")
 
-#------------read country list
-countries_level_3<-readRDS(file="countries_level3.rds")
+# Read data
+################################################################################
 
-age_id=c(seq(5,20),30,31,32,33) 
+# Clear workspace
+rm(list = ls())
+
+# Packages
+library(tidyverse)
+library(cowplot)
+library(latex2exp)
+library(tidyverse)
+library(viridis)
+library(hrbrthemes)
+
+# Directories (in repository)
+outputdir <- "output"
+plotdir <- "figures"
+codedir <- "code"
+
+# Read DALYs data
+dalys_fish_orig <- readRDS(file.path(outputdir, "my_data.rds"))
+dalys_meat_orig <- readRDS(file.path(outputdir, "my_meat_data.rds"))
+
+# Read population data
+pop_orig <- readRDS(file.path(outputdir, "population_all.rds"))
+
+# Read country list
+countries_level_3 <- readRDS(file.path(outputdir, "countries_level3.rds"))
+
+
+# Build data
+################################################################################
+
 #---------age groups
 #5 1-4 years 
 #6 5-9 years 
@@ -48,19 +65,35 @@ age_id=c(seq(5,20),30,31,32,33)
 #96 vitamin A
 #95 iron
 
-population_all<-population_all%>%select(-c("lower","upper","location_id"))
+# Age ids
+age_id <- c(seq(5,20),30,31,32,33) 
 
+# Format population data
+pop <- pop_orig %>%
+  select(-c("lower","upper","location_id"))
+
+# Format DALYs fish
+omega <- dalys_fish %>% 
+  filter(measure==2 & metric==1 & sex!=3 & rei==121 & location %in% countries_level_3$location_id & age %in% age_id)
+# omega1<- left_join(omega, population_all, by=c("location_name" = "location_name","year"="year_id","age"="age_group_id","sex"="sex_id"),all.x=TRUE)
+# omega1<-omega1%>%rename(population=val.y, DALY=val.x)
+
+# Format DALYs meat
+dalys_meat <- dalys_meat_orig %>% 
+  filter(measure==2 & metric==1 & sex!=3 & rei==121 & location %in% countries_level_3$location_id & age %in% age_id)
 meat<-b%>%filter(measure==2 & metric==1 & sex!=3 & rei==121 & location %in% countries_level_3$location_id & age %in% age_id)
 meat1<- left_join(omega, population_all, by=c("location_name" = "location_name","year"="year_id","age"="age_group_id","sex"="sex_id"),all.x=TRUE)
 meat1<-omega1%>%rename(population=val.y, DALY=val.x)
 
+# Zinc
+zinc <- a %>% 
+  filter(measure==2 & metric==1 & sex!=3 & rei==97 & age %in% age_id & location %in% countries_level_3$location_id) %>%
+  arrange(val)
 
-omega<-a%>%filter(measure==2 & metric==1 & sex!=3 & rei==121 & location %in% countries_level_3$location_id & age %in% age_id)
-omega1<- left_join(omega, population_all, by=c("location_name" = "location_name","year"="year_id","age"="age_group_id","sex"="sex_id"),all.x=TRUE)
-omega1<-omega1%>%rename(population=val.y, DALY=val.x)
-
-zinc<-a%>%filter(measure==2 & metric==1 & sex!=3 & rei==97 & age %in% age_id & location %in% countries_level_3$location_id) %>%arrange(val)
-iron<-a%>%filter(measure==2 & metric==1 & sex!=3 & rei==95 & age %in% age_id & location %in% countries_level_3$location_id) %>%arrange(val)
+# Iron
+iron <- a %>% 
+  filter(measure==2 & metric==1 & sex!=3 & rei==95 & age %in% age_id & location %in% countries_level_3$location_id) %>% 
+  arrange(val)
 
 #---linear function to predict DALY in 2030
 #r30<-function(val,year){t<-lm(val~year)
