@@ -31,11 +31,10 @@ omega_N_raw_2019 <- readxl::read_excel(file.path(datadir1, "omega_RR_2019.XLSX")
 EAR_requirements <- readxl::read_excel(file.path(datadir2, "EAR_requirements_GBDgroups.xlsx"))
 
 
-# Read data
+# Helper functions
 ################################################################################
 
-
-#---------age groups
+# Age groups
 #5 1-4 years 
 #6 5-9 years 
 #7 10-14 years
@@ -57,45 +56,63 @@ EAR_requirements <- readxl::read_excel(file.path(datadir2, "EAR_requirements_GBD
 #32 90-94 years
 #33 95-99 years
 
+# Build something
 x  <- seq(0,1000,1)
-y1 <- 1.15^((250-x)/100)   #RR of GBD based on Lancet 2017
-y2 <- -0.0014*x+1.35        #RR of GBD based on linearized Mozzafarian and Rimm 2006
+y1 <- 1.15^((250-x)/100)   # RR of GBD based on Lancet 2017
+y2 <- -0.0014*x+1.35        # RR of GBD based on linearized Mozzafarian and Rimm 2006
 df <- data.frame(x,y1,y2)
 
-ggplot(df, aes(x)) +                    # basic graphical object
-  geom_line(aes(y=y1), colour="red") +  # first layer
-  geom_line(aes(y=y2), colour="green")  # second layer
-ggsave("j.png")
+# Plot something
+ggplot(df, aes(x)) +
+  geom_line(aes(y=y1), colour="red") +
+  geom_line(aes(y=y2), colour="green")
 
 
-omega_n3_RR<-function(val,age,omega_N_raw_2019){
-  if(age==5|age==6 | age==7| age==8| age==9){R<-0;return(R)} else{
-  agepaste<-paste("age",as.character(age),sep="")
-  x<-omega_N_raw_2019$x*1000   #mg/d
-  y<-omega_N_raw_2019[ , grepl( agepaste , names( omega_N_raw_2019 ) ) ]
-set.seed(1)
-plot(x, y)
-xx <- rcspline.eval(x, inclx=TRUE, nk=4)
-knots <- attr(xx, "knots")
-coef <- lsfit(xx, y)$coef
-options(digits=4)
-# rcspline.restate must ignore intercept
-w <- rcspline.restate(knots, coef[-1], x="{\\rm BP}")
-# could also have used coef instead of coef[-1], to include intercept
-cat(attr(w,"latex"), sep="\n")
+# Helper functions
+################################################################################
 
-xtrans <- eval(attr(w, "function"))
-# This is an S function of a single argument
-lines(x, coef[1] + xtrans(x), type="l")
-# Plots fitted transformation
+# Function to...
+omega_n3_RR <- function(val,age,omega_N_raw_2019){
+  
+  # If..
+  if(age==5|age==6 | age==7| age==8| age==9){
+    
+    R <- 0
+    return(R)
+  
+  # Else..    
+  }else{
+    
+    agepaste<-paste("age",as.character(age),sep="")
+    x<-omega_N_raw_2019$x*1000   #mg/d
+    y<-omega_N_raw_2019[ , grepl( agepaste , names( omega_N_raw_2019 ) ) ]
+    set.seed(1)
+    plot(x, y)
+    xx <- rcspline.eval(x, inclx=TRUE, nk=4)
+    knots <- attr(xx, "knots")
+    coef <- lsfit(xx, y)$coef
+    options(digits=4)
+    # rcspline.restate must ignore intercept
+    w <- rcspline.restate(knots, coef[-1], x="{\\rm BP}")
+    # could also have used coef instead of coef[-1], to include intercept
+    cat(attr(w,"latex"), sep="\n")
+    
+    xtrans <- eval(attr(w, "function"))
+    # This is an S function of a single argument
+    lines(x, coef[1] + xtrans(x), type="l")
+    # Plots fitted transformation
+    
+    xtrans <- rcsplineFunction(knots, coef)
+    xtrans
+    lines(x, xtrans(x), col='blue')
+    return(xtrans(val))
+  }
+  
+}
 
-xtrans <- rcsplineFunction(knots, coef)
-xtrans
-lines(x, xtrans(x), col='blue')
-return(xtrans(val))}}
-
-
-zinc_iron_vita_RR<-function(val,age,sex,nutrient,country_SDIgroup,EAR_requirements){
+# Function to...
+zinc_iron_vita_RR <- function(val, age, sex, nutrient, country_SDIgroup, EAR_requirements){
+  
   #extract EAR per the nutrient, age, sex requested
   #units mg/d
   #criteria to assess iron availability
@@ -103,16 +120,21 @@ zinc_iron_vita_RR<-function(val,age,sex,nutrient,country_SDIgroup,EAR_requiremen
   if (nutrient=="Iron" & country_SDIgroup=="middle"){nutrient<-"Iron.10%"}
   if (nutrient=="Iron" & country_SDIgroup=="high"){nutrient<-"Iron.12%"}
   
+  # Something
+  EAR <- EAR_requirements %>% filter(age_groups==age & sex_groups==sex)
+  EAR <- EAR[ , grepl( nutrient , names( EAR_requirements ) ) ]
+  EAR <- as.numeric(EAR)
   
-  EAR<- EAR_requirements %>% filter(age_groups==age & sex_groups==sex)
-  EAR<-EAR[ , grepl( nutrient , names( EAR_requirements ) ) ]
-  EAR<-as.numeric(EAR)
-R<-function(x){1-pnorm(x,mean=EAR, sd=EAR*0.1)}   #RR (based on the probability method: 1-cmd(normal distribution with mean equal to EAR and 10% CV))
-return(R(val))}
- # 10% CV for cdf justification can be found here: Risk–benefit analysis of micronutrients, Renwick, 2004, 
-# https://ec.europa.eu/food/sites/food/files/safety/docs/labelling_nutrition-supplements-responses-ilsi_annex1_en.pdf
+  # Function to calculate thing
+  # 10% CV for cdf justification can be found here: Risk–benefit analysis of micronutrients, Renwick, 2004, 
+  # https://ec.europa.eu/food/sites/food/files/safety/docs/labelling_nutrition-supplements-responses-ilsi_annex1_en.pdf
+  calc_r <- function(x){1-pnorm(x,mean=EAR, sd=EAR*0.1)}   #RR (based on the probability method: 1-cmd(normal distribution with mean equal to EAR and 10% CV))
+  
+  # Calculate thing
+  r_val <- calc_r(val)
+  
+  # Return
+  return(r_val)
 
-
-
-
+}
 
