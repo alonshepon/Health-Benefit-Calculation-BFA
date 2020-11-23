@@ -49,13 +49,20 @@ hdi <- hdi_orig %>%
   filter(Year==2017)
 
 # Prepare SDI data for merge
+# Duplicated rows for "Georgia" (manually fixed) and "North Africa and Middle East" and "South Asia" (fixed with unique())
 sdi <- sdi_orig %>% 
+  # Unique
+  unique() %>% 
   # Columns of interest
   select(Location, "2017") %>% 
   # Rename columns
   rename(location=Location, sdi="2017") %>% 
   # Add category
-  mutate(sdi_group=cut(sdi, breaks=c(0,0.35,0.75,1), labels = c("low","middle","high")))
+  mutate(sdi_group=cut(sdi, breaks=c(0,0.35,0.75,1), labels = c("low","middle","high"))) %>% 
+  # Rename "Georgia" the state
+  mutate(row_id=1:n(),
+         location=ifelse(location=="Georgia" & row_id==105, "Georgia, USA", location)) %>% 
+  select(-row_id)
 
 # Add SDI/HDI to data
 data2 <- data1 %>% 
@@ -63,7 +70,7 @@ data2 <- data1 %>%
   left_join(country_codes_2col, by=c("location"="location_id")) %>% 
   # Add HDI
   left_join(hdi, by=c("location_name"="Entity")) %>% 
-  # Add SDI (THIS ADDS COLUMNS - PROBEMATIC!!!!!!!!!!!!!!!!!!!!!!!!!!!)
+  # Add SDI
   left_join(sdi, by=c("location_name"="location"))
 
 
