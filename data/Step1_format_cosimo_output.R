@@ -1,0 +1,129 @@
+
+
+# Read data
+################################################################################
+
+# Clear workspace
+rm(list = ls())
+
+# Packages
+library(tidyverse)
+library(countrycode)
+
+# Directories
+inputdir <- "data/cosimo/raw"
+outputdir <- "data/cosimo/processed"
+plotdir <- "data/cosimo/figures"
+
+# Read data
+nutr_diff_orig <- read.csv(file.path(inputdir, "NutrientPercentageDifference.csv"), as.is=T)
+
+
+# Format data
+################################################################################
+
+# Format data
+nutr_diff <- nutr_diff_orig %>% 
+  # Rename columns
+  rename(code_long=X, country_orig=countries, food=products, nutrient_orig=elements, country_id=country_codes, country_iso3=X.1,
+         food_id=product_codes, food_code=X.2, nutrient_id=ele_codes, code_end=X.3) %>% 
+  # Gather year
+  gather(key="year", value="perc_diff", 11:ncol(.)) %>% 
+  # Format year
+  mutate(year=year %>% gsub("X_", "", .) %>% as.numeric()) %>% 
+  # Format percent difference
+  mutate(perc_diff=perc_diff %>% gsub("#DIV/0!|#N/A|%", "", .) %>% as.numeric()) %>% 
+  # Fix missing ISO3
+  mutate(country_iso3=ifelse(country_iso3=="" & country_orig=="EU 27", "EUN", country_iso3)) %>% 
+  # Format nutrient
+  mutate(nutrient=recode(nutrient_orig, 
+                         "Calcium, Ca [mg/p/d]"="Calcium",        
+                         "Energy [Kcal/p/d]"="Energy",                
+                         "Iron, Fe [mg/p/d]"="Iron",                
+                         "Monounsaturated fatty acids, t"="Monounsaturated fatty acids",  
+                         "Omega3 fatty acids [g/p/d]"="Omega-3 fatty acids",      
+                         "Polyunsaturated fatty acids, t"="Polyunsaturated fatty acids",   
+                         "Protein [g/p/d]"="Protein",                  
+                         "Saturated Fatty acids, total ["="Saturated fatty acids",  
+                         "Total lipid [g/p/d]"="Total lipids",              
+                         "Vitamin A, [IU/p/g]"="Vitamin A",              
+                         "Vitamin A, RAE [mg/p/d retinol"="Vitamin A, RAE",   
+                         "Vitamin B-12 [ug/p/d]"="Vitamin B-12",          
+                         "Zinc, Zn [mg/p/d]"="Zinc"),
+         nutrient_units=recode(nutrient_orig, 
+                         "Calcium, Ca [mg/p/d]"="mg/p/d",        
+                         "Energy [Kcal/p/d]"="Kcal/p/d",                
+                         "Iron, Fe [mg/p/d]"="mg/p/d",                
+                         "Monounsaturated fatty acids, t"="unknown",  
+                         "Omega3 fatty acids [g/p/d]"="g/p/d",      
+                         "Polyunsaturated fatty acids, t"="unknown",   
+                         "Protein [g/p/d]"="g/p/d",                  
+                         "Saturated Fatty acids, total ["="unknown",  
+                         "Total lipid [g/p/d]"="g/p/d",              
+                         "Vitamin A, [IU/p/g]"="IU/p/g",              
+                         "Vitamin A, RAE [mg/p/d retinol"="mg/p/d",   
+                         "Vitamin B-12 [ug/p/d]"="ug/p/d",          
+                         "Zinc, Zn [mg/p/d]"="mg/p/d")) %>% 
+  # Arrange
+  select(country_id, country_iso3, country_orig, 
+         food_id, food_code, food, 
+         nutrient_id, nutrient, nutrient_units,
+         year, perc_diff)
+
+
+# Inspect
+freeR::complete(nutr_diff)
+range(nutr_diff$year)
+range(nutr_diff$perc_diff, na.rm=T)
+
+
+# Build keys
+################################################################################
+
+# Country key
+country_key <- nutr_diff %>% 
+  select(country_id, country_iso3, country_orig) %>% 
+  unique() %>% 
+  arrange(country_id) %>% 
+  mutate(country=countrycode(country_iso3, "iso3c", "country.name")) %>% 
+  mutate(country=ifelse(is.na(country), country_orig, country))
+
+# Food key
+food_key <- nutr_diff %>% 
+  select(food_id, food_code, food) %>% 
+  unique() %>% 
+  arrange(food_id)
+
+# Nutrient key
+nutr_key <- nutr_diff %>% 
+  select(nutrient_id, nutrient, nutrient_units) %>% 
+  unique() %>% 
+  arrange(nutrient_id)
+ 
+
+# Finalize data
+################################################################################
+
+# Final data
+nutr_diff_out <- nutr_diff %>% 
+  # Add corrected country name
+  select(-country_orig) %>% 
+  left_join(country_key %>% select(country_iso3, country)) %>% 
+  # Arrange
+  select(country_id, country_iso3, country, 
+         food_id, food_code, food, 
+         nutrient_id, nutrient, nutrient_units,
+         year, perc_diff) %>% 
+  arrange(country, food, nutrient, year)
+  
+  
+
+# Export data
+################################################################################
+
+# Export data
+saveRDS(nutr_diff_out, file=file.path(outputdir, "COSIMO_2010_2030_perc_nutr_diff_by_food.Rds"))
+
+
+
+

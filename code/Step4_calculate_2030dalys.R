@@ -170,14 +170,14 @@ if(F){
 
 }
 
-# Plot data
+# Alon's plots
 ################################################################################
 
 # Plot 1
 ##################################
 
 # Plot DALY ratio
-g1 <- ggplot(j, aes(x=fct_reorder(location_name, delta_DALY, .fun='median',.desc = TRUE), y=delta_DALY, color=sdi_group)) +
+g1 <- ggplot(j, aes(x=fct_reorder(location_name, delta_DALY, .fun='median', .desc = TRUE), y=delta_DALY, color=sdi_group)) +
   # Plot DALY ratio distribution by age/sex group
   geom_boxplot(outlier.size = 0.3, alpha=0.1) +
   # Plot population adjusted DALY
@@ -227,6 +227,17 @@ g2
 ggsave(g2, file=file.path(plotdir, "plot.pdf"), width=40, height=20, units = "cm", dpi=500) 
 
 
+
+# Chris's plots
+################################################################################
+
+# DALY's over time
+data_yr <- j %>% 
+  # Reduce to data of interest
+  select(location_name, )
+
+
+
 # Plot 3 (CMF appraoch)
 ##################################
 
@@ -234,7 +245,7 @@ ggsave(g2, file=file.path(plotdir, "plot.pdf"), width=40, height=20, units = "cm
 delta_daly_adj_cap <- 3
 
 # Clean data
-data_clean <- j1 %>%
+data_cntry <- j1 %>%
   ungroup() %>% 
   # Add ISO3 and country
   mutate(iso3=countrycode::countrycode(location_name, "country.name", "iso3c"),
@@ -252,7 +263,7 @@ world <- rnaturalearth::ne_countries(scale="small", returnclass = "sf")
 
 # Add data to world
 data_sf <- world %>% 
-  left_join(data_clean, by=c("gu_a3"="iso3"))
+  left_join(data_cntry, by=c("gu_a3"="iso3"))
 
 # Plot data
 g3 <- ggplot(data_sf) +
