@@ -17,9 +17,87 @@ plotdir <- "data/cosimo/figures"
 
 # Read data
 nutr_diff_orig <- read.csv(file.path(inputdir, "NutrientPercentageDifference.csv"), as.is=T)
+food_lo_orig <- read.csv(file.path(inputdir, "FoodConsumptionBase.csv"), as.is=T)
+food_hi_orig  <- read.csv(file.path(inputdir, "FoodConsumptionScenario.csv"), as.is=T)
 
 
-# Format data
+# Format nutrition differences
+################################################################################
+
+# Format low road
+food_lo <- food_lo_orig %>% 
+  rename(code_long=X, country_orig=countries, food=products, nutrient=elements, country_id=country_codes, country_iso3=X.1,
+         food_id=product_codes, food_code=X.2, nutrient_id=ele_codes, code_end=X.3) %>% 
+  # Gather year
+  gather(key="year", value="value_lo", 11:ncol(.)) %>% 
+  # Format year
+  mutate(year=year %>% gsub("X_", "", .) %>% as.numeric()) %>% 
+  # Arrange
+  select(country_id, country_iso3, country_orig, 
+         food_id, food_code, food, 
+         nutrient_id, nutrient,
+         year, value_lo)
+
+# Format high road
+food_hi <- food_hi_orig %>% 
+  rename(code_long=X, country_orig=countries, food=products, nutrient=elements, country_id=country_codes, country_iso3=X.1,
+         food_id=product_codes, food_code=X.2, nutrient_id=ele_codes, code_end=X.3) %>% 
+  # Gather year
+  gather(key="year", value="value_hi", 11:ncol(.)) %>% 
+  # Format year
+  mutate(year=year %>% gsub("X_", "", .) %>% as.numeric()) %>% 
+  # Arrange
+  select(country_id, country_iso3, country_orig, 
+         food_id, food_code, food, 
+         nutrient_id, nutrient,
+         year, value_hi)
+
+# Merge high and low road
+food <- left_join(food_lo, food_hi) %>% 
+  # Add percentage
+  mutate(value_diff=value_hi-value_lo,
+         value_diff_perc=(value_hi-value_lo)/value_lo*100) %>% 
+  # Arrange
+  arrange(country_orig, food, nutrient, year)
+
+# Country key
+country_key1 <- food %>% 
+  select(country_id, country_iso3, country_orig) %>% 
+  unique() %>% 
+  arrange(country_id) %>% 
+  mutate(country=countrycode(country_iso3, "iso3c", "country.name")) %>% 
+  mutate(country=ifelse(is.na(country), country_orig, country))
+
+# Food key --- looks good
+food_key1 <- food %>% 
+  select(food_id, food_code, food) %>% 
+  unique() %>% 
+  arrange(food_id)
+
+# Nutrient key --- looks good
+nutr_key1 <- food %>% 
+  select(nutrient_id, nutrient) %>% 
+  unique() %>% 
+  arrange(nutrient_id)
+
+# Add corrected county to data
+food_out <- food %>% 
+  # Add corrected country name
+  select(-country_orig) %>% 
+  left_join(country_key %>% select(country_iso3, country)) %>% 
+  # Arrange
+  select(country_id, country_iso3, country, 
+         food_id, food_code, food, 
+         nutrient_id, nutrient,
+         year, everything()) %>% 
+  arrange(country, food, nutrient, year)
+
+
+# Export data
+saveRDS(food_out, file=file.path(outputdir, "COSIMO_2010_2030_food_consumption_differences.Rds"))
+
+
+# Format nutrition differences
 ################################################################################
 
 # Format data
@@ -76,10 +154,6 @@ freeR::complete(nutr_diff)
 range(nutr_diff$year)
 range(nutr_diff$perc_diff, na.rm=T)
 
-
-# Build keys
-################################################################################
-
 # Country key
 country_key <- nutr_diff %>% 
   select(country_id, country_iso3, country_orig) %>% 
@@ -101,9 +175,6 @@ nutr_key <- nutr_diff %>%
   arrange(nutrient_id)
  
 
-# Finalize data
-################################################################################
-
 # Final data
 nutr_diff_out <- nutr_diff %>% 
   # Add corrected country name
@@ -116,14 +187,7 @@ nutr_diff_out <- nutr_diff %>%
          year, perc_diff) %>% 
   arrange(country, food, nutrient, year)
   
-  
-
-# Export data
-################################################################################
 
 # Export data
 saveRDS(nutr_diff_out, file=file.path(outputdir, "COSIMO_2010_2030_perc_nutr_diff_by_food.Rds"))
-
-
-
 
