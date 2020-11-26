@@ -98,33 +98,8 @@ if(F){
     rename(population=val.y, DALY=val.x)
 }
 
-# Zinc
-zinc <- dalys_fish_orig %>% 
-  filter(measure==2 & metric==1 & sex!=3 & rei==97 & age %in% age_id & location %in% countries_level_3$location_id) %>%
-  arrange(val)
-
-# Iron
-iron <- dalys_fish_orig %>% 
-  filter(measure==2 & metric==1 & sex!=3 & rei==95 & age %in% age_id & location %in% countries_level_3$location_id) %>% 
-  arrange(val)
-
-
-# Do some stuff (Alon, I don't really know what's happening here)
-################################################################################
-
-#---linear function to predict DALY in 2030
-#r30<-function(val,year){t<-lm(val~year)
-#return(t$coef[1]+2030*(t$coef[2]))}
-
-# Function to...
-r30 <- function(val, year){
-  tt <- loess(val~year, span=10, control = loess.control(surface = "direct"))
-  tt1 <- max(predict(tt, newdata = 2030),0)  # make sure DALYS are not negative
-  return(tt1)
-} 
-
-
-# This prepares something...
+# Calculate DALYs in 2030 based on extrapolation for meat and omega n-3 based on the function below this chunk
+# This is the baseline values for 2030 
 j <- omega %>% 
   # Calculate 2030 DALY by country-sex-age
   group_by(location_name, sex, age) %>% 
@@ -139,36 +114,69 @@ j <- omega %>%
   mutate(pop_adjust_delta_DALY = sum(population*delta_DALY)/sum(population)) %>% 
   mutate(population_total = sum(population))
 
-# THE FOLLOWING WAS COMMENTED OUT BY ALON
- #%>% mutate(delta_DALY_sym=sign(delta_DALY)*log10(1+abs(delta_DALY)*log(10)))
-#delta_DALY_sym, bi symmetrical log transformation, https://pdfs.semanticscholar.org/70d5/3d9f448e6f2c10bd87a4a058be64f5af7dbc.pdf
 
-# None of the following code worked when CMF got it b/c the dataframe "afgh_11" is not present
-if(F){
-  
-  # Check example
-  afgh_11 <- omega %>%
-    filter(measure==2 & metric==1 & sex==1 & rei==121 & location_name=='Turkey' & age==11) 
-  t <- lm(afgh_11$val~afgh_11$year)
-  t_reg <- t$coef[1]+2030*(t$coef[2])
-  fineX <- seq(min(afgh_11$year)-10, max(afgh_11$year)+20 , 1)
-  s <- fineX > max(afgh_11$year) | fineX < min(afgh_11$year)
-  low <- loess(afgh_11$val~afgh_11$year, span = 10, control = loess.control(surface = "direct"))
-  res <- predict(low, newdata = fineX)
-  
-  ##---------------------
-  ####interp <- spline(afgh_11$year,afgh_11$val , xout= fineX , method = c("natural"))
-  #####plot(fineX,interp$y)
-  
-  #plot(afgh_11$year,afgh_11$val, xlim = range(fineX), ylim = range(res))
-  #lines(fineX, res, col = "blue", lwd = 3)
-  #points(fineX[s], res[s], col = "green", cex = .6, pch = 3)
-  
-  #plot(afgh_20$year,afgh_20$val)
-  #t$coef[1]+t$coef[2]*2030
-  #mutate(loess = predict(loess(y ~ x, data = data)))
+#---Function to predict DALYs in 2030 (baseline) based on extrapolating data from 1990. 
 
-}
+r30 <- function(val, year){
+  tt <- loess(val~year, span=10, control = loess.control(surface = "direct"))
+  tt1 <- max(predict(tt, newdata = 2030),0)  # make sure DALYS are not negative
+  return(tt1)
+} 
+
+
+#divide DALY meat to the various outcomes 
+
+
+#--------------------------calculate DALYs in 2030 for the high road scenario
+
+
+#step 1: For meat DALYs (except ischemic heart disease) perform per each age-sex-location-outcome
+
+#DALY2030meat_highroad=DALY2030_baseline*(SEV_highroad)/SEV_baseline
+
+
+
+
+#step 2: For ischemic heart disease (which include omega n-3 and meat) For each age-sex-location:
+
+#DALY2030ischemic_highroad=Joint_PAF(DALY2030_baseline_meat*(SEV_highroad_meat)/SEV_baseline_meat+DALY2030_baseline_omega*(SEV_highroad_omega)/SEV_baseline_omega)
+
+
+
+#step 3: Sum all DALYs for each age-sex-group. This is the overall burden for the highroad per age-sex-location
+#That is DALY2030ischemic_highroad+DALY2030meat_highroad, where the last term is for all the non-ischemic heart disease outcomes
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Zinc
+zinc <- dalys_fish_orig %>% 
+  filter(measure==2 & metric==1 & sex!=3 & rei==97 & age %in% age_id & location %in% countries_level_3$location_id) %>%
+  arrange(val)
+
+# Iron
+iron <- dalys_fish_orig %>% 
+  filter(measure==2 & metric==1 & sex!=3 & rei==95 & age %in% age_id & location %in% countries_level_3$location_id) %>% 
+  arrange(val)
+
+
+
 
 # Alon's plots
 ################################################################################
