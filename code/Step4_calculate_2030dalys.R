@@ -141,10 +141,14 @@ r30 <- function(val, year){
 
 #DALY2030ischemic_highroad=Joint_PAF(DALY2030_baseline_meat*(SEV_highroad_meat)/SEV_baseline_meat+DALY2030_baseline_omega*(SEV_highroad_omega)/SEV_baseline_omega)
 
+#Joint_PAF=1-(1-PAF1)(1-PAF2)      where PAF1 is the population attributable factor for meat, and PAF2 - for omega n-3
 
 
-#step 3: Sum all DALYs for each age-sex-group. This is the overall burden for the highroad per age-sex-location
-#That is DALY2030ischemic_highroad+DALY2030meat_highroad, where the last term is for all the non-ischemic heart disease outcomes
+
+
+#step 3: Sum all DALYs for each age-sex-group. This is the overall burden for the highroad per age-sex-location:
+
+#That is, DALY2030ischemic_highroad+DALY2030meat_highroad, where the last term is for all the non-ischemic heart disease outcomes
 
 
 
