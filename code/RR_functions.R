@@ -27,10 +27,10 @@ plotdir <- "figures"
 codedir <- "code"
 
 # Read RR GBD 2019
-omega_N_raw_2019 <- readxl::read_excel(file.path(datadir1, "omega_RR_2019.XLSX"))
+#omega_N_raw_2019 <- readxl::read_excel(file.path(datadir1, "omega_RR_2019.XLSX"))
 EAR_requirements <- readxl::read_excel(file.path(datadir2, "EAR_requirements_GBDgroups.xlsx"))
-
-
+red_meat_2019 <- read.xlsx('d:/Dropbox (Personal)/Dropbox (Personal)/Nutrient Gaps/Health Benefits calculations/code/Health Benefit claculation BFA/Health-Benefit-Calculation-BFA/Health-Benefit-Calculation-BFA/code/meat_RR_2019.xlsx')
+omega_N_raw_2019 <- read.xlsx('d:/Dropbox (Personal)/Dropbox (Personal)/Nutrient Gaps/Health Benefits calculations/code/Health Benefit claculation BFA/Health-Benefit-Calculation-BFA/Health-Benefit-Calculation-BFA/code/omega_RR_2019.xlsx')
 # Helper functions
 ################################################################################
 
@@ -71,7 +71,7 @@ ggplot(df, aes(x)) +
 # Helper functions
 ################################################################################
 
-# Function to...
+# Function of Relative Risk of omega n-3
 omega_n3_RR <- function(val,age,omega_N_raw_2019){
   
   # If..
@@ -86,29 +86,113 @@ omega_n3_RR <- function(val,age,omega_N_raw_2019){
     agepaste<-paste("age",as.character(age),sep="")
     x<-omega_N_raw_2019$x*1000   #mg/d
     y<-omega_N_raw_2019[ , grepl( agepaste , names( omega_N_raw_2019 ) ) ]
-    set.seed(1)
+    xtrans<-splinefun(x, y,method = c("monoH.FC"),ties = mean)
     plot(x, y)
-    xx <- rcspline.eval(x, inclx=TRUE, nk=4)
-    knots <- attr(xx, "knots")
-    coef <- lsfit(xx, y)$coef
-    options(digits=4)
-    # rcspline.restate must ignore intercept
-    w <- rcspline.restate(knots, coef[-1], x="{\\rm BP}")
-    # could also have used coef instead of coef[-1], to include intercept
-    cat(attr(w,"latex"), sep="\n")
-    
-    xtrans <- eval(attr(w, "function"))
-    # This is an S function of a single argument
-    lines(x, coef[1] + xtrans(x), type="l")
-    # Plots fitted transformation
-    
-    xtrans <- rcsplineFunction(knots, coef)
-    xtrans
-    lines(x, xtrans(x), col='blue')
+    lines(x, xtrans(x), col='red')
     return(xtrans(val))
   }
-  
 }
+
+
+
+
+
+
+# Function of Relative Risk of high red meat for various outcomes
+red_meat_RR <- function(val,age,meat_outcome, red_meat_2019){
+  
+  # If..
+  if(age==5|age==6 | age==7| age==8| age==9){
+    
+    R <- 0
+    return(R)}
+    
+    # Else..(adolescents and adults)   
+  else{
+    x<-c(0,50,100,150,200)   #g/d
+    agepaste<-paste("age",as.character(age),sep="")   #age
+    
+    
+    if (meat_outcome==429){ # breast cancer REI_id=429
+    
+    # build age specific RR
+    meat_raw_2019_outcome<-red_meat_2019[red_meat_2019$Diet.high.in.red.meat=="Breast cancer",];
+    y<-meat_raw_2019_outcome[ , grepl( agepaste , names( meat_raw_2019_outcome ) ) ]
+    xtrans<-splinefun(x, y,method = c("monoH.FC"),ties = mean)
+    plot(x, y)
+    lines(x, xtrans(x), col='red')
+    }
+    
+    if (meat_outcome==441){ # Colon and rectum cancer REI_id=441
+      
+      # build age specific RR
+      meat_raw_2019_outcome<-red_meat_2019[red_meat_2019$Diet.high.in.red.meat=="Colon and rectum cancer",];
+      y<-meat_raw_2019_outcome[ , grepl( agepaste , names( meat_raw_2019_outcome ) ) ]
+      xtrans<-splinefun(x, y,method = c("monoH.FC"),ties = mean)
+      plot(x, y)
+      lines(x, xtrans(x), col='red')
+    }
+    
+    if (meat_outcome==493){ # Ischemic heart disease REI_id=493
+      
+      # build age specific RR
+      meat_raw_2019_outcome<-red_meat_2019[red_meat_2019$Diet.high.in.red.meat=="Ischemic heart disease",];
+      y<-meat_raw_2019_outcome[ , grepl( agepaste , names( meat_raw_2019_outcome ) ) ]
+      xtrans<-splinefun(x, y,method = c("monoH.FC"),ties = mean)
+      plot(x, y)
+      lines(x, xtrans(x), col='red')
+    }
+    
+    if (meat_outcome==495){ # Ischemic stroke REI_id=495
+      
+      # build age specific RR
+      meat_raw_2019_outcome<-red_meat_2019[red_meat_2019$Diet.high.in.red.meat=="Ischemic stroke",];
+      y<-meat_raw_2019_outcome[ , grepl( agepaste , names( meat_raw_2019_outcome ) ) ]
+      xtrans<-splinefun(x, y,method = c("monoH.FC"),ties = mean)
+      plot(x, y)
+      lines(x, xtrans(x), col='red')
+    }
+    
+    if (meat_outcome==496){ # Intracerebral hemorrhage REI_id=496
+      
+      # build age specific RR
+      meat_raw_2019_outcome<-red_meat_2019[red_meat_2019$Diet.high.in.red.meat=="Intracerebral hemorrhage",];
+      y<-meat_raw_2019_outcome[ , grepl( agepaste , names( meat_raw_2019_outcome ) ) ]
+      xtrans<-splinefun(x, y,method = c("monoH.FC"),ties = mean)
+      plot(x, y)
+      lines(x, xtrans(x), col='red')
+    }
+    
+    if (meat_outcome==497){ # Subarachnoid hemorrhage REI_id=496 
+      
+      # build age specific RR
+      meat_raw_2019_outcome<-red_meat_2019[red_meat_2019$Diet.high.in.red.meat=="Subarachnoid hemorrhage",];
+      y<-meat_raw_2019_outcome[ , grepl( agepaste , names( meat_raw_2019_outcome ) ) ]
+      xtrans<-splinefun(x, y,method = c("monoH.FC"),ties = mean)
+      plot(x, y)
+      lines(x, xtrans(x), col='red')
+    }
+    
+    if (meat_outcome==976){ # Diabetes mellitus type 2 REI_id=976 
+      
+      # build age specific RR
+      meat_raw_2019_outcome<-red_meat_2019[red_meat_2019$Diet.high.in.red.meat=="Diabetes mellitus type 2",];
+      y<-meat_raw_2019_outcome[ , grepl( agepaste , names( meat_raw_2019_outcome ) ) ]
+      xtrans<-splinefun(x, y,method = c("monoH.FC"),ties = mean)
+      plot(x, y)
+      lines(x, xtrans(x), col='red')
+    }
+    
+   return(xtrans(val))
+}
+}
+
+
+
+
+
+
+
 
 # Function to...
 zinc_iron_vita_RR <- function(val, age, sex, nutrient, country_SDIgroup, EAR_requirements){
