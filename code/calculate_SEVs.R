@@ -124,7 +124,7 @@ red_meat_SEV <- function(val,age,meat_outcome, red_meat_2019){
 
 
 # SEV of zinc/iron/vitamin A
-zinc_iron_vita_RR <- function(Intake, age, sex, nutrient, country_SDIgroup, EAR_requirements){
+zinc_iron_vita_SEV <- function(Intake, age, sex, nutrient, country_SDIgroup, EAR_requirements){
   SEV<-integrate(zinc_iron_vita_RR(x,age,sex, nutrient, country_SDIgroup, EAR_requirements)*Intake(x),-inf,inf)*100
   
   # Return
