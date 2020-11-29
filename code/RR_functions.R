@@ -1,4 +1,6 @@
 
+
+# a script to build Relative risk (RR) curves (functions) for omega n-3, red meat and micronutrients intakes
 # Read data
 ################################################################################
 
