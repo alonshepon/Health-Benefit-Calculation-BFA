@@ -58,16 +58,15 @@ omega_N_raw_2019 <- read.xlsx('d:/Dropbox (Personal)/Dropbox (Personal)/Nutrient
 #32 90-94 years
 #33 95-99 years
 
-# Build something
-x  <- seq(0,1000,1)
-y1 <- 1.15^((250-x)/100)   # RR of GBD based on Lancet 2017
-y2 <- -0.0014*x+1.35        # RR of GBD based on linearized Mozzafarian and Rimm 2006
-df <- data.frame(x,y1,y2)
+# RR of omega n-3 (Mozzafarian and Rimm) 
+#x  <- seq(0,1000,1)
+#y1 <- 1.15^((250-x)/100)   # RR of GBD based on Lancet 2017
+#y2 <- -0.0014*x+1.35        # RR of GBD based on linearized Mozzafarian and Rimm 2006
+#df <- data.frame(x,y1,y2)
 
-# Plot something
-ggplot(df, aes(x)) +
-  geom_line(aes(y=y1), colour="red") +
-  geom_line(aes(y=y2), colour="green")
+#ggplot(df, aes(x)) +
+#  geom_line(aes(y=y1), colour="red") +
+#  geom_line(aes(y=y2), colour="green")
 
 
 # Helper functions
@@ -121,8 +120,8 @@ red_meat_RR <- function(val,age,meat_outcome, red_meat_2019){
     meat_raw_2019_outcome<-red_meat_2019[red_meat_2019$Diet.high.in.red.meat=="Breast cancer",];
     y<-meat_raw_2019_outcome[ , grepl( agepaste , names( meat_raw_2019_outcome ) ) ]
     xtrans<-splinefun(x, y,method = c("monoH.FC"),ties = mean)
-    plot(x, y)
-    lines(x, xtrans(x), col='red')
+    #plot(x, y)
+    #lines(x, xtrans(x), col='red')
     }
     
     if (meat_outcome==441){ # Colon and rectum cancer REI_id=441
@@ -196,22 +195,24 @@ red_meat_RR <- function(val,age,meat_outcome, red_meat_2019){
 
 
 
-# Function to...
+# Function to calculate nutrient deficiencies
 zinc_iron_vita_RR <- function(val, age, sex, nutrient, country_SDIgroup, EAR_requirements){
   
   #extract EAR per the nutrient, age, sex requested
   #units mg/d
+  #age, according to GBD age groups
+  #sex=1 male; sex=2 female
   #criteria to assess iron availability
   if (nutrient=="Iron" & country_SDIgroup=="low"){nutrient<-"Iron.5%"}
   if (nutrient=="Iron" & country_SDIgroup=="middle"){nutrient<-"Iron.10%"}
   if (nutrient=="Iron" & country_SDIgroup=="high"){nutrient<-"Iron.12%"}
-  
+
   # Something
   EAR <- EAR_requirements %>% filter(age_groups==age & sex_groups==sex)
   EAR <- EAR[ , grepl( nutrient , names( EAR_requirements ) ) ]
   EAR <- as.numeric(EAR)
   
-  # Function to calculate thing
+  # Build Risk curve based on CMD of normal distribution centered at EAR
   # 10% CV for cdf justification can be found here: Risk–benefit analysis of micronutrients, Renwick, 2004, 
   # https://ec.europa.eu/food/sites/food/files/safety/docs/labelling_nutrition-supplements-responses-ilsi_annex1_en.pdf
   calc_r <- function(x){1-pnorm(x,mean=EAR, sd=EAR*0.1)}   #RR (based on the probability method: 1-cmd(normal distribution with mean equal to EAR and 10% CV))
