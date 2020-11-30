@@ -3,5 +3,6 @@
 .RData
 .Ruserdata
 
-# Ignore output folder
+# Ignore large files folder
 output
+data/intakes/processed
