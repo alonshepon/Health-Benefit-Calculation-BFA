@@ -69,6 +69,7 @@ key <- data %>%
 # Setup theme
 my_theme <-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
                    axis.text=element_text(size=6),
+                   axis.text.y=element_blank(),
                    axis.title=element_text(size=8),
                    legend.text=element_text(size=6),
                    legend.title=element_text(size=8),
@@ -96,7 +97,7 @@ for(i in 1:nrow(key)){
   plot_title <- paste0(country_do, ": ", nutrient_do, " intake")
   g <- ggplot(sdata, aes(x=intake, fill=sex)) +
     facet_wrap(~age_yr, ncol=10, scales="free_y") +
-    geom_density() +
+    geom_density(alpha=0.6, lwd=0.2) +
     # Labels
     labs(x="Habitual intake", y="Density", title=plot_title) +
     # Legends
