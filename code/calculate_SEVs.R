@@ -13,17 +13,16 @@ omega_N_raw_2019 <- read.xlsx('d:/Dropbox (Personal)/Dropbox (Personal)/Nutrient
 red_meat_2019 <- read.xlsx('d:/Dropbox (Personal)/Dropbox (Personal)/Nutrient Gaps/Health Benefits calculations/code/Health Benefit claculation BFA/Health-Benefit-Calculation-BFA/Health-Benefit-Calculation-BFA/code/meat_RR_2019.xlsx')
 EAR_requirements <- read.xlsx('d:/Dropbox (Personal)/Dropbox (Personal)/Nutrient Gaps/Health Benefits calculations/Data/EAR/EAR_requirements_GBDgroups.xlsx')
 
-
-m=9
+#example of intkae for quality control
+m=3
 Intake<-function(x){y=1/sqrt(2*pi*(m/5)^2)*exp(-(x-m)^2/(2*(m/5)^2))}#normal distribution for example
-c<-zinc_iron_vita_SEV(Intake, 10, 1, "Iron", "low", EAR_requirements)
-
-
+c<-zinc_iron_vita_SEV(Intake, 10, 1, "Zinc", "low", EAR_requirements)
 b<-red_meat_SEV(Intake,10,976, red_meat_2019,red_meat_RR)
 plot(Intake(seq(0:500)))
 integrant<-function(x){Intake(x)}
 inter<-(integrate(integrant,lower=-Inf,upper=Inf))
 inter$value
+###--------------------
 
 # SEV of omega n-3
 
