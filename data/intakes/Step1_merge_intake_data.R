@@ -54,12 +54,76 @@ data_orig <- purrr::map_df(intake_files, function(x){
   
 })
 
+# Age group key
+#5 1-4 years 
+#6 5-9 years 
+#7 10-14 years
+#8 15-19 years
+#9 20-24 years
+#10 25-29 years
+#11 30-34 years
+#12 35-39 years
+#13 40-44 years 
+#14 45-49 years 
+#15 50-54 years 
+#16 55-59 years 
+#17 60-64 years 
+#18 65-69 years 
+#19 70-74 years 
+#20 75-79 years
+#30 80-84 years
+#31 85-89 years
+#32 90-94 years
+#33 95-99 years
+
+# Age groups
+age_group_lo <- c(0, seq(5,100,5))
+age_group_hi <- c(seq(4,99,5), Inf)
+age_groups <- paste(age_group_lo, age_group_hi, sep="-")
+age_group_breaks <- c(-Inf,age_group_hi)
+age_group_key <- tibble(age_yr=0:100,
+                        age_group=cut(x=0:100, breaks=age_group_breaks, labels=age_groups)) %>% 
+  mutate(age_group=recode(age_group, 
+                          "100-Inf"="100+"),
+         age_group_id=recode(age_group,
+                              "0-4"="5",
+                              "5-9"="6",
+                              "10-14"="7",
+                              "15-19"="8",
+                              "20-24"="9",
+                              "25-29"="10",
+                              "30-34"="11",
+                              "35-39"="12",
+                              "40-44"="13",
+                              "45-49"="14",
+                              "50-54"="15",
+                              "55-59"="16",
+                              "60-64"="17",
+                              "65-69"="18",
+                              "70-74"="19",
+                              "75-79"="20",
+                              "80-84"="30",
+                              "85-89"="31",
+                              "90-94"="32",
+                              "95-99"="33",
+                              "100+"="34"))
+
 # Format original data
 data <- data_orig %>% 
+  # Rename columns
   rename(id=X, age_yr=age, intake=HI) %>% 
+  # Add country/nutrient/sex information
   left_join(file_key) %>% 
-  select(filename, country, nutrient, sex, age_yr, id, intake) %>% 
+  # Add age group
+  mutate(age_group=cut(age_yr, 
+                       breaks=age_group_breaks,
+                       labels=age_groups)) %>% 
+  mutate(age_group=recode(age_group, "100-Inf"="100+")) %>% 
+  left_join(age_group_key) %>% 
+  # Arrange columns
+  select(filename, country, nutrient, sex, age_group_id, age_group, age_yr, id, intake) %>% 
   arrange(country, nutrient, sex, age_yr, id)
+
 
 # Export data
 ################################################################################

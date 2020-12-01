@@ -112,3 +112,9 @@ for(i in 1:nrow(key)){
          width=8.5, height=11, units="in", dpi=600)
   
 }
+
+
+
+
+
+
