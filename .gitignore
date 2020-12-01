@@ -5,4 +5,4 @@
 
 # Ignore large files folder
 output
-data/intakes/processed
+data/intakes/processed/
