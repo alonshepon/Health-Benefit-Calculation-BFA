@@ -96,7 +96,7 @@ for(i in 1:nrow(key)){
   # Plot data
   plot_title <- paste0(country_do, ": ", nutrient_do, " intake")
   g <- ggplot(sdata, aes(x=intake, fill=sex)) +
-    facet_wrap(~age_yr, ncol=10, scales="free_y") +
+    facet_wrap(~age_group, ncol=4, scales="free_y") +
     geom_density(alpha=0.6, lwd=0.2) +
     # Labels
     labs(x="Habitual intake", y="Density", title=plot_title) +
@@ -113,7 +113,21 @@ for(i in 1:nrow(key)){
   
 }
 
+# Fit distributions
+################################################################################
 
+# Distributions
+dist_key <- data %>% 
+  select(country, nutrient, sex, age_group) %>% 
+  unique()
+
+# Loop through and fit distributions
+for(i in 1:length(dist_key)){
+  
+  
+  
+  
+}
 
 
 
