@@ -112,23 +112,3 @@ for(i in 1:nrow(key)){
          width=8.5, height=11, units="in", dpi=600)
   
 }
-
-# Fit distributions
-################################################################################
-
-# Distributions
-dist_key <- data %>% 
-  select(country, nutrient, sex, age_group) %>% 
-  unique()
-
-# Loop through and fit distributions
-for(i in 1:length(dist_key)){
-  
-  
-  
-  
-}
-
-
-
-
