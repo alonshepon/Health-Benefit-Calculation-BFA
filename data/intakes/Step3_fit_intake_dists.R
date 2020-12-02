@@ -93,7 +93,7 @@ for(i in 1:nrow(dist_fits)){
 
 # Mark best distribution
 dist_fits_out <- dist_fits %>% 
-  mutate(best_dist=ifelse(ln_ks < g_ks | !is.na(g_ks), "log-normal", "gamma"))
+  mutate(best_dist=ifelse(ln_ks < g_ks | is.na(g_ks), "log-normal", "gamma"))
 
 # Inspect
 freeR::complete(dist_fits_out)
