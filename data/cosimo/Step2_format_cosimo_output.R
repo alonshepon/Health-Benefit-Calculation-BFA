@@ -19,6 +19,63 @@ plotdir <- "data/cosimo/figures"
 nutr_diff_orig <- read.csv(file.path(inputdir, "NutrientPercentageDifference.csv"), as.is=T)
 food_lo_orig <- read.csv(file.path(inputdir, "FoodConsumptionBase.csv"), as.is=T)
 food_hi_orig  <- read.csv(file.path(inputdir, "FoodConsumptionScenario.csv"), as.is=T)
+nutr_abs_orig <- read.csv(file.path(inputdir, "NutrientsScen.csv"), as.is=T, skip=1)
+
+
+# Helper functions
+################################################################################
+
+# Function to extract info from long code
+strsplit_extract <- function(x, split, which){
+  
+  split_escaped <- paste0("\\", split)
+  vals <- purrr::map(x,  function(x){
+    split_val <- strsplit(x, split_escaped)
+    extracted_val <- split_val[[1]][which]
+  })
+  
+  vals <- vals %>% unlist() %>% as.character()
+  
+  return(vals)
+  
+}
+
+# Format nutrient absolute values
+################################################################################
+
+# Format data
+nutr_abs <- nutr_abs_orig %>% 
+  # Gather columns
+  gather(key="year", value="value", 5:ncol(.)) %>% 
+  # Format year
+  mutate(year=year %>% gsub("X|A", "", .) %>% as.numeric()) %>% 
+  # Remove useless columns
+  select(-c(Location, Type, Comment)) %>%
+  # Rename
+  rename(long_code=OUTPUT.0) %>% 
+  # Extract code info
+  mutate(iso3 = strsplit_extract(x=long_code, split="_", which=1),
+         food_code = strsplit_extract(x=long_code, split="_", which=2),
+         code3 = strsplit_extract(x=long_code, split="_", which=3),
+         code4 = strsplit_extract(x=code3, split="..", which=1),
+         code5 = strsplit_extract(x=code3, split="..", which=2),
+         code6 = strsplit_extract(x=code3, split="..", which=3)) %>% 
+  # Select
+  select(-c(code3, code4, code6)) %>% 
+  rename(nutrient_code=code5) %>% 
+  select(long_code, iso3, food_code, nutrient_code, year, value, everything()) %>% 
+  arrange(iso3, food_code, nutrient_code, year) %>% 
+  # Remove empty rows
+  filter(!is.na(year))
+
+# Inspect data
+str(nutr_abs)
+sort(unique(nutr_abs$iso3))
+sort(unique(nutr_abs$food_code))
+sort(unique(nutr_abs$nutrient_code))
+
+# Export formatted data
+saveRDS(nutr_abs, file=file.path(outputdir, "COSIMO_2010_2030_abs_nutr_diff_by_food.Rds"))
 
 
 # Format nutrition differences
@@ -129,19 +186,19 @@ nutr_diff <- nutr_diff_orig %>%
                          "Vitamin B-12 [ug/p/d]"="Vitamin B-12",          
                          "Zinc, Zn [mg/p/d]"="Zinc"),
          nutrient_units=recode(nutrient_orig, 
-                         "Calcium, Ca [mg/p/d]"="mg/p/d",        
-                         "Energy [Kcal/p/d]"="Kcal/p/d",                
-                         "Iron, Fe [mg/p/d]"="mg/p/d",                
-                         "Monounsaturated fatty acids, t"="unknown",  
-                         "Omega3 fatty acids [g/p/d]"="g/p/d",      
-                         "Polyunsaturated fatty acids, t"="unknown",   
-                         "Protein [g/p/d]"="g/p/d",                  
-                         "Saturated Fatty acids, total ["="unknown",  
-                         "Total lipid [g/p/d]"="g/p/d",              
-                         "Vitamin A, [IU/p/g]"="IU/p/g",              
-                         "Vitamin A, RAE [mg/p/d retinol"="mg/p/d",   
-                         "Vitamin B-12 [ug/p/d]"="ug/p/d",          
-                         "Zinc, Zn [mg/p/d]"="mg/p/d")) %>% 
+                               "Calcium, Ca [mg/p/d]"="mg/p/d",        
+                               "Energy [Kcal/p/d]"="Kcal/p/d",                
+                               "Iron, Fe [mg/p/d]"="mg/p/d",                
+                               "Monounsaturated fatty acids, t"="unknown",  
+                               "Omega3 fatty acids [g/p/d]"="g/p/d",      
+                               "Polyunsaturated fatty acids, t"="unknown",   
+                               "Protein [g/p/d]"="g/p/d",                  
+                               "Saturated Fatty acids, total ["="unknown",  
+                               "Total lipid [g/p/d]"="g/p/d",              
+                               "Vitamin A, [IU/p/g]"="IU/p/g",              
+                               "Vitamin A, RAE [mg/p/d retinol"="mg/p/d",   
+                               "Vitamin B-12 [ug/p/d]"="ug/p/d",          
+                               "Zinc, Zn [mg/p/d]"="mg/p/d")) %>% 
   # Arrange
   select(country_id, country_iso3, country_orig, 
          food_id, food_code, food, 
@@ -173,7 +230,6 @@ nutr_key <- nutr_diff %>%
   select(nutrient_id, nutrient, nutrient_units) %>% 
   unique() %>% 
   arrange(nutrient_id)
- 
 
 # Final data
 nutr_diff_out <- nutr_diff %>% 
@@ -186,7 +242,7 @@ nutr_diff_out <- nutr_diff %>%
          nutrient_id, nutrient, nutrient_units,
          year, perc_diff) %>% 
   arrange(country, food, nutrient, year)
-  
+
 
 # Export data
 saveRDS(nutr_diff_out, file=file.path(outputdir, "COSIMO_2010_2030_perc_nutr_diff_by_food.Rds"))

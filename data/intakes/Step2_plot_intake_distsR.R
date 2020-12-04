@@ -19,6 +19,19 @@ plotdir <- "data/intakes/figures"
 data <- readRDS(file.path(inputdir, "habitual_nutrient_intakes_by_age_sex_4countries.Rds"))
 
 
+# Calculate nutrient mins/maxs
+################################################################################
+
+# Intake ranges
+range_key <- data %>% 
+  group_by(nutrient) %>% 
+  summarize(min=min(intake),
+            max=max(intake),
+            q90=quantile(intake, probs=0.9))
+
+# Export
+write.csv(range_key, file=file.path(inputdir, "habitual_nutrient_intake_ranges.csv"), row.names = F)
+
 # Plot data coverage
 ################################################################################
 
@@ -26,7 +39,8 @@ data <- readRDS(file.path(inputdir, "habitual_nutrient_intakes_by_age_sex_4count
 coverage <- data %>% 
   group_by(country, nutrient, sex, age_yr) %>% 
   summarize(n=n()) %>% 
-  mutate(data_yn=n>0)
+  mutate(data_yn=n>0, 
+         sex=stringr::str_to_title(sex))
 
 # Plot coverage
 g <- ggplot(coverage, aes(x=age_yr, y=nutrient, fill=data_yn)) +
@@ -54,7 +68,7 @@ g
 
 # Export plot
 ggsave(g, filename=file.path(plotdir,"intake_data_coverage.png"), 
-       width=6.5, height=4, units="in", dpi=600)
+       width=6.5, height=6.5, units="in", dpi=600)
 
 
 # Plot intake distribtuions

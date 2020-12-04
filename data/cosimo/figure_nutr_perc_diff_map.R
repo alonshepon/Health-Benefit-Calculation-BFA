@@ -71,6 +71,8 @@ data <- bind_rows(data1, data2)
 # Expand data to match map countries
 data_expanded <- world %>% 
   sf::st_drop_geometry() %>% 
+  # Reduce
+  select(gu_a3) %>% 
   # Add nutrient info
   left_join(data, by=c("gu_a3"="country_iso3")) %>% 
   # Expand
@@ -78,16 +80,16 @@ data_expanded <- world %>%
   # Remove missing data
   filter(!is.na(nutrient_label))
 
-# Add expanded data to SF
-data_sf <- world %>% 
-  left_join(data_expanded, by=c("gu_a3"))
 
-
-# Plot data
+# Plot data (all)
 ################################################################################
 
+# Add expanded data to SF
+data_all_sf <- world %>% 
+  left_join(data_expanded, by=c("gu_a3"))
+
 # Plot data
-g <- ggplot(data_sf) +
+g <- ggplot(data_all_sf) +
   facet_wrap(~nutrient_label, ncol=4) +
   geom_sf(mapping=aes(fill=perc_diff), lwd=0.1, color="grey30") +
   # Legend
@@ -111,7 +113,48 @@ g <- ggplot(data_sf) +
 g
 
 # Export plot
-ggsave(g, filename=file.path(plotdir, "figure_perc_nutr_diff.png"), 
+ggsave(g, filename=file.path(plotdir, "figure_perc_nutr_diff_all.png"), 
        width=10.5, height=6, units="in", dpi=600)
 
+
+# Plot data (subset)
+################################################################################
+
+# Data plot
+nutrients_plot <- c("Iron (mg/p/d)", "Zinc (mg/p/d)", "Calcium (mg/p/d)", 
+                    "Vitamin A (IU/p/g)", "Vitamin B-12 (ug/p/d)", "Omega-3 fatty acids (g/p/d)")
+data_plot <- data_expanded %>% 
+  filter(nutrient_label %in% nutrients_plot)
+
+# Add expanded data to SF
+data_plot_sf <- world %>% 
+  left_join(data_plot, by=c("gu_a3"))
+
+# Plot data
+g <- ggplot(data_plot_sf) +
+  facet_wrap(~nutrient_label, ncol=3) +
+  geom_sf(mapping=aes(fill=perc_diff), lwd=0.1, color="grey30") +
+  # Legend
+  scale_fill_gradient2(name="% difference in 2030\nunder high and low roads", midpoint=0, low="darkred", high="navy", mid="white", na.value = "grey80") +
+  guides(fill = guide_colorbar(ticks.colour = "black", frame.colour = "black")) +
+  # Crop out Antarctica
+  coord_sf(y=c(-55, NA)) +
+  # Theme
+  theme_bw() +
+  theme(legend.position = "bottom",
+        axis.text=element_blank(),
+        axis.title=element_blank(),
+        legend.text=element_text(size=6),
+        legend.title=element_text(size=8),
+        strip.text=element_text(size=6),
+        plot.title=element_text(size=8),
+        panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(), 
+        axis.line = element_line(colour = "black"))
+g
+
+# Export plot
+ggsave(g, filename=file.path(plotdir, "figure_perc_nutr_diff_use.png"), 
+       width=6.5, height=3, units="in", dpi=600)
 

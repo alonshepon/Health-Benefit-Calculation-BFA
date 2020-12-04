@@ -31,9 +31,12 @@ file_key <- tibble(filename=intake_files) %>%
   mutate(country=ifelse(grepl("mexico", filename), "Mexico", ""),
          country=ifelse(grepl("usa", filename), "United States", country),
          country=ifelse(grepl("zambia", filename), "Zambia", country),
-         country=ifelse(grepl("uganda", filename), "Uganda", country)) %>% 
+         country=ifelse(grepl("uganda", filename), "Uganda", country),
+         country=ifelse(grepl("china", filename), "China", country),
+         country=ifelse(grepl("lao", filename), "Laos", country),
+         country=ifelse(grepl("phil", filename), "Philippines", country)) %>% 
   # Add nutrient
-  mutate(nutrient=gsub(".csv|_m_||_w_|_h_w_|mexico|usa|zambia|uganda", "", filename)) %>% 
+  mutate(nutrient=gsub(".csv|_m_||_w_|_h_w_|mexico|usa|zambia|uganda|phil|lao|china", "", filename)) %>% 
   mutate(nutrient=recode(nutrient,
                          "b12"="Vitamin B-12",
                          "calc"="Calcium",
