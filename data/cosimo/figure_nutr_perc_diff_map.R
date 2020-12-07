@@ -122,7 +122,7 @@ ggsave(g, filename=file.path(plotdir, "figure_perc_nutr_diff_all.png"),
 
 # Data plot
 nutrients_plot <- c("Iron (mg/p/d)", "Zinc (mg/p/d)", "Calcium (mg/p/d)", 
-                    "Vitamin A (IU/p/g)", "Vitamin B-12 (ug/p/d)", "Omega-3 fatty acids (g/p/d)")
+                    "Vitamin A (IU/p/d)", "Vitamin B-12 (ug/p/d)", "Omega-3 fatty acids (g/p/d)")
 data_plot <- data_expanded %>% 
   filter(nutrient_label %in% nutrients_plot)
 
