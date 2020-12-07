@@ -98,13 +98,13 @@ nutr_vals <- nutr_lo %>%
                                "Calcium, Ca [mg/p/d]"="mg/p/d",        
                                "Energy [Kcal/p/d]"="Kcal/p/d",                
                                "Iron, Fe [mg/p/d]"="mg/p/d",                
-                               "Monounsaturated fatty acids, t"="unknown",  
+                               "Monounsaturated fatty acids, t"="g/p/d",  
                                "Omega3 fatty acids [g/p/d]"="g/p/d",      
-                               "Polyunsaturated fatty acids, t"="unknown",   
+                               "Polyunsaturated fatty acids, t"="g/p/d",   
                                "Protein [g/p/d]"="g/p/d",                  
-                               "Saturated Fatty acids, total ["="unknown",  
+                               "Saturated Fatty acids, total ["="g/p/d",  
                                "Total lipid [g/p/d]"="g/p/d",              
-                               "Vitamin A, [IU/p/g]"="IU/p/g",              
+                               "Vitamin A, [IU/p/g]"="IU/p/d",              
                                "Vitamin A, RAE [mg/p/d retinol"="mg/p/d",   
                                "Vitamin B-12 [ug/p/d]"="ug/p/d",          
                                "Zinc, Zn [mg/p/d]"="mg/p/d")) %>% 
@@ -274,7 +274,7 @@ nutr_key1 <- food %>%
 food_out <- food %>% 
   # Add corrected country name
   select(-country_orig) %>% 
-  left_join(country_key %>% select(country_iso3, country)) %>% 
+  left_join(country_key1 %>% select(country_iso3, country)) %>% 
   # Arrange
   select(country_id, country_iso3, country, 
          food_id, food_code, food, 
@@ -322,13 +322,13 @@ nutr_diff <- nutr_diff_orig %>%
                                "Calcium, Ca [mg/p/d]"="mg/p/d",        
                                "Energy [Kcal/p/d]"="Kcal/p/d",                
                                "Iron, Fe [mg/p/d]"="mg/p/d",                
-                               "Monounsaturated fatty acids, t"="unknown",  
+                               "Monounsaturated fatty acids, t"="g/p/d",  
                                "Omega3 fatty acids [g/p/d]"="g/p/d",      
-                               "Polyunsaturated fatty acids, t"="unknown",   
+                               "Polyunsaturated fatty acids, t"="g/p/d",   
                                "Protein [g/p/d]"="g/p/d",                  
-                               "Saturated Fatty acids, total ["="unknown",  
+                               "Saturated Fatty acids, total ["="g/p/d",  
                                "Total lipid [g/p/d]"="g/p/d",              
-                               "Vitamin A, [IU/p/g]"="IU/p/g",              
+                               "Vitamin A, [IU/p/g]"="IU/p/d",              
                                "Vitamin A, RAE [mg/p/d retinol"="mg/p/d",   
                                "Vitamin B-12 [ug/p/d]"="ug/p/d",          
                                "Zinc, Zn [mg/p/d]"="mg/p/d")) %>% 
