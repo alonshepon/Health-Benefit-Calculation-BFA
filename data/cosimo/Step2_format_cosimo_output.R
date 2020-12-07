@@ -20,7 +20,8 @@ nutr_diff_orig <- read.csv(file.path(inputdir, "NutrientPercentageDifference.csv
 food_lo_orig <- read.csv(file.path(inputdir, "FoodConsumptionBase.csv"), as.is=T)
 food_hi_orig  <- read.csv(file.path(inputdir, "FoodConsumptionScenario.csv"), as.is=T)
 nutr_abs_orig <- read.csv(file.path(inputdir, "NutrientsScen.csv"), as.is=T, skip=1)
-
+nutr_lo_orig <- read.csv(file.path(inputdir, "BaseNutrients.csv"), as.is=T)
+nutr_hi_orig <- read.csv(file.path(inputdir, "ScenarioNutrients.csv"), as.is=T)
 
 # Helper functions
 ################################################################################
@@ -40,7 +41,139 @@ strsplit_extract <- function(x, split, which){
   
 }
 
-# Format nutrient absolute values
+# Format absolute nutrient values
+################################################################################
+
+# Format nutrient
+nutr_lo <- nutr_lo_orig %>%
+  # Remove columns
+  select(-c(X, X.3)) %>% 
+  # Rename columns
+  rename(country=countries, iso3=X.1, food=products, food_code=X.2, nutrient=elements, nutrient_code=ele_codes, food_id=product_codes, country_id=country_codes) %>% 
+  # Rearrange columns
+  select(country_id, iso3, country, food_id, food_code, food, nutrient_code, nutrient, everything()) %>% 
+  # Gather
+  gather(key="year", value="value_lo", 9:ncol(.)) %>% 
+  # Format year
+  mutate(year=gsub("X_", "", year) %>% as.numeric(),
+         value_lo=ifelse(value_lo=="#N/A", NA, value_lo) %>% as.numeric())
+
+# Format nutrient
+nutr_hi <- nutr_hi_orig %>%
+  # Remove columns
+  select(-c(X, X.3)) %>% 
+  # Rename columns
+  rename(country=countries, iso3=X.1, food=products, food_code=X.2, nutrient=elements, nutrient_code=ele_codes, food_id=product_codes, country_id=country_codes) %>% 
+  # Rearrange columns
+  select(country_id, iso3, country, food_id, food_code, food, nutrient_code, nutrient, everything()) %>% 
+  # Gather
+  gather(key="year", value="value_hi", 9:ncol(.)) %>% 
+  # Format year
+  mutate(year=gsub("X_", "", year) %>% as.numeric(),
+         value_hi=ifelse(value_hi=="#N/A", NA, value_hi) %>% as.numeric())
+
+# Merge data
+nutr_vals <- nutr_lo %>% 
+  left_join(nutr_hi) %>% 
+  # Compute differences
+  mutate(value_diff=value_hi-value_lo,
+         value_pdiff=(value_hi-value_lo)/value_lo*100) %>% 
+  # Fix nutrient values and units
+  mutate(nutrient_orig=nutrient,
+         nutrient=recode(nutrient_orig, 
+                         "Calcium, Ca [mg/p/d]"="Calcium",        
+                         "Energy [Kcal/p/d]"="Energy",                
+                         "Iron, Fe [mg/p/d]"="Iron",                
+                         "Monounsaturated fatty acids, t"="Monounsaturated fatty acids",  
+                         "Omega3 fatty acids [g/p/d]"="Omega-3 fatty acids",      
+                         "Polyunsaturated fatty acids, t"="Polyunsaturated fatty acids",   
+                         "Protein [g/p/d]"="Protein",                  
+                         "Saturated Fatty acids, total ["="Saturated fatty acids",  
+                         "Total lipid [g/p/d]"="Total lipids",              
+                         "Vitamin A, [IU/p/g]"="Vitamin A",              
+                         "Vitamin A, RAE [mg/p/d retinol"="Vitamin A, RAE",   
+                         "Vitamin B-12 [ug/p/d]"="Vitamin B-12",          
+                         "Zinc, Zn [mg/p/d]"="Zinc"),
+         nutrient_units=recode(nutrient_orig, 
+                               "Calcium, Ca [mg/p/d]"="mg/p/d",        
+                               "Energy [Kcal/p/d]"="Kcal/p/d",                
+                               "Iron, Fe [mg/p/d]"="mg/p/d",                
+                               "Monounsaturated fatty acids, t"="unknown",  
+                               "Omega3 fatty acids [g/p/d]"="g/p/d",      
+                               "Polyunsaturated fatty acids, t"="unknown",   
+                               "Protein [g/p/d]"="g/p/d",                  
+                               "Saturated Fatty acids, total ["="unknown",  
+                               "Total lipid [g/p/d]"="g/p/d",              
+                               "Vitamin A, [IU/p/g]"="IU/p/g",              
+                               "Vitamin A, RAE [mg/p/d retinol"="mg/p/d",   
+                               "Vitamin B-12 [ug/p/d]"="ug/p/d",          
+                               "Zinc, Zn [mg/p/d]"="mg/p/d")) %>% 
+  select(-nutrient_orig) %>% 
+  # Fix country
+  mutate(iso3=ifelse(iso3=="", "EUN", iso3)) %>% 
+  # Arrange
+  select(country_id:nutrient, nutrient_units, everything()) %>% 
+  arrange(country, food, nutrient, year)
+
+# Inspect data
+str(nutr_vals)
+freeR::complete(nutr_vals)
+range(nutr_vals$year)
+
+
+# Build keys
+###########################################
+
+# Nutrient key
+nutr_key <- nutr_vals %>% 
+  select(nutrient_code, nutrient, nutrient_units) %>% 
+  unique() %>% 
+  arrange(nutrient_code)
+
+# Food key
+food_key <- nutr_vals %>% 
+  select(food_id, food_code, food) %>% 
+  unique() %>% 
+  arrange(food_id)
+
+# Country key
+cntry_key <- nutr_vals %>% 
+  select(country_id, iso3, country) %>% 
+  unique() %>% 
+  arrange(country_id) %>% 
+  mutate(country_use=countrycode(iso3, "iso3c", "country.name"),
+         country_use=ifelse(is.na(country_use), country, country_use)) %>% 
+  select(country_id, country_use) %>% 
+  rename(country=country_use)
+
+anyDuplicated(cntry_key$country_id)
+
+# Add correct country
+###########################################
+
+# Add correct country to data
+nutr_vals1 <- nutr_vals %>% 
+  select(-country) %>% 
+  left_join(cntry_key) %>% 
+  select(country_id, iso3, country, everything())
+
+# Inspect data
+str(nutr_vals1)
+freeR::complete(nutr_vals1)
+range(nutr_vals$year)
+
+# Export data
+###########################################
+
+# Export keys
+write.csv(nutr_key, file=file.path(outputdir, "COSIMO_nutrient_key.csv"), row.names=F)
+write.csv(food_key, file=file.path(outputdir, "COSIMO_food_product_key.csv"), row.names=F)
+
+# Export data
+saveRDS(nutr_vals1, file=file.path(outputdir, "COSIMO_2010_2030_nutr_by_scenario_cntry_food.rds"))
+
+
+# Format absolute nutrient differences
 ################################################################################
 
 # Format data
