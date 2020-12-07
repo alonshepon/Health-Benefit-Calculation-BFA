@@ -151,18 +151,21 @@ j <- omega %>%
 #####################################################################################
 
  
- #example of intake for quality control
- m=150
- m1=155
+ #-----------------------------example of intake for quality control
+ m=10
+ m1=255
  Intake_bs_omega<-function(x){y=1/sqrt(2*pi*(m/5)^2)*exp(-(x-m)^2/(2*(m/5)^2))}#normal distribution for example
  Intake_hr_omega<-function(x){y=1/sqrt(2*pi*(m1/5)^2)*exp(-(x-m1)^2/(2*(m1/5)^2))}#normal distribution for example
+ r<-seq(0:500)
+ df<-omega_n3_SEV(Intake_bs_omega,10,omega_N_raw_2019,omega_n3_RR)
+plot(Intake_bs_omega(r),col='blue')
  
- 
- m=50
- m1=30
+ m=200
+ m1=60
  Intake_bs_meat<-function(x){y=1/sqrt(2*pi*(m/5)^2)*exp(-(x-m)^2/(2*(m/5)^2))}#normal distribution for example
  Intake_hr_meat<-function(x){y=1/sqrt(2*pi*(m1/5)^2)*exp(-(x-m1)^2/(2*(m1/5)^2))}#normal distribution for example
- 
+ df<-red_meat_SEV(Intake_bs_meat,10,493,red_meat_raw_2019,red_meat_RR)
+ plot(Intake_bs_meat(r),col='blue')
  
  #c<-zinc_iron_vita_SEV(Intake, 10, 1, "Zinc", "low", EAR_requirements)
  #b<-red_meat_SEV(Intake,10,976, red_meat_2019,red_meat_RR)
@@ -170,12 +173,12 @@ j <- omega %>%
  #integrant<-function(x){Intake(x)}
  #inter<-(integrate(integrant,lower=-Inf,upper=Inf))
  #inter$value
- ###--------------------
+ ###------------------------------------------------------------
  
  
  #--------------------------calculate DALYs in 2030 for the high road scenario
- source("RR_functions") 
  
+ source('d:/Dropbox (Personal)/Dropbox (Personal)/Nutrient Gaps/Health Benefits calculations/code/Health Benefit claculation BFA/Health-Benefit-Calculation-BFA/Health-Benefit-Calculation-BFA/code/RR_functions.R')
  #do not forget to integrate intakes of meat, omega n-3, and micronutrients per age-sex-location to tog data.frame
 
 DALYs1<-tog %>%  
@@ -191,19 +194,17 @@ DALYs1<-tog %>%
                               *(1-omega_n3_PAF(Intake_bs_omega,intake_hr_omega,age,omega_N_raw_2019,omega_n3_RR,0))))*(DALY2030_red_meat_hr+DALY2030_omega_hr))%>%
    
    #step 2: For all other meat DALYs (except ischemic heart disease) perform per each age-sex-location-outcome
-   filter(cause %in% cause_meat_no_ischemic)  #all other causes
-   #for omega
-   mutate(DALY2030_omega_hr<-omega_n3_PAF(Intake_bs_omega,intake_hr_omega,age,omega_N_raw_2019,omega_n3_RR,1)*DALY2030_omega) %>%
+   filter(cause %in% cause_meat_no_ischemic)  %>% #all other causes
    #for meat
    mutate(DALY2030_red_meat_hr<-red_meat_PAF(Intake_bs_meat,intake_hr_meat,age,cause,red_meat_raw_2019,red_meat_RR,1)*DALY2030_meat)
    mutate(DALY2030_hr_all=DALY2030_red_meat_hr+DALY2030_omega_hr)
    #step 3: Sum all DALYs for each age-sex-group. This is the overall burden for the highroad per age-sex-location:
    group_by(location,age,sex) %>% #summarize all DALYs per age-sex-location
-     summarize(DALY2030_hr_total=sum(DALY2030_hr_all))
+     summarize(DALY2030_hr_total=sum(DALY2030_hr_all,na.rm = TRUE))
   
 
    #--------------------------calculate changes in SEVs
-   source("RR_functions") 
+   source('d:/Dropbox (Personal)/Dropbox (Personal)/Nutrient Gaps/Health Benefits calculations/code/Health Benefit claculation BFA/Health-Benefit-Calculation-BFA/Health-Benefit-Calculation-BFA/code/RR_functions.R')
    
    #do not forget to integrate intakes of meat, omega n-3, and micronutrients per age-sex-location to tog data.frame
    #br are intakes of baseline, while hr = high road
