@@ -100,8 +100,8 @@ omega_n3_RR <- function(val,age,omega_N_raw_2019){
     x<-omega_N_raw_2019$x*1000   #mg/d
     y<-omega_N_raw_2019[ , grepl( agepaste , names( omega_N_raw_2019 ) ) ]
     xtrans<-splinefun(x, y,method = c("monoH.FC"),ties = mean)
-    plot(x, y)
-    lines(x, xtrans(x), col='red')
+    #plot(x, y)
+    #lines(x, xtrans(x), col='red')
     return(xtrans(val))
   }
 }
@@ -152,8 +152,8 @@ red_meat_RR <- function(val,age,meat_outcome, red_meat_2019){
       meat_raw_2019_outcome<-red_meat_2019[red_meat_2019$Diet.high.in.red.meat=="Ischemic heart disease",];
       y<-meat_raw_2019_outcome[ , grepl( agepaste , names( meat_raw_2019_outcome ) ) ]
       xtrans<-splinefun(x, y,method = c("monoH.FC"),ties = mean)
-      plot(x, y)
-      lines(x, xtrans(x), col='red')
+      #plot(x, y)
+      #lines(x, xtrans(x), col='red')
     }
     
     if (meat_outcome==495){ # Ischemic stroke REI_id=495
@@ -162,8 +162,8 @@ red_meat_RR <- function(val,age,meat_outcome, red_meat_2019){
       meat_raw_2019_outcome<-red_meat_2019[red_meat_2019$Diet.high.in.red.meat=="Ischemic stroke",];
       y<-meat_raw_2019_outcome[ , grepl( agepaste , names( meat_raw_2019_outcome ) ) ]
       xtrans<-splinefun(x, y,method = c("monoH.FC"),ties = mean)
-      plot(x, y)
-      lines(x, xtrans(x), col='red')
+      #plot(x, y)
+      #lines(x, xtrans(x), col='red')
     }
     
     if (meat_outcome==496){ # Intracerebral hemorrhage REI_id=496
@@ -172,8 +172,8 @@ red_meat_RR <- function(val,age,meat_outcome, red_meat_2019){
       meat_raw_2019_outcome<-red_meat_2019[red_meat_2019$Diet.high.in.red.meat=="Intracerebral hemorrhage",];
       y<-meat_raw_2019_outcome[ , grepl( agepaste , names( meat_raw_2019_outcome ) ) ]
       xtrans<-splinefun(x, y,method = c("monoH.FC"),ties = mean)
-      plot(x, y)
-      lines(x, xtrans(x), col='red')
+      #plot(x, y)
+      #lines(x, xtrans(x), col='red')
     }
     
     if (meat_outcome==497){ # Subarachnoid hemorrhage REI_id=496 
@@ -182,8 +182,8 @@ red_meat_RR <- function(val,age,meat_outcome, red_meat_2019){
       meat_raw_2019_outcome<-red_meat_2019[red_meat_2019$Diet.high.in.red.meat=="Subarachnoid hemorrhage",];
       y<-meat_raw_2019_outcome[ , grepl( agepaste , names( meat_raw_2019_outcome ) ) ]
       xtrans<-splinefun(x, y,method = c("monoH.FC"),ties = mean)
-      plot(x, y)
-      lines(x, xtrans(x), col='red')
+      #plot(x, y)
+      #lines(x, xtrans(x), col='red')
     }
     
     if (meat_outcome==976){ # Diabetes mellitus type 2 REI_id=976 
@@ -192,8 +192,8 @@ red_meat_RR <- function(val,age,meat_outcome, red_meat_2019){
       meat_raw_2019_outcome<-red_meat_2019[red_meat_2019$Diet.high.in.red.meat=="Diabetes mellitus type 2",];
       y<-meat_raw_2019_outcome[ , grepl( agepaste , names( meat_raw_2019_outcome ) ) ]
       xtrans<-splinefun(x, y,method = c("monoH.FC"),ties = mean)
-      plot(x, y)
-      lines(x, xtrans(x), col='red')
+      #plot(x, y)
+      #lines(x, xtrans(x), col='red')
     }
     
    return(xtrans(val))
@@ -213,6 +213,12 @@ micronutrient_RR <- function(val, age, sex, nutrient, country_SDIgroup, EAR_requ
   if (nutrient=="Iron" & country_SDIgroup=="low"){nutrient<-"Iron.5%"}
   if (nutrient=="Iron" & country_SDIgroup=="middle"){nutrient<-"Iron.10%"}
   if (nutrient=="Iron" & country_SDIgroup=="high"){nutrient<-"Iron.12%"}
+  
+  #criteria to assess zinc availability
+  if (nutrient=="Zinc" & country_SDIgroup=="low"){nutrient<-"Zinc.low"}
+  if (nutrient=="Zinc" & country_SDIgroup=="middle"){nutrient<-"Zinc.mod"}
+  if (nutrient=="Zinc" & country_SDIgroup=="high"){nutrient<-"Zinc.high"}
+  
 
   # load EAR values based on input of nutrient and country SDI 
   EAR <- EAR_requirements %>% filter(age_groups==age & sex_groups==sex)

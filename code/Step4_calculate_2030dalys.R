@@ -210,26 +210,29 @@ DALYs1<-tog %>%
    
    SEVs1<-tog %>%  
      # For each age-sex-location:
-     #for omega
+     #for omega n-3 %mg/d
      mutate(delta_SEV_omega<-omega_n3_SEV(Intake_bs_omega,age,omega_N_raw_2019,omega_n3_RR)-
               omega_n3_SEV(Intake_hr_omega,age,omega_N_raw_2019,omega_n3_RR)) %>%  #changes in %
-     #for meat
-     mutate(delta_SEV_meat<-red_meat_SEV(Intake_bs_meat,age,meat_outcome, red_meat_2019,red_meat_RR)-
-              red_meat_SEV(Intake_hr_meat,age,meat_outcome,red_meat_2019,red_meat_RR)) %>%   #changes in % 
-     #for zinc
+     #for meat %g/d
+     mutate(delta_SEV_meat<-red_meat_SEV(Intake_bs_meat,age,cause, red_meat_2019,red_meat_RR)-
+              red_meat_SEV(Intake_hr_meat,age,cause,red_meat_2019,red_meat_RR)) %>%   #changes in % 
+     #for zinc  %intakes mg/d
      mutate(delta_SEV_zinc<-micronutrient_SEV(Intake_bs_zinc, age, sex, "Zinc", country_SDIgroup, EAR_requirements)-
               micronutrient_SEV(Intake_hr_zinc, age, sex, "Zinc", country_SDIgroup, EAR_requirements)) %>% #changes in %
 
-     #for iron
+     #for iron %intakes mg/d
      mutate(delta_SEV_iron<-micronutrient_SEV(Intake_bs_iron, age, sex, "Iron", country_SDIgroup, EAR_requirements)-
               micronutrient_SEV(Intake_hr_iron, age, sex, "Iron", country_SDIgroup, EAR_requirements))  #changes in %
    
-     #for calcium
-     mutate(delta_SEV_calcium<-micronutrient_SEV(Intake_bs_iron, age, sex, "Iron", country_SDIgroup, EAR_requirements)-
-              micronutrient_SEV(Intake_hr_iron, age, sex, "Iron", country_SDIgroup, EAR_requirements))  #changes in %  
+     #for calcium %intakes mg/d
+     mutate(delta_SEV_calcium<-micronutrient_SEV(Intake_bs_iron, age, sex, "Calcium", country_SDIgroup, EAR_requirements)-
+              micronutrient_SEV(Intake_hr_iron, age, sex, "Calcium", country_SDIgroup, EAR_requirements))  #changes in %  
    
-   
-
+     #for vitamin A %intakes RAE/d
+     mutate(delta_SEV_vitA<-micronutrient_SEV(Intake_bs_vitA, age, sex, "vitA", country_SDIgroup, EAR_requirements)-
+              micronutrient_SEV(Intake_hr_vitA, age, sex, "vitA", country_SDIgroup, EAR_requirements))  #changes in %  
+     
+     
 
 # Zinc
 #zinc <- dalys_fish_orig %>% 
