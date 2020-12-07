@@ -200,7 +200,7 @@ DALYs1<-tog %>%
    mutate(DALY2030_hr_all=DALY2030_red_meat_hr+DALY2030_omega_hr)
    #step 3: Sum all DALYs for each age-sex-group. This is the overall burden for the highroad per age-sex-location:
    group_by(location,age,sex) %>% #summarize all DALYs per age-sex-location
-     summarize(DALY2030_hr_total=sum(DALY2030_hr_all,na.rm = TRUE))
+     summarize(DALY2030_hr_total=sum(DALY2030_hr_all))
   
 
    #--------------------------calculate changes in SEVs
@@ -223,11 +223,11 @@ DALYs1<-tog %>%
 
      #for iron %intakes mg/d
      mutate(delta_SEV_iron<-micronutrient_SEV(Intake_bs_iron, age, sex, "Iron", country_SDIgroup, EAR_requirements)-
-              micronutrient_SEV(Intake_hr_iron, age, sex, "Iron", country_SDIgroup, EAR_requirements))  #changes in %
+              micronutrient_SEV(Intake_hr_iron, age, sex, "Iron", country_SDIgroup, EAR_requirements)) %>%  #changes in %
    
      #for calcium %intakes mg/d
      mutate(delta_SEV_calcium<-micronutrient_SEV(Intake_bs_iron, age, sex, "Calcium", country_SDIgroup, EAR_requirements)-
-              micronutrient_SEV(Intake_hr_iron, age, sex, "Calcium", country_SDIgroup, EAR_requirements))  #changes in %  
+              micronutrient_SEV(Intake_hr_iron, age, sex, "Calcium", country_SDIgroup, EAR_requirements)) %>%  #changes in %  
    
      #for vitamin A %intakes RAE/d
      mutate(delta_SEV_vitA<-micronutrient_SEV(Intake_bs_vitA, age, sex, "vitA", country_SDIgroup, EAR_requirements)-
