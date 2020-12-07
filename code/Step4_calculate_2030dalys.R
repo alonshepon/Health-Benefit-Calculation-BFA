@@ -151,7 +151,7 @@ j <- omega %>%
 #####################################################################################
 
  
- #-----------------------------example of intake for quality control
+ #-----------------------------example of intake distributions for quality control (can delete it later)
  m=10
  m1=255
  Intake_bs_omega<-function(x){y=1/sqrt(2*pi*(m/5)^2)*exp(-(x-m)^2/(2*(m/5)^2))}#normal distribution for example
@@ -170,9 +170,9 @@ plot(Intake_bs_omega(r),col='blue')
  #c<-zinc_iron_vita_SEV(Intake, 10, 1, "Zinc", "low", EAR_requirements)
  #b<-red_meat_SEV(Intake,10,976, red_meat_2019,red_meat_RR)
  #plot(Intake(seq(0:500)))
- #integrant<-function(x){Intake(x)}
- #inter<-(integrate(integrant,lower=-Inf,upper=Inf))
- #inter$value
+ integrant<-function(x){Intake_bs_meat(x)}
+ inter<-(integrate(integrant,lower=-Inf,upper=Inf))
+ inter$value
  ###------------------------------------------------------------
  
  
