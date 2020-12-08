@@ -21,7 +21,7 @@ key_orig <- read.csv(file.path(inputdir, "COSIMO_2020_country_key.csv"), as.is=T
 world <- rnaturalearth::ne_countries("small", returnclass="sf")
 
 # Intake data
-intake_cntrys <- c("China", "Laos", "Mexico", "Philippines", "Uganda", "United States of America", "Zambia", "Italy")
+intake_cntrys <- c("China", "Laos", "Mexico", "Philippines", "Uganda", "United States of America", "Zambia", "Italy", "Burkina Faso")
 world_intake <- world %>% 
   filter(geounit %in% intake_cntrys) 
 world_intake_centroid <- world_intake %>% 
@@ -119,7 +119,7 @@ intake_key_df <- world %>%
                              "Eastern Europe"="Italy", 
                              "Melanesia"="Laos & Philippines",  
                              "Middle Africa"="Uganda & Zambia", 
-                             "Northern Africa"="Uganda & Zambia",  
+                             "Northern Africa"="Italy",  
                              "Northern America"="United States", 
                              "Northern Europe"="Italy",  
                              "Seven seas (open ocean)"="N/A",  
@@ -128,8 +128,8 @@ intake_key_df <- world %>%
                              "Southern Africa"="Uganda & Zambia",  
                              "Southern Asia"="China",  
                              "Southern Europe"="Italy",  
-                             "Western Africa"="Uganda & Zambia",  
-                             "Western Asia"="China", 
+                             "Western Africa"="Burkina Faso",  
+                             "Western Asia"="Italy", 
                              "Western Europe"="Italy"))
 
 # Add to world and map

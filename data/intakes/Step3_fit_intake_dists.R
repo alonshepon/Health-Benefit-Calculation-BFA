@@ -16,7 +16,15 @@ outputdir <- "data/intakes/output"
 plotdir <- "data/intakes/figures"
 
 # Read data
-data <- readRDS(file.path(inputdir, "habitual_nutrient_intakes_by_age_sex_4countries.Rds"))
+data <- readRDS(file.path(inputdir, "habitual_nutrient_intakes_by_age_sex_9countries.Rds"))
+
+# Combine countries
+data <- data %>% 
+  mutate(country_final=recode(country,
+                              "Laos"="Laos & Philippines",
+                              "Philippines"="Laos & Philippines",
+                              "Uganda"="Uganda & Zambia",
+                              "Zambia"="Uganda & Zambia"))
 
 
 # Fit distributions
@@ -27,7 +35,7 @@ library(fitdistrplus)
 
 # Build key
 dist_key <- data %>% 
-  select(country, nutrient, sex, age_group) %>% 
+  select(country_final, nutrient, sex, age_group) %>% 
   unique() 
 
 # Distributions
@@ -50,14 +58,14 @@ for(i in 1:nrow(dist_fits)){
   
   # Params
   print(i)
-  country_do <- dist_fits$country[i]
+  country_do <- dist_fits$country_final[i]
   nutrient_do <- dist_fits$nutrient[i]
   sex_do <- dist_fits$sex[i]
   age_group_do <- dist_fits$age_group[i]
   
   # Subset data
   sdata <- data %>% 
-    filter(country==country_do & nutrient==nutrient_do & sex==sex_do & age_group==age_group_do)
+    filter(country_final==country_do & nutrient==nutrient_do & sex==sex_do & age_group==age_group_do)
   
   # Inspect skewness
   # descdist(sdata$intake)
@@ -99,7 +107,7 @@ dist_fits_out <- dist_fits %>%
 freeR::complete(dist_fits_out)
 
 # Export best distributions
-write.csv(dist_fits_out, file=file.path(outputdir, "habitual_nutrient_intakes_by_age_sex_4countries_distribution_fits.csv"), row.names=F)
+write.csv(dist_fits_out, file=file.path(outputdir, "habitual_nutrient_intakes_by_age_sex_9countries_distribution_fits.csv"), row.names=F)
 
 
 

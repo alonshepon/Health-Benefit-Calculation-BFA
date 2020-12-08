@@ -37,4 +37,4 @@ cntry_key <- cntry_key_orig %>%
   select(iso3, country, unm49, group_code, group_name, continent_region, everything())
 
 # Export country key
-write.csv(cntry_key, file=file.path(outputdir, "COSIMO_2020_country_key.csv"), row.names=F)
+write.csv(cntry_key, file=file.path(outputdir, "COSIMO_AGLINK_2020_country_key.csv"), row.names=F)

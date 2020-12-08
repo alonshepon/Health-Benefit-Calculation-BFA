@@ -143,7 +143,7 @@ cntry_key <- nutr_vals %>%
   arrange(country_id) %>% 
   mutate(country_use=countrycode(iso3, "iso3c", "country.name"),
          country_use=ifelse(is.na(country_use), country, country_use)) %>% 
-  select(country_id, country_use) %>% 
+  select(country_id, iso3, country_use) %>% 
   rename(country=country_use)
 
 anyDuplicated(cntry_key$country_id)
@@ -168,6 +168,7 @@ range(nutr_vals$year)
 # Export keys
 write.csv(nutr_key, file=file.path(outputdir, "COSIMO_nutrient_key.csv"), row.names=F)
 write.csv(food_key, file=file.path(outputdir, "COSIMO_food_product_key.csv"), row.names=F)
+write.csv(cntry_key, file=file.path(outputdir, "COSIMO_country_key.csv"), row.names=F)
 
 # Export data
 saveRDS(nutr_vals1, file=file.path(outputdir, "COSIMO_2010_2030_nutr_by_scenario_cntry_food.rds"))
