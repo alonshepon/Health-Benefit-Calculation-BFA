@@ -23,31 +23,55 @@ cosimo_orig <- readRDS(file.path(outputdir, "COSIMO_2010_2030_nutr_by_scenario_c
 # Read GENUS dataset
 genus_orig <- readRDS(file.path(genusdir, "genus_nutrient_supplies_w_fort_by_age_sex_2011.Rds"))
 
+# Read COSIMO-GENUS I3O matching key
+cosimo_genus_iso_key <- readxl::read_excel("tables/TableS2_cosimo_genus_countries.xlsx", skip=1) %>% 
+  setNames(c("iso3_cosimo", "country_cosimo", "iso3_genus", "country_genus")) %>% 
+  select(iso3_cosimo, iso3_genus)
+
+# Read SPADE-derived scalars (for omega-3s and )
+spade_scalars <- readRDS(file.path("data/intakes/output/intake_distribution_age_sex_scalars.Rds")) %>% 
+  mutate(sex=recode(sex, "men"="Males", "women"="Females"))
 
 # Map GENUS coverage
 ################################################################################
 
-# GENUS coverage?
-genus_isos <- genus_orig %>% 
-  group_by(iso3_use) %>% 
-  summarize(data_yn=sum(!is.na(value_med))>0)
+# Only if you want to
+if(F){
 
-# Get world
-world <- rnaturalearth::ne_countries(scale="small", returnclass = "sf")
+  # GENUS coverage?
+  genus_isos <- genus_orig %>% 
+    group_by(iso3_use, country_use) %>% 
+    summarize(data_yn=sum(!is.na(value_med))>0) %>% 
+    ungroup()
+  
+  # Get world
+  world <- rnaturalearth::ne_countries(scale="large", returnclass = "sf")
+  
+  # Add data
+  genus_isos_sf <- world %>% 
+    left_join(genus_isos, by=c("gu_a3"="iso3_use"))
+  
+  # Plot world
+  g <- ggplot(genus_isos_sf) +
+    geom_sf(mapping=aes(fill=data_yn), lwd=0.2) +
+    ggrepel::geom_text_repel(data=genus_isos_sf, 
+                             mapping=aes(label=gu_a3, color=data_yn, geometry=geometry), 
+                             stat="sf_coordinates",
+                             size=2) +
+    labs(x="", y="") +
+    scale_color_manual(name="Data availability", values = c("darkred", "blue"), na.value="black") +
+    theme_bw() +
+    theme(legend.position = "bottom")
+  g
+  
+  # Export map
+  ggsave(g, filename=file.path(plotdir, "GENUS_coverage_map.png"), 
+         width=15, height=8.5, units="in", dpi=200)
 
-# Add data
-genus_isos_sf <- world %>% 
-  left_join(genus_isos, by=c("gu_a3"="iso3_use"))
-
-# Plot world
-g <- ggplot(genus_isos_sf) +
-  geom_sf(mapping=aes(fill=data_yn)) +
-  geom_sf_text(data=genus_isos_sf, mapping=aes(color=data_yn, label=iso3_use)) +
-  theme_bw()
-g
+}
 
 
-# Format GENUS for merge
+# Format GENUS for merge 
 ################################################################################
 
 # Expand GENUS to separate children into male/female
@@ -122,59 +146,27 @@ data <- cosimo_orig %>%
                                "Vitamin B-12"="Vitamin B6",
                                "Omega-3 fatty acids"="Polyunsaturated fatty acids")) %>% 
   # Add GENUS ISO3s for scalar matching
-  mutate(iso3_genus=recode(iso3,
-                           "AFG"="PAK", # Afghanistan             Pakistan
-                           "ANT"="USA", # Netherlands Antilles    
-                           "BDI"="RWA", # Burundi                 Rwanda
-                           "BLX"="BEL", # Belgium-Luxembourg      Belgium
-                           "BMU"="USA", # Bermuda                 USA
-                           "COD"="COG",  # Congo - Kinshasa       Congo
-                           "COM"="MDG",  # Comoros                Madagascar
-                           "CZ2"="USA",  # Czechoslovakia
-                           "DMA"="USA",  # Dominica
-                           "ET2"="USA",  # Ethiopia PDR
-                           "EUN"="USA",  # EU 27
-                           "GAB"="USA",  # Gabon
-                           "HKG"="CHN",  # Hong Kong China
-                           "KHM"="USA",  # Cambodia
-                           "KIR"="USA",  # Kiribati
-                           "KNA"="USA",  # St. Kitts & Nevis
-                           "LBR"="USA",  # Liberia
-                           "LSO"="USA",  # Lesotho
-                           "MAC"="USA",  # Macau SAR China
-                           "MMR"="USA",  # Myanmar
-                           "OMN"="USA",  # Oman
-                           "PNG"="USA",  # Papua New Guinea
-                           "PRK"="USA",  # North Korea
-                           "SLB"="USA",  # Solomon Islands
-                           "SLE"="USA",  # Sierra Leone
-                           "SOM"="USA",  # Somalia
-                           "SRM"="USA",  # Serbia & Montenegro
-                           "STP"="USA",  # Sao Tome & Principe
-                           "SYC"="USA",  # Seychelles
-                           "TCD"="USA",  # Chad
-                           "TGO"="USA",  # Togo
-                           "TKM"="USA",  # Turkmenistan
-                           "TLS"="USA",  # Timor-Leste
-                           "TWN"="USA",  # Taiwan
-                           "UGA"="USA",  # Uganda
-                           "USR"="RUS",  # USSR
-                           "VNM"="USA",  # Vietname
-                           "VUT"="USA",  # Vanuatu
-                           "WSM"="USA",  # Samoa
-                           "YUG"="USA",  # Yugoslavia
-                           "ZMB"="USA")) %>%  # Zambia
-  # Add fractions
+  left_join(cosimo_genus_iso_key, by=c("iso3"="iso3_cosimo")) %>% 
+  mutate(iso3_genus=ifelse(is.na(iso3_genus), iso3, iso3_genus)) %>% 
+  # Add GENUS-derived scalars
   left_join(intake_scalars, by=c("iso3_genus"="iso3", "nutrient_genus"="nutrient")) %>% 
+  rename(scalar_genus=scalar) %>% 
+  # Add SPADE-derived scalars
+  left_join(spade_scalars %>% select(country_id,  nutrient, sex, age_group, scalar)) %>%
+  rename(scalar_spade=scalar) %>% 
+  # Select scalar
+  mutate(scalar=ifelse(nutrient %in% c("Omega-3 fatty acids", "Vitamin B-12"), scalar_spade, scalar_genus)) %>% 
   # Calculate sex-age means
   rename(mean_cntry=value) %>% 
   mutate(mean_group=mean_cntry * scalar)
 
-# Which combos missing data
-check <- data %>% 
-  group_by(iso3, country) %>% 
-  summarize(n=sum(!is.na(scalar))) %>% 
-  filter(n==0)
+# Inspect data
+freeR::complete(data)
+
+
+# Export
+################################################################################
+
 
 
 

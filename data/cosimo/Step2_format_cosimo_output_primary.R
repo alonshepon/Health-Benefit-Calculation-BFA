@@ -194,9 +194,15 @@ data1_eun <- data1 %>%
   filter(iso3=="EUN")
 
 # Duplicate EUN data for each E27 country
-e27_do <- cntry_key %>% 
+##############################################
+
+# EU27 countries
+e27_do <- cntry_key %>%
+  # Reduce to EU countries
   filter(eu27==T) %>% 
   select(country_id, iso3_use, country_use)
+
+# Duplicate EUN data for each E27 country
 data1_eu_use <- purrr::map_df(1:nrow(e27_do), function(x) {
   
   id_do <- e27_do$country_id[x]
@@ -228,5 +234,5 @@ write.csv(food_key, file=file.path(outputdir, "COSIMO_food_product_key.csv"), ro
 write.csv(cntry_key_out, file=file.path(outputdir, "COSIMO_country_key.csv"), row.names=F)
 
 # Export data
-saveRDS(data2, file=file.path(outputdir, "COSIMO_2010_2030_data_by_scenario_cntry_food.rds"))
+saveRDS(data2, file=file.path(outputdir, "COSIMO_2010_2030_nutr_by_scenario_cntry_food.rds"))
 

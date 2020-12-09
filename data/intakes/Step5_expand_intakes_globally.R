@@ -101,6 +101,9 @@ dist_key_exp <- purrr::map_df(1:nrow(cntry_key), function(x){
   
 })
 
+# Inspect
+freeR::complete(dist_key_exp)
+
 # Export key
 saveRDS(dist_key_exp, file=file.path(outputdir, "intake_distributions_for_all_cosimo_countries.Rds"))
 
