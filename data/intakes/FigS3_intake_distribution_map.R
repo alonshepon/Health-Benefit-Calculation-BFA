@@ -15,7 +15,7 @@ outputdir <- "data/intakes/output"
 plotdir <- "data/intakes/figures"
 
 # Read country key
-key_orig <- read.csv(file.path(inputdir, "COSIMO_2020_country_key.csv"), as.is=T)
+key_orig <- read.csv(file.path(inputdir, "COSIMO_country_key.csv"), as.is=T)
 
 # Get world
 world <- rnaturalearth::ne_countries("small", returnclass="sf")
@@ -94,8 +94,8 @@ g <- ggplot(sf1) +
 g
 
 # Export plot
-ggsave(g, filename=file.path(plotdir, "FigureS3_intake_data_un_subregion.png"), 
-       width=6.5, height=4, units="in", dpi=600)
+# ggsave(g, filename=file.path(plotdir, "FigureSX_intake_data_un_subregion.png"), 
+#        width=6.5, height=4, units="in", dpi=600)
 
 
 
@@ -107,7 +107,7 @@ intake_key_df <- world %>%
   sf::st_drop_geometry() %>% 
   select(geounit, gu_a3, subregion) %>% 
   rename(country=geounit, iso3=gu_a3) %>% 
-  # Classify
+  # Classify based on UN subregion
   mutate(intake_group=recode(subregion,
                              "Antarctica"="N/A", 
                              "Australia and New Zealand"="United States", 
@@ -130,7 +130,9 @@ intake_key_df <- world %>%
                              "Southern Europe"="Italy",  
                              "Western Africa"="Burkina Faso",  
                              "Western Asia"="Italy", 
-                             "Western Europe"="Italy"))
+                             "Western Europe"="Italy")) %>% 
+  # Make a few manual corrections
+  mutate(intake_group=ifelse(country=="Sudan", "Uganda & Zambia", intake_group))
 
 # Add to world and map
 intake_key_sf <- world %>% 
@@ -138,6 +140,7 @@ intake_key_sf <- world %>%
   rename(iso3=gu_a3) %>% 
   left_join(intake_key_df)
 
+# Plot map
 g <- ggplot(intake_key_sf) +
   geom_sf(mapping=aes(fill=intake_group), color="grey30", lwd=0.2) +
   # Add points for intake countries

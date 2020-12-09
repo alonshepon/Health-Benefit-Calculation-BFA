@@ -35,7 +35,7 @@ library(fitdistrplus)
 
 # Build key
 dist_key <- data %>% 
-  select(country_final, nutrient, sex, age_group) %>% 
+  dplyr::select(country_final, nutrient, sex, age_group) %>% 
   unique() 
 
 # Distributions

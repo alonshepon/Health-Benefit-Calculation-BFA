@@ -40,7 +40,9 @@ coverage <- data %>%
   group_by(country, nutrient, sex, age_yr) %>% 
   summarize(n=n()) %>% 
   mutate(data_yn=n>0, 
-         sex=stringr::str_to_title(sex))
+         sex=stringr::str_to_title(sex)) %>% 
+  # Remove children
+  filter(sex!="Children")
 
 # Plot coverage
 g <- ggplot(coverage, aes(x=age_yr, y=nutrient, fill=data_yn)) +
@@ -71,7 +73,7 @@ ggsave(g, filename=file.path(plotdir,"intake_data_coverage.png"),
        width=6.5, height=8.5, units="in", dpi=600)
 
 
-# Plot intake distribtuions
+# Plot intake distributions
 ################################################################################
 
 # Key

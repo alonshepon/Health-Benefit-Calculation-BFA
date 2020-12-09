@@ -26,7 +26,9 @@ intake_files <- list.files(inputdir)
 file_key <- tibble(filename=intake_files) %>% 
   # Add sex
   mutate(sex=ifelse(grepl("_m_",filename), "men", 
-                          ifelse(grepl("_w_", filename), "women", "unknown"))) %>% 
+                          ifelse(grepl("_w_ad_", filename), "women (adult)", 
+                                 ifelse(grepl("_w_", filename), "women", 
+                                        ifelse(grepl("_c_", filename), "children", "unknown"))))) %>% 
   # Add country
   mutate(country=ifelse(grepl("mexico", filename), "Mexico", ""),
          country=ifelse(grepl("usa", filename), "United States", country),
@@ -38,7 +40,7 @@ file_key <- tibble(filename=intake_files) %>%
          country=ifelse(grepl("burkina", filename), "Burkina Faso", country),
          country=ifelse(grepl("italy", filename), "Italy", country)) %>% 
   # Add nutrient
-  mutate(nutrient=gsub(".csv|_m_||_w_|_h_w_|mexico|usa|zambia|uganda|phil|lao|china|italy|burkina", "", filename)) %>% 
+  mutate(nutrient=gsub(".csv|_m_||_w_|_h_w_|_c_|_w_ad_|mexico|usa|zambia|uganda|phil|lao|china|italy|burkina", "", filename)) %>% 
   mutate(nutrient=recode(nutrient,
                          "b12"="Vitamin B-12",
                          "calc"="Calcium",
@@ -127,7 +129,12 @@ data <- data_orig %>%
   left_join(age_group_key) %>% 
   # Arrange columns
   select(filename, country, nutrient, sex, age_group_id, age_group, age_yr, id, intake) %>% 
-  arrange(country, nutrient, sex, age_yr, id)
+  arrange(country, nutrient, sex, age_yr, id) %>% 
+  # Remove un-needed data
+  filter(nutrient!="Processed meat" & sex!="women (adult)")
+
+# Inspect
+freeR::complete(data)
 
 
 # Export data
