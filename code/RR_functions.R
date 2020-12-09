@@ -31,9 +31,15 @@ codedir <- "code"
 
 #read data of RR values for omega n-3 and meat from GBD 2020
 
-omega_N_raw_2019 <- read.xlsx('d:/Dropbox (Personal)/Dropbox (Personal)/Nutrient Gaps/Health Benefits calculations/code/Health Benefit claculation BFA/Health-Benefit-Calculation-BFA/Health-Benefit-Calculation-BFA/code/omega_RR_2019.xlsx')
-red_meat_2019 <- read.xlsx('d:/Dropbox (Personal)/Dropbox (Personal)/Nutrient Gaps/Health Benefits calculations/code/Health Benefit claculation BFA/Health-Benefit-Calculation-BFA/Health-Benefit-Calculation-BFA/code/meat_RR_2019.xlsx')
-EAR_requirements <- read.xlsx('d:/Dropbox (Personal)/Dropbox (Personal)/Nutrient Gaps/Health Benefits calculations/Data/EAR/EAR_requirements_GBDgroups.xlsx')
+# Alon's computer
+# omega_N_raw_2019 <- read.xlsx('d:/Dropbox (Personal)/Dropbox (Personal)/Nutrient Gaps/Health Benefits calculations/code/Health Benefit claculation BFA/Health-Benefit-Calculation-BFA/Health-Benefit-Calculation-BFA/code/omega_RR_2019.xlsx')
+# red_meat_2019 <- read.xlsx('d:/Dropbox (Personal)/Dropbox (Personal)/Nutrient Gaps/Health Benefits calculations/code/Health Benefit claculation BFA/Health-Benefit-Calculation-BFA/Health-Benefit-Calculation-BFA/code/meat_RR_2019.xlsx')
+# EAR_requirements <- read.xlsx('d:/Dropbox (Personal)/Dropbox (Personal)/Nutrient Gaps/Health Benefits calculations/Data/EAR/EAR_requirements_GBDgroups.xlsx')
+
+# Chris
+omega_N_raw_2019 <- read.xlsx('code/omega_RR_2019.xlsx')
+red_meat_raw_2019 <- read.xlsx('code/meat_RR_2019.xlsx')
+EAR_requirements <- read.xlsx('code/EAR_requirements_GBDgroups.xlsx')
 
 
 # Read RR GBD 2019

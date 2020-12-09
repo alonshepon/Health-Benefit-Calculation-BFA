@@ -11,7 +11,7 @@ library(tidyverse)
 library(countrycode)
 
 # Directories (outside repo)
-mypath <-"d:/Dropbox (Personal)/Dropbox (Personal)/Nutrient Gaps/Health Benefits calculations/code/Health Benefit claculation BFA/Health-Benefit-Calculation-BFA - Copy/" # Alon's computer
+# mypath <-"d:/Dropbox (Personal)/Dropbox (Personal)/Nutrient Gaps/Health Benefits calculations/code/Health Benefit claculation BFA/Health-Benefit-Calculation-BFA - Copy/" # Alon's computer
 
 # Directories (in repository)
 outputdir <- "output"
@@ -19,14 +19,15 @@ plotdir <- "figures"
 codedir <- "code"
 
 # Read DALYs data
-dalys_fish_orig <- readRDS(file.path(mypath, "my_data.rds"))
-dalys_meat_orig <- readRDS(file.path(mypath, "my_meat_1_data.rds"))
+dalys_fish_orig <- readRDS(file.path(outputdir, "my_data.rds"))
+dalys_meat_orig <- readRDS(file.path(outputdir, "my_meat_data.rds"))
 
 # Read population data
 pop_orig <- readRDS(file.path(mypath, "population_all.rds"))
 
 # Read country list
 countries_level_3 <- readRDS(file.path(mypath, "countries_level3.rds"))
+
 
 # Notes
 ################################################################################
@@ -76,8 +77,10 @@ countries_level_3 <- readRDS(file.path(mypath, "countries_level3.rds"))
 
 # Build data
 ################################################################################
+
 cause_meat<- c(429,441,493,495,496,497,976) 
 cause_meat_no_ischemic<- c(429,441,495,496,497,976)
+
 # Age ids
 age_id <- c(seq(5,20), 30, 31, 32, 33) 
 
@@ -107,7 +110,7 @@ r30 <- function(val, year){
 omega <- dalys_fish_orig %>% 
   # Reduce to data of interest (EXPAND NOTES HERE)
   filter(measure==2 & metric==1 & sex!=3 & rei==121 & location %in% countries_level_3$location_id & age %in% age_id) %>% 
-  left_join(countries_level_3)
+  left_join(countries_level_3) %>% 
   # Add population information
   left_join(pop, by=c("location_name", "year"="year_id", "age"="age_group_id", "sex"="sex_id")) %>%  
   # Rename columns
@@ -122,21 +125,26 @@ j <- omega %>%
   summarize(year=year,DALY_omega=DALY,DALY2030_omega = r30(DALY,year),HDI=`Human.Development.Index.(UNDP)`,
             SDI=SDI,SDI_group=group.SDI,population=population) %>%filter(year==2017)
 
-  # Calculate country level data for plotting ratio 
-  j1<-j %>%filter(year==2017)%>%group_by(location_name) %>%mutate(ratio_DALY=DALY2030_omega/DALY_omega)%>%
-  summarize(pop_adjust_DALY = sum(population*DALY_omega)/sum(population),
-  pop_adjust_delta_DALY = sum(population*ratio_DALY)/sum(population), 
-  population_total = sum(population))
+# Calculate country level data for plotting ratio 
+j1 <-j %>%
+  filter(year==2017)%>%
+  group_by(location_name) %>%
+  mutate(ratio_DALY=DALY2030_omega/DALY_omega)%>%
+summarize(pop_adjust_DALY = sum(population*DALY_omega)/sum(population),
+pop_adjust_delta_DALY = sum(population*ratio_DALY)/sum(population), 
+population_total = sum(population))
 
 
 
 # Format DALYs meat
-  meat <- dalys_meat_orig %>% filter(measure==2 & metric==1 & sex!=3 &rei==116 & cause %in% cause_meat & location %in% countries_level_3$location_id & age %in% age_id) %>% 
+  meat <- dalys_meat_orig %>% 
+    filter(measure==2 & metric==1 & sex!=3 &rei==116 & cause %in% cause_meat & location %in% countries_level_3$location_id & age %in% age_id) %>% 
     # Add population information
-    left_join(countries_id,by=c("location"="location_id")) %>%
+    # left_join(countries_id, by=c("location"="location_id")) %>%
     left_join(pop, by=c("location_name"="location_name", "year"="year_id", "age"="age_group_id", "sex"="sex_id")) %>%
     # Rename columns
-    rename(population=val.y, DALY=val.x) %>%select(location_name, everything())
+    rename(population=val.y, DALY=val.x) %>%
+    select(location_name, everything())
  
 # Calculate red meat DALYs in 2030 based on extrapolation
   k <- meat %>% 
@@ -153,6 +161,9 @@ j <- omega %>%
  
 #####################################################################################
 
+ 
+ # Source helper functions
+ source("code/RR_functions.R")
  
  #-----------------------------example of intake distributions for quality control (can delete it later)
  m=10
@@ -180,34 +191,33 @@ plot(Intake_bs_omega(r),col='blue')
  
  
  #--------------------------calculate DALYs in 2030 for the high road scenario
- 
- source('d:/Dropbox (Personal)/Dropbox (Personal)/Nutrient Gaps/Health Benefits calculations/code/Health Benefit claculation BFA/Health-Benefit-Calculation-BFA/Health-Benefit-Calculation-BFA/code/RR_functions.R')
+ # 
+ # source('d:/Dropbox (Personal)/Dropbox (Personal)/Nutrient Gaps/Health Benefits calculations/code/Health Benefit claculation BFA/Health-Benefit-Calculation-BFA/Health-Benefit-Calculation-BFA/code/RR_functions.R')
  #do not forget to integrate intakes of meat, omega n-3, and micronutrients per age-sex-location to tog data.frame
 
 DALYs1<-tog %>%  
    #step 1: For ischemic heart disease (which include omega n-3 and meat) For each age-sex-location:
- 
    filter(cause==493) %>% #ischematic heart disease 
    #for omega
-   mutate(DALY2030_omega_hr<-omega_n3_PAF(Intake_bs_omega,intake_hr_omega,age,omega_N_raw_2019,omega_n3_RR,1)*DALY2030_omega) %>%
+   mutate(DALY2030_omega_hr = omega_n3_PAF(Intake_bs_omega,intake_hr_omega,age,omega_N_raw_2019,omega_n3_RR,1) * DALY2030_omega) %>%
     #for meat
-   mutate(DALY2030_red_meat_hr<-red_meat_PAF(Intake_bs_meat,intake_hr_meat,age,cause,red_meat_raw_2019,red_meat_RR,1)*DALY2030_meat) %>%
+   mutate(DALY2030_red_meat_hr=red_meat_PAF(Intake_bs_meat,intake_hr_meat,age,cause,red_meat_raw_2019,red_meat_RR,1)*DALY2030_meat) %>%
    #add while taking overlap into consideration using Joint_PAF=1-(1-PAF1)(1-PAF2)      where PAF1 is the population attributable factor for meat, and PAF2 - for omega n-3
    mutate(DALY2030_hr_all=(1-(1-red_meat_PAF(Intake_bs_meat,intake_hr_meat,age,cause,red_meat_raw_2019,red_meat_RR,0)
-                              *(1-omega_n3_PAF(Intake_bs_omega,intake_hr_omega,age,omega_N_raw_2019,omega_n3_RR,0))))*(DALY2030_red_meat_hr+DALY2030_omega_hr))%>%
+                              *(1-omega_n3_PAF(Intake_bs_omega,intake_hr_omega,age,omega_N_raw_2019,omega_n3_RR,0))))*(DALY2030_red_meat_hr+DALY2030_omega_hr)) %>%
    
    #step 2: For all other meat DALYs (except ischemic heart disease) perform per each age-sex-location-outcome
    filter(cause %in% cause_meat_no_ischemic)  %>% #all other causes
    #for meat
-   mutate(DALY2030_red_meat_hr<-red_meat_PAF(Intake_bs_meat,intake_hr_meat,age,cause,red_meat_raw_2019,red_meat_RR,1)*DALY2030_meat)
-   mutate(DALY2030_hr_all=DALY2030_red_meat_hr+DALY2030_omega_hr)
+   mutate(DALY2030_red_meat_hr<-red_meat_PAF(Intake_bs_meat,intake_hr_meat,age,cause,red_meat_raw_2019,red_meat_RR,1)*DALY2030_meat) %>% 
+   mutate(DALY2030_hr_all=DALY2030_red_meat_hr+DALY2030_omega_hr) %>% 
    #step 3: Sum all DALYs for each age-sex-group. This is the overall burden for the highroad per age-sex-location:
    group_by(location,age,sex) %>% #summarize all DALYs per age-sex-location
      summarize(DALY2030_hr_total=sum(DALY2030_hr_all))
   
 
    #--------------------------calculate changes in SEVs
-   source('d:/Dropbox (Personal)/Dropbox (Personal)/Nutrient Gaps/Health Benefits calculations/code/Health Benefit claculation BFA/Health-Benefit-Calculation-BFA/Health-Benefit-Calculation-BFA/code/RR_functions.R')
+   # source('d:/Dropbox (Personal)/Dropbox (Personal)/Nutrient Gaps/Health Benefits calculations/code/Health Benefit claculation BFA/Health-Benefit-Calculation-BFA/Health-Benefit-Calculation-BFA/code/RR_functions.R')
    
    #do not forget to integrate intakes of meat, omega n-3, and micronutrients per age-sex-location to tog data.frame
    #br are intakes of baseline, while hr = high road
