@@ -1,8 +1,5 @@
 
-
 # a script to build Relative risk (RR), SEV (summary exposure values) and PAF curves (functions) for omega n-3, red meat and micronutrients intakes
-
-
 
 # Function of Relative Risk of omega n-3
 omega_n3_RR <- function(val,age,omega_N_raw_2019){
@@ -294,17 +291,13 @@ red_meat_SEV <- function(Intake,age,meat_outcome, red_meat_2019,red_meat_RR){
   }
 }
 
-
-
-
-
-
 # SEV of zinc/iron/vitamin A
 micronutrient_SEV <- function(Intake, age, sex, nutrient, country_SDIgroup, EAR_requirements){
   
-  integrant<-function(x){micronutrient_RR(x,age,sex, nutrient, country_SDIgroup, EAR_requirements)*Intake(x)}
-  res<-integrate(integrant, lower=-Inf,upper=Inf)
-  SEV<-res$value*100
+  integrant <- function(x){micronutrient_RR(x,age,sex, nutrient, country_SDIgroup, EAR_requirements)*Intake(x)}
+  res <- integrate(integrant, lower=-Inf,upper=Inf)
+  SEV <- res$value*100
+  
   # Return
   return(SEV)
   
@@ -315,53 +308,54 @@ micronutrient_SEV <- function(Intake, age, sex, nutrient, country_SDIgroup, EAR_
 
 ###################################################################################################3
 # relative risk changes of high red meat for various intake changes
+#(meat_outcome==429 breast cancer REI_id=429
+#(meat_outcome==441 Colon and rectum cancer REI_id=441
+#(meat_outcome==493) Ischemic heart disease REI_id=493
+#(meat_outcome==495) Ischemic stroke REI_id=495
+#(meat_outcome==496) Intracerebral hemorrhage REI_id=496
+#(meat_outcome==497) Subarachnoid hemorrhage REI_id=497 
+#(meat_outcome==976) Diabetes mellitus type 2 REI_id=976 
 red_meat_PAF <- function(Intake_br,intake_hr,age,meat_outcome, red_meat_2019,red_meat_RR,flag_meat){
   
   # If..
   if(age==5|age==6 | age==7| age==8| age==9){
     
     PAF <- 0
-    return(PAF)}
   
   # Else..(adolescents and adults)   
-  else{
+  }else{
+    
     agepaste<-paste("age",as.character(age),sep="")   #age
-    
-    
-    #(meat_outcome==429 breast cancer REI_id=429
-    #(meat_outcome==441 Colon and rectum cancer REI_id=441
-    #(meat_outcome==493) Ischemic heart disease REI_id=493
-    #(meat_outcome==495) Ischemic stroke REI_id=495
-    #(meat_outcome==496) Intracerebral hemorrhage REI_id=496
-    #(meat_outcome==497) Subarachnoid hemorrhage REI_id=497 
-    #(meat_outcome==976) Diabetes mellitus type 2 REI_id=976 
-    
     # build age specific calculation
     integrant_br<-function(x){Intake_br(x)*red_meat_RR(x,age,meat_outcome,red_meat_2019)}
     int_br<-(integrate(integrant_br,lower=-Inf,upper=Inf))
     integrant_hr<-function(x){Intake_hr(x)*red_meat_RR(x,age,meat_outcome,red_meat_2019)}
     int_hr<-(integrate(integrant_hr,lower=-Inf,upper=Inf))
  
-  if(flag_meat==1){PAF<-(integrant_hr)/integrant_br  #relative change
-    return(PAF)}else
-      {PAF<-(integrant_hr-1)/integrant_hr
-      return(PAF)}         #serve as a proper PAF
-}
+    if(flag_meat==1){
+      PAF<-(integrant_hr)/integrant_br  #relative change
+    }else{
+      PAF<-(integrant_hr-1)/integrant_hr
+    }
+  }
+  
+  # Return
+  return(PAF)
+  
 
 }
 
 # PAF of omega n-3
-
-omega_n3_PAF <- function(Intake_br,intake_hr,age,omega_N_raw_2019,omega_n3_RR,flag_omega)
-{
+omega_n3_PAF <- function(Intake_br,intake_hr,age,omega_N_raw_2019,omega_n3_RR,flag_omega){
+  
   # If..
   if(age==5|age==6 | age==7| age==8| age==9){
     
     PAF <- 0
-    return(PAF)
     
-    # Else..    
+  # Else..    
   }else{
+    
     agepaste<-paste("age",as.character(age),sep="")
     y<-omega_N_raw_2019[ , grepl( agepaste , names( omega_N_raw_2019 ) ) ]
     lowest_risk<-last(y)
@@ -371,13 +365,19 @@ omega_n3_PAF <- function(Intake_br,intake_hr,age,omega_N_raw_2019,omega_n3_RR,fl
     
     integrant_hr<-function(x){Intake_hr(x)*omega_n3_RR(x,age,omega_N_raw_2019)}
     int_hr<-(integrate(integrant_hr,lower=-Inf,upper=Inf))
-    if(flag_omega==1){PAF<-(integrant_hr)/integrant_br  #relative change
-    return(PAF)}else
-    {PAF<-(integrant_hr-lowest_risk)/integrant_hr
-    return(PAF)}
-     }        #serve as a proper PAF
-
+    
+    if(flag_omega==1){
+      PAF<-(integrant_hr)/integrant_br  #relative change
+    }else{
+      PAF<-(integrant_hr-lowest_risk)/integrant_hr
+    }
+    
   }
+  
+  # Return
+  return(PAF)
+
+}
 
 
 

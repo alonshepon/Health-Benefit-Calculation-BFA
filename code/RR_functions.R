@@ -1,4 +1,7 @@
 
+# On Chris' computer
+# Replaced "Intake_hr" with "Intake_hr"
+
 
 # a script to build Relative risk (RR), SEV (summary exposure values) and PAF curves (functions) for omega n-3, red meat and micronutrients intakes
 # Read data
@@ -19,14 +22,14 @@ library(ggplot2)
 library(fitdistrplus)
 library(Hmisc)
 
-# Directories (outside repository)
-datadir1 <- "/Users/cfree/Dropbox/Health Benefits calculations/Data/IHME/definitions" # Chris Free's computer
-datadir2 <- "/Users/cfree/Dropbox/Health Benefits calculations/Data/EAR/" # Chris Free's computer
-
-# Directories (in repository)
-outputdir <- "output"
-plotdir <- "figures"
-codedir <- "code"
+# # Directories (outside repository)
+# datadir1 <- "/Users/cfree/Dropbox/Health Benefits calculations/Data/IHME/definitions" # Chris Free's computer
+# datadir2 <- "/Users/cfree/Dropbox/Health Benefits calculations/Data/EAR/" # Chris Free's computer
+# 
+# # Directories (in repository)
+# outputdir <- "output"
+# plotdir <- "figures"
+# codedir <- "code"
 
 
 #read data of RR values for omega n-3 and meat from GBD 2020
@@ -395,7 +398,7 @@ micronutrient_SEV <- function(Intake, age, sex, nutrient, country_SDIgroup, EAR_
 
 ###################################################################################################3
 # relative risk changes of high red meat for various intake changes
-red_meat_PAF <- function(Intake_br,intake_hr,age,meat_outcome, red_meat_2019,red_meat_RR,flag_meat){
+red_meat_PAF <- function(Intake_br,Intake_hr,age,meat_outcome, red_meat_2019,red_meat_RR,flag_meat){
   
   # If..
   if(age==5|age==6 | age==7| age==8| age==9){
@@ -432,7 +435,7 @@ red_meat_PAF <- function(Intake_br,intake_hr,age,meat_outcome, red_meat_2019,red
 
 # PAF of omega n-3
 
-omega_n3_PAF <- function(Intake_br,intake_hr,age,omega_N_raw_2019,omega_n3_RR,flag_omega)
+omega_n3_PAF <- function(Intake_br,Intake_hr,age,omega_N_raw_2019,omega_n3_RR,flag_omega)
 {
   # If..
   if(age==5|age==6 | age==7| age==8| age==9){
