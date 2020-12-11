@@ -17,10 +17,20 @@ outputdir <- "data/intakes/output"
 plotdir <- "data/intakes/figures"
 
 # Read data
-dists <- read.csv(file.path(outputdir, "habitual_nutrient_intakes_by_age_sex_4countries_distribution_fits.csv"), as.is=T)
+dists <- read.csv(file.path(outputdir, "habitual_nutrient_intakes_by_age_sex_9countries_distribution_fits.csv"), as.is=T) %>% 
+  filter(!is.na(best_dist) & sex!="children")
 
 # Read range key
-range_key <- read.csv(file=file.path(inputdir, "habitual_nutrient_intake_ranges.csv"), as.is=T)
+range_key <- read.csv(file=file.path(inputdir, "habitual_nutrient_intake_ranges.csv"), as.is=T) %>% 
+  mutate(cutoff)
+
+# Cutoff key 
+cutoff_key <- tibble(nutrient=c("Calcium", "Iron", "Omega-3 fatty acids", "Red meat", "Vitamin A", "Vitamin B-12", "Zinc"),
+                     cutoff= c(2000, 80, 0.3, 300, 3000, 20, 50))
+
+# Add cutoff to dist
+dists <- dists %>% 
+  left_join(cutoff_key)
 
 
 # Build data
@@ -38,8 +48,10 @@ data <- purrr::map_df(1:nrow(dists), function(i){
   age_group_do <- dists$age_group[i]
   
   # Simulation range
-  xmin <- range_key %>% filter(nutrient==nutrient_do) %>% pull(min)
-  xmax <- range_key %>% filter(nutrient==nutrient_do) %>% pull(max)
+  # xmin <- range_key %>% filter(nutrient==nutrient_do) %>% pull(min)
+  # xmax <- range_key %>% filter(nutrient==nutrient_do) %>% pull(max)
+  xmin <- 0
+  xmax <- dists$cutoff[i]
   
   # If gamma
   if(dist_do=="gamma"){
@@ -116,9 +128,9 @@ my_theme <-  theme(axis.text=element_text(size=6),
                    panel.background = element_blank(), 
                    axis.line = element_line(colour = "black"))
 
+
 # Nutrients
 nutrients <- sort(unique(dists$nutrient))
-cutoffs <- c(3000, 60, 1, 50, 50, 3000, 5, 40)
 
 # Loop though nutrients
 for(i in 1:length(nutrients)){
@@ -129,13 +141,13 @@ for(i in 1:length(nutrients)){
     filter(nutrient==nutrient_do)
   
   # X-axis cutoff
-  cutoff <- cutoffs[i]
+  # cutoff <- cutoff_key
 
   # Plot distributions
   g <- ggplot(sdata, aes(x=intake, y=density, color=age_group1)) +
-    facet_grid(country ~ sex) +
+    facet_grid(country ~ sex, scales="free_y") +
     geom_line() +
-    xlim(0, cutoff) +
+    # xlim(0, cutoff) +
     # Labels
     labs(x="Habitual intake", y="Density", title=nutrient_do) +
     # Legend
@@ -148,6 +160,7 @@ for(i in 1:length(nutrients)){
   outfile <- paste0("FigS2", letters[i], "_", tolower(nutrient_do) %>% gsub(" ", "_", .), ".png")
   ggsave(g, filename=file.path(plotdir, outfile), 
          width=6.5, height=6.5, units="in", dpi=600)
+  
 }
 
 

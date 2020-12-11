@@ -46,8 +46,7 @@ red_meat_RR <- function(val, age, meat_outcome, red_meat_2019){
   if(age==5|age==6 | age==7| age==8| age==9){
     
     RR <- 0
-    return(RR)
-    
+
   # Else..(adolescents and adults)   
   }else{
     
@@ -73,9 +72,10 @@ red_meat_RR <- function(val, age, meat_outcome, red_meat_2019){
     # Ischemic heart disease REI_id=493
     if (meat_outcome==493){ 
       # build age specific RR
-      meat_raw_2019_outcome<-red_meat_2019[red_meat_2019$Diet.high.in.red.meat=="Ischemic heart disease",];
-      y<-meat_raw_2019_outcome[ , grepl( agepaste , names( meat_raw_2019_outcome ) ) ]
-      xtrans<-splinefun(x, y,method = c("monoH.FC"),ties = mean)
+      meat_raw_2019_outcome <- red_meat_2019[red_meat_2019$`Diet high in red meat`=="Ischemic heart disease",];
+      y <- meat_raw_2019_outcome[ , grepl( agepaste , names( meat_raw_2019_outcome ) ) ]
+      y_vec <- pull(y)
+      xtrans <- splinefun(x, y_vec, method = c("monoH.FC"),ties = mean)
     }
     
     # Ischemic stroke REI_id=495
@@ -207,15 +207,14 @@ red_meat_SEV <- function(Intake, age, meat_outcome, red_meat_2019, red_meat_RR){
   if(age==5|age==6 | age==7| age==8| age==9){
     
     SEV <- 0
-    return(SEV)}
-  
+
   # Else..(adolescents and adults)   
-  else{
+  }else{
+    
     agepaste<-paste("age",as.character(age),sep="")   #age
     
-    
-    if (meat_outcome==429){ # breast cancer REI_id=429
-      
+    # breast cancer REI_id=429
+    if (meat_outcome==429){ 
       # build age specific RR
       meat_raw_2019_outcome<-red_meat_2019[red_meat_2019$Diet.high.in.red.meat=="Breast cancer",];
       y<-meat_raw_2019_outcome[ , grepl( agepaste , names( meat_raw_2019_outcome ) ) ]
@@ -223,11 +222,10 @@ red_meat_SEV <- function(Intake, age, meat_outcome, red_meat_2019, red_meat_RR){
       integrant<-function(x){Intake(x)*red_meat_RR(x,age,meat_outcome,red_meat_2019)}
       int<-(integrate(integrant,lower=-Inf,upper=Inf))
       SEV<-min((int$value-1)/(RRmax-1)*100,100)
-      
     }
     
-    if (meat_outcome==441){ # Colon and rectum cancer REI_id=441
-      
+    # Colon and rectum cancer REI_id=441
+    if (meat_outcome==441){ 
       # build age specific RR
       meat_raw_2019_outcome<-red_meat_2019[red_meat_2019$Diet.high.in.red.meat=="Colon and rectum cancer",];
       y<-meat_raw_2019_outcome[ , grepl( agepaste , names( meat_raw_2019_outcome ) ) ]
@@ -237,20 +235,19 @@ red_meat_SEV <- function(Intake, age, meat_outcome, red_meat_2019, red_meat_RR){
       SEV<-min((int$value-1)/(RRmax-1)*100,100)
     }
     
-    if (meat_outcome==493){ # Ischemic heart disease REI_id=493
-      
+    # Ischemic heart disease REI_id=493
+    if (meat_outcome==493){ 
       # build age specific RR
-      meat_raw_2019_outcome<-red_meat_2019[red_meat_2019$Diet.high.in.red.meat=="Ischemic heart disease",];
+      meat_raw_2019_outcome<-red_meat_2019[red_meat_2019$`Diet high in red meat`=="Ischemic heart disease",];
       y<-meat_raw_2019_outcome[ , grepl( agepaste , names( meat_raw_2019_outcome ) ) ]
       RRmax<-last(y)
-      integrant<-function(x){Intake(x)*red_meat_RR(x,age,meat_outcome,red_meat_2019)}
-      int<-(integrate(integrant,lower=-Inf,upper=Inf))
+      integrant<-function(x){Intake(x)*red_meat_RR(x, age, meat_outcome, red_meat_2019)}
+      int <- (integrate(integrant, lower=-Inf, upper=Inf))
       SEV<-min((int$value-1)/(RRmax-1)*100,100)
-      
     }
     
-    if (meat_outcome==495){ # Ischemic stroke REI_id=495
-      
+    # Ischemic stroke REI_id=495
+    if (meat_outcome==495){ 
       # build age specific RR
       meat_raw_2019_outcome<-red_meat_2019[red_meat_2019$Diet.high.in.red.meat=="Ischemic stroke",];
       y<-meat_raw_2019_outcome[ , grepl( agepaste , names( meat_raw_2019_outcome ) ) ]
@@ -260,8 +257,8 @@ red_meat_SEV <- function(Intake, age, meat_outcome, red_meat_2019, red_meat_RR){
       SEV<-min((int$value-1)/(RRmax-1)*100,100)
     }
     
-    if (meat_outcome==496){ # Intracerebral hemorrhage REI_id=496
-      
+    # Intracerebral hemorrhage REI_id=496
+    if (meat_outcome==496){ 
       # build age specific RR
       meat_raw_2019_outcome<-red_meat_2019[red_meat_2019$Diet.high.in.red.meat=="Intracerebral hemorrhage",];
       y<-meat_raw_2019_outcome[ , grepl( agepaste , names( meat_raw_2019_outcome ) ) ]
@@ -269,11 +266,10 @@ red_meat_SEV <- function(Intake, age, meat_outcome, red_meat_2019, red_meat_RR){
       integrant<-function(x){Intake(x)*red_meat_RR(x,age,meat_outcome,red_meat_2019)}
       int<-(integrate(integrant,lower=-Inf,upper=Inf))
       SEV<-min((int$value-1)/(RRmax-1)*100,100)
-      
     }
     
-    if (meat_outcome==497){ # Subarachnoid hemorrhage REI_id=496 
-      
+    # Subarachnoid hemorrhage REI_id=496 
+    if (meat_outcome==497){ 
       # build age specific RR
       meat_raw_2019_outcome<-red_meat_2019[red_meat_2019$Diet.high.in.red.meat=="Subarachnoid hemorrhage",];
       y<-meat_raw_2019_outcome[ , grepl( agepaste , names( meat_raw_2019_outcome ) ) ]
@@ -281,11 +277,10 @@ red_meat_SEV <- function(Intake, age, meat_outcome, red_meat_2019, red_meat_RR){
       integrant<-function(x){Intake(x)*red_meat_RR(x,age,meat_outcome,red_meat_2019)}
       int<-(integrate(integrant,lower=-Inf,upper=Inf))
       SEV<-min((int$value-1)/(RRmax-1)*100,100)
-      
     }
     
-    if (meat_outcome==976){ # Diabetes mellitus type 2 REI_id=976 
-      
+    # Diabetes mellitus type 2 REI_id=976 
+    if (meat_outcome==976){
       # build age specific RR
       meat_raw_2019_outcome<-red_meat_2019[red_meat_2019$Diet.high.in.red.meat=="Diabetes mellitus type 2",];
       y<-meat_raw_2019_outcome[ , grepl( agepaste , names( meat_raw_2019_outcome ) ) ]
@@ -293,11 +288,13 @@ red_meat_SEV <- function(Intake, age, meat_outcome, red_meat_2019, red_meat_RR){
       integrant<-function(x){Intake(x)*red_meat_RR(x,age,meat_outcome,red_meat_2019)}
       int<-(integrate(integrant,lower=-Inf,upper=Inf))
       SEV<-min((int$value-1)/(RRmax-1)*100,100)
-      
     }
     
-    return(SEV)
   }
+  
+  # Return
+  return(SEV)
+    
 }
 
 

@@ -53,12 +53,12 @@ data <- data_orig %>%
   # Reduce to red meats
   filter(food %in% red_meat_foods) %>% 
   # Sum red meat intake by country
-  group_by(country_id, country, iso3) %>% 
+  group_by(country_id, country, iso3, year) %>% 
   summarize(value_lo=sum(value_lo, na.rm=T),
             value_hi=sum(value_hi, na.rm=T)) %>% 
   ungroup() %>% 
   # Gather
-  gather(key="scenario", value="mean_cntry", 4:ncol(.)) %>% 
+  gather(key="scenario", value="mean_cntry", 5:ncol(.)) %>% 
   mutate(scenario=recode(scenario, 
                          "value_lo"="Base", 
                          "value_hi"="High road")) %>% 
@@ -68,6 +68,9 @@ data <- data_orig %>%
   left_join(spade_scalars, by=c("iso3"="country_iso3", "sex", "age_group")) %>% 
   # Add group intake
   mutate(mean_group=mean_cntry*scalar) %>% 
+  # Arrange
+  select(scenario, year,
+         country_id:iso3, sex, age_group, scalar, mean_cntry, mean_group, everything()) %>% 
   # Remove countries without scalars
   filter(!is.na(mean_group))
 

@@ -38,6 +38,9 @@ EAR_requirements <- readxl::read_excel('code/EAR_requirements_GBDgroups.xlsx')
 # Read distributions (micronutrients)
 dists <- readRDS(file.path("data/cosimo/processed/COSIMO_2010_2030_country_nutrient_age_sex_means_and_distributions.Rds"))
 
+# Read distributions (red meat)
+dists_meat <- readRDS(file=file.path("data/cosimo/processed/COSIMO_2010_2030_country_red_meat_age_sex_means_and_distributions.Rds"))
+
 # Read SDI key
 sdi_key <- read.csv(file=file.path(outputdir, "sdi_key.csv"), as.is=T)
 
@@ -163,6 +166,42 @@ dists2030 <- dists %>%
                        "90-94"="32",
                        "95-99"="33") %>% as.numeric()) %>% 
   select(-c(sex, age_group))
+
+# Merge data
+dists2030_meat <- dists_meat %>% 
+  # Remove incomplete data (fix later)
+  filter(!is.na(g_shape)) %>% 
+  # Reduce to 2030
+  filter(year==2030) %>% 
+  # Simplify 
+  select(country, iso3, nutrient, sex, age_group, scenario, mean_group, g_shape, g_rate, g_mean, g_mean_diff) %>% 
+  # Add age id and sex id
+  mutate(sex_id=recode(sex, 
+                       "men"=1,
+                       "women"=2) %>% as.numeric(),
+         age_id=recode(age_group,
+                       "0-4"="5",
+                       "5-9"="6",
+                       "10-14"="7",
+                       "15-19"="8",
+                       "20-24"="9",
+                       "25-29"="10",
+                       "30-34"="11",
+                       "35-39"="12",
+                       "40-44"="13",
+                       "45-49"="14",
+                       "50-54"="15",
+                       "55-59"="16",
+                       "60-64"="17",
+                       "65-69"="18",
+                       "70-74"="19",
+                       "75-79"="20",
+                       "80-84"="30",
+                       "85-89"="31",
+                       "90-94"="32",
+                       "95-99"="33") %>% as.numeric()) %>% 
+  select(-c(sex, age_group))
+
 
 
 # Calculate DALYs
@@ -325,7 +364,7 @@ sev_mn_final <- data_sev_mn %>%
   mutate(sev_delta=sev_high-sev_base)
 
 # Export
-write.csv(sev_mn_final, file=file.path("2030_sevs_base_high_road_micronutrients.csv"), row.names=F)
+write.csv(sev_mn_final, file=file.path(outputdir, "2030_sevs_base_high_road_micronutrients.csv"), row.names=F)
 
 
 # Calculate changes in summary exposure values (SEVs) -- omega-3 fatty acids
@@ -396,22 +435,77 @@ sev_omega_final <- data_sev_omega %>%
   mutate(sev_delta=sev_high-sev_base)
 
 # Export
-write.csv(sev_omega_final, file=file.path("2030_sevs_base_high_road_omega3s.csv"), row.names=F)
+write.csv(sev_omega_final, file=file.path(outputdir, "2030_sevs_base_high_road_omega3s.csv"), row.names=F)
 
 
 # Calculate changes in summary exposure values (SEVs) -- red meat
 ##########################################################################################
 
 
+# Build data required for micronutrient SEV calculations
+data_sev_meat <- dists2030_meat %>% 
+  # Reduce to age groups with required data
+  filter(age_id>=10) %>%
+  # Reduce to rows with the required SEV ingredients: SDI group
+  filter(!is.na(g_shape))
 
+# Loop through
+for(x in 1:nrow(data_sev_meat)){
+  
+  # Parameters
+  print(x)
+  scenario_do <- data_sev_meat$scenario[x]
+  iso3_do <- data_sev_meat$iso3[x]
+  nutr_do <- data_sev_meat$nutrient[x]
+  age_id_do <- data_sev_meat$age_id[x]
+  sex_id_do <- data_sev_meat$sex_id[x]
+  
+  # If gamma distribution....
+  shape <- data_sev_meat$g_shape[x]
+  rate <- data_sev_meat$g_rate[x]
+  x_shift <- data_sev_meat$g_mean_diff[x]
+  intake_function <- function(x){y <- dgamma(x-x_shift, shape=shape, rate=rate)}
+  
+  # If lognormal distribution...
+  
+  # Calculate SEV
+  sev <- try(red_meat_SEV(Intake=intake_function,
+                          age=age_id_do,
+                          meat_outcome=493,
+                          red_meat_2019=red_meat_raw_2019,
+                          red_meat_RR))
+                          
+                    
+  
+  # Record based on try()
+  if(inherits(sev, "try-error")){
+    sev_out <- NA
+  }else{
+    sev_out <- sev
+  }
+  
+  # Record
+  data_sev_meat$sev[x] <- sev_out
+  
+  # Build dataframe row
+  # row_out <- tibble(scenario=scenario_do,
+  #                   nutrient=nutr_do,
+  #                   iso3=iso3_do,
+  #                   sex=sex_id_do,
+  #                   age=age_id_do,
+  #                   sev=sev_out)
+  
+}
 
-#for meat %g/d
-# mutate(delta_SEV_meat<-red_meat_SEV(Intake_bs_meat,age,cause, red_meat_2019,red_meat_RR)-
-#          red_meat_SEV(Intake_hr_meat,age,cause,red_meat_2019,red_meat_RR))
+# Format SEVs
+sev_meat_final <- data_sev_meat %>% 
+  mutate(nutrient="Red meat") %>% 
+  select(scenario, nutrient, country, iso3, sex_id, age_id, sev) %>% 
+  spread(key="scenario", value="sev") %>% 
+  rename(sev_high="High road", sev_base="Base") %>% 
+  mutate(sev_delta=sev_high-sev_base)
 
-
-
-
-
+# Export
+write.csv(sev_meat_final, file=file.path(outputdir, "2030_sevs_base_high_road_meat.csv"), row.names=F)
 
 
