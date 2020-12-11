@@ -8,8 +8,13 @@ rm(list = ls())
 # Packages
 library(tidyverse)
 
-# Directories (outside repository)
-ihmedir <- "d:/Dropbox (Personal)/Dropbox (Personal)/Nutrient Gaps/Health Benefits calculations/Data/IHME/" # Alon's computer
+# Directories (outside repository) -- Alon's computer
+# ihmedir1 <- "d:/Dropbox (Personal)/Dropbox (Personal)/Nutrient Gaps/Health Benefits calculations/Data/IHME/" # Alon's computer
+# ihmedir3 <- "d:/Dropbox (Personal)/Dropbox (Personal)/Nutrient Gaps/Health Benefits calculations/Data/IHME3/" # Alon's computer
+
+# Directories (outside repository) -- Chris's computer
+ihmedir1 <- "/Users/cfree/Dropbox/BFA Data/IHME" # Chris's computer
+ihmedir3 <- "/Users/cfree/Dropbox/BFA Data/IHME3" # Chris's computer
 
 # Directories (in repository)
 outputdir <- "output"
@@ -17,27 +22,24 @@ plotdir <- "figures"
 codedir <- "code"
 
 # Read country codes
-country_codes_orig <- readxl::read_excel(file.path(ihmedir, "definitions", "IHME_GBD_2017_GBD_LOCATIONS_HIERARCHY_Y2018M11D18.XLSX"))
+country_codes_orig <- readxl::read_excel(file.path(ihmedir1, "definitions", "IHME_GBD_2017_GBD_LOCATIONS_HIERARCHY_Y2018M11D18.XLSX"))
 
 # Read HDI info
-hdi_orig <- readxl::read_excel(file.path(ihmedir, "definitions", "human-development-index.xlsx"))
+hdi_orig <- readxl::read_excel(file.path(ihmedir1, "definitions", "human-development-index.xlsx"))
 
 # Read SDI info
-sdi_orig <- readxl::read_excel(file.path(ihmedir, "definitions", "IHME_GBD_2019_SDI_1990_2019_Y2020M10D15.XLSX"))
+sdi_orig <- readxl::read_excel(file.path(ihmedir1, "definitions", "IHME_GBD_2019_SDI_1990_2019_Y2020M10D15.XLSX"))
 
-# THERE ARE PROBLEMS HERE - MULTIPLE MATCHES OF SDI
 
 # Build data
 ################################################################################
 
-ihmedir <- "d:/Dropbox (Personal)/Dropbox (Personal)/Nutrient Gaps/Health Benefits calculations/Data/IHME3/" # Alon's computer
-
 # IHME CSVs to merge
-ihme_csvs <- list.files(file.path(ihmedir, ""), pattern=".csv")
+ihme_csvs <- list.files(file.path(ihmedir3, ""), pattern=".csv")
 
 # Merge IHME CSVs
 data1 <- purrr::map_df(ihme_csvs, function(x){
-  fdata <- read.csv(file.path(ihmedir, "", x), as.is=T)
+  fdata <- read.csv(file.path(ihmedir3, "", x), as.is=T)
 })
 
 # Prepare country codes for merge
@@ -79,8 +81,13 @@ data2 <- data1 %>%
 # Export data
 ################################################################################
 
-# Export data
-saveRDS(data2, file = file.path(ihmedir, "my_data.rds"))
-saveRDS(country_codes_orig, file = file.path(ihmedir, "countries_code.rds"))
-saveRDS(country_codes_level3, file = file.path(ihmedir, "countries_level3.rds"))
+# Export data  -- Chris's computer
+saveRDS(data2, file = file.path(outputdir, "my_data.rds"))
+saveRDS(country_codes_orig, file = file.path(outputdir, "countries_code.rds"))
+saveRDS(country_codes_level3, file = file.path(outputdir, "countries_level3.rds"))
+
+# Export data  -- Alon's computer
+# saveRDS(data2, file = file.path(ihmedir, "my_data.rds"))
+# saveRDS(country_codes_orig, file = file.path(ihmedir, "countries_code.rds"))
+# saveRDS(country_codes_level3, file = file.path(ihmedir, "countries_level3.rds"))
 
