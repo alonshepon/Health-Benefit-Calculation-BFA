@@ -198,6 +198,127 @@ plot(Intake_bs_omega(r),col='blue')
  ###------------------------------------------------------------
  
  
+ # Potentially the real example
+ ##########################################################################################
+ 
+  # Read distributions
+ dists <- readRDS(file.path("data/cosimo/processed/COSIMO_2010_2030_country_nutrient_age_sex_means_and_distributions.Rds"))
+ 
+ 
+ # Merge data
+ dists2030 <- dists %>% 
+   # Remove incomplete data (fix later)
+   filter(!is.na(g_shape)) %>% 
+   # Reduce to 2030
+   filter(year==2030) %>% 
+   # Simplify 
+   select(country, iso3, nutrient, sex, age_group, scenario, mean_group, g_shape, g_rate, g_mean, g_mean_diff) %>% 
+   # Add age id and sex id
+   mutate(sex_id=recode(sex, 
+                        "men"=1,
+                        "women"=2) %>% as.numeric(),
+          age_id=recode(age_group,
+                        "0-4"="5",
+                        "5-9"="6",
+                        "10-14"="7",
+                        "15-19"="8",
+                        "20-24"="9",
+                        "25-29"="10",
+                        "30-34"="11",
+                        "35-39"="12",
+                        "40-44"="13",
+                        "45-49"="14",
+                        "50-54"="15",
+                        "55-59"="16",
+                        "60-64"="17",
+                        "65-69"="18",
+                        "70-74"="19",
+                        "75-79"="20",
+                        "80-84"="30",
+                        "85-89"="31",
+                        "90-95"="32",
+                        "90-95"="33") %>% as.numeric()) %>% 
+   select(-c(sex, age_group))
+ 
+ # Merge distributions with DALYs
+ tog1 <- dists2030 %>% 
+   # Add DALYs to distributions (fix so that merge isn't based on country)
+   left_join(tog %>% select(-c(year.x, year.y)), by=c("country"="location_name", "age_id"="age", "sex_id"="sex")) %>% 
+   # Eliminate age groups below ID=10
+   filter(age_id>=10) %>% 
+   # Reduce to ischematic heart disease 
+   filter(cause==493)
+ 
+ # Loop through each row and compute
+ i <- 1
+ for(i in 1:nrow(tog1)){
+   
+   # Build intake distribution function
+   shape <- tog1$g_shape[i]
+   rate <- tog1$g_rate[i]
+   mean_diff <- tog1$g_mean_diff[i]
+   intake_dist_function <- function(x){
+     y <- dgamma(x-mean_diff, shape=shape, rate=rate)
+   }
+   
+   # Calculate the DALY2030_omega_hr
+   age_do <- tog1$age_id[i]
+   DALY2030_omega <- tog1$DALY2030_omega[i]
+   DALY2030_omega_hr <- omega_n3_PAF(Intake_br=intake_dist_function, 
+                                     Intake_hr=intake_dist_function, 
+                                     age=age_do, 
+                                     omega_N_raw_2019, 
+                                     omega_n3_RR, 
+                                     flag_omega=1) * DALY2030_omega
+
+   # Calculate the DALY2030_red_meat_hr
+   cause_do <- tog1$cause[i]
+   DALY2030_meat <- tog1$DALY2030_meat[i]
+   DALY2030_red_meat_hr = red_meat_PAF(Intake_br=intake_dist_function,  
+                                       Intake_hr=intake_dist_function, 
+                                       age=age_do,  
+                                       meat_outcome=cause_do, 
+                                       red_meat_raw_2019, 
+                                       red_meat_RR, 
+                                       flag_meat=1) * DALY2030_meat
+
+
+   #add while taking overlap into consideration using Joint_PAF=1-(1-PAF1)(1-PAF2)      
+   # where PAF1 is the population attributable factor for meat, and PAF2 - for omega n-3
+   red_meat_paf <- red_meat_PAF(Intake_br=intake_dist_function,  
+                                Intake_hr=intake_dist_function, 
+                                age=age_do,  
+                                meat_outcome=cause_do, 
+                                red_meat_raw_2019, 
+                                red_meat_RR, 
+                                0)
+   omega_n3_paf <- omega_n3_PAF(Intake_br=intake_dist_function, 
+                                Intake_hr=intake_dist_function, 
+                                age=age_do, 
+                                omega_N_raw_2019, 
+                                omega_n3_RR,
+                                0)
+   DALY2030_hr_all = (1-(1-red_meat_paf*(1-omega_n3_paf))) * (DALY2030_red_meat_hr + DALY2030_omega_hr)
+
+   
+   
+   
+     #step 2: For all other meat DALYs (except ischemic heart disease) perform per each age-sex-location-outcome
+     filter(cause %in% cause_meat_no_ischemic)  %>% #all other causes
+     #for meat
+     mutate(DALY2030_red_meat_hr = red_meat_PAF(Intake_bs_meat,intake_hr_meat,age,cause,red_meat_raw_2019,red_meat_RR,1)*DALY2030_meat)
+   mutate(DALY2030_hr_all = DALY2030_red_meat_hr+DALY2030_omega_hr)
+   #step 3: Sum all DALYs for each age-sex-group. This is the overall burden for the highroad per age-sex-location:
+   group_by(location,age,sex) %>% #summarize all DALYs per age-sex-location
+     summarize(DALY2030_hr_total=sum(DALY2030_hr_all))
+   
+   
+   
+ }
+ 
+ 
+ 
+ 
  #--------------------------calculate DALYs in 2030 for the high road scenario
  
  # COMMENTED OUT ON CHRIS' COMPUTER; NOT ON ALON'S
@@ -208,9 +329,9 @@ DALYs1 <- tog %>%
    #step 1: For ischemic heart disease (which include omega n-3 and meat) For each age-sex-location:
    filter(cause==493) %>% #ischematic heart disease 
    #for omega
-   mutate(DALY2030_omega_hr <- omega_n3_PAF(Intake_bs_omega, Intake_hr_omega, age, omega_N_raw_2019, omega_n3_RR, 1)*DALY2030_omega) %>%
+   mutate(DALY2030_omega_hr = omega_n3_PAF(Intake_bs_omega, Intake_hr_omega, age, omega_N_raw_2019, omega_n3_RR, 1)*DALY2030_omega) %>%
     #for meat
-   mutate(DALY2030_red_meat_hr<-red_meat_PAF(Intake_bs_meat, intake_hr_meat, age, cause, red_meat_raw_2019, red_meat_RR, 1)*DALY2030_meat) %>%
+   mutate(DALY2030_red_meat_hr = red_meat_PAF(Intake_bs_meat, intake_hr_meat, age, cause, red_meat_raw_2019, red_meat_RR, 1)*DALY2030_meat) %>%
    #add while taking overlap into consideration using Joint_PAF=1-(1-PAF1)(1-PAF2)      where PAF1 is the population attributable factor for meat, and PAF2 - for omega n-3
    mutate(DALY2030_hr_all=(1-(1-red_meat_PAF(Intake_bs_meat,intake_hr_meat,age,cause,red_meat_raw_2019,red_meat_RR,0)
                               *(1-omega_n3_PAF(Intake_bs_omega,intake_hr_omega,age,omega_N_raw_2019,omega_n3_RR,0))))*(DALY2030_red_meat_hr+DALY2030_omega_hr)) %>%
@@ -218,8 +339,8 @@ DALYs1 <- tog %>%
    #step 2: For all other meat DALYs (except ischemic heart disease) perform per each age-sex-location-outcome
    filter(cause %in% cause_meat_no_ischemic)  %>% #all other causes
    #for meat
-   mutate(DALY2030_red_meat_hr<-red_meat_PAF(Intake_bs_meat,intake_hr_meat,age,cause,red_meat_raw_2019,red_meat_RR,1)*DALY2030_meat)
-   mutate(DALY2030_hr_all=DALY2030_red_meat_hr+DALY2030_omega_hr)
+   mutate(DALY2030_red_meat_hr = red_meat_PAF(Intake_bs_meat,intake_hr_meat,age,cause,red_meat_raw_2019,red_meat_RR,1)*DALY2030_meat)
+   mutate(DALY2030_hr_all = DALY2030_red_meat_hr+DALY2030_omega_hr)
    #step 3: Sum all DALYs for each age-sex-group. This is the overall burden for the highroad per age-sex-location:
    group_by(location,age,sex) %>% #summarize all DALYs per age-sex-location
      summarize(DALY2030_hr_total=sum(DALY2030_hr_all))

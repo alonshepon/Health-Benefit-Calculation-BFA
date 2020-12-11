@@ -11,6 +11,7 @@ library(tidyverse)
 library(countrycode)
 
 # Directories (outside repo)
+mypath <- "output" # Chris Free's computer
 # mypath <-"d:/Dropbox (Personal)/Dropbox (Personal)/Nutrient Gaps/Health Benefits calculations/code/Health Benefit claculation BFA/Health-Benefit-Calculation-BFA - Copy/" # Alon's computer
 
 # Directories (in repository)
@@ -19,8 +20,9 @@ plotdir <- "figures"
 codedir <- "code"
 
 # Read DALYs data
-dalys_fish_orig <- readRDS(file.path(outputdir, "my_data.rds"))
-dalys_meat_orig <- readRDS(file.path(outputdir, "my_meat_data.rds"))
+dalys_fish_orig <- readRDS(file.path(mypath, "my_data.rds"))
+# dalys_meat_orig <- readRDS(file.path(mypath, "my_meat_1_data.rds")) # Alon's computer
+dalys_meat_orig <- readRDS(file.path(mypath, "my_meat_data.rds")) # Chris's computer
 
 # Read population data
 pop_orig <- readRDS(file.path(mypath, "population_all.rds"))
@@ -28,62 +30,30 @@ pop_orig <- readRDS(file.path(mypath, "population_all.rds"))
 # Read country list
 countries_level_3 <- readRDS(file.path(mypath, "countries_level3.rds"))
 
+# Read other data
+omega_N_raw_2019 <- readxl::read_excel('code/omega_RR_2019.xlsx')
+red_meat_raw_2019 <- readxl::read_excel('code/meat_RR_2019.xlsx')
+EAR_requirements <- readxl::read_excel('code/EAR_requirements_GBDgroups.xlsx')
 
-# Notes
-################################################################################
+# Read distributions
+dists <- readRDS(file.path("data/cosimo/processed/COSIMO_2010_2030_country_nutrient_age_sex_means_and_distributions.Rds"))
 
-# AGE GROUP CODES
-# 5 1-4 years 
-# 6 5-9 years 
-# 7 10-14 years
-# 8 15-19 years
-# 9 20-24 years
-# 10 25-29 years
-# 11 30-34 years
-# 12 35-39 years
-# 13 40-44 years 
-# 14 45-49 years 
-# 15 50-54 years 
-# 16 55-59 years 
-# 17 60-64 years 
-# 18 65-69 years 
-# 19 70-74 years 
-# 20 75-79 years
-# 30 80-84 years
-# 31 85-89 years
-# 32 90-94 years
-# 33 95-99 years
+# Read SDI key
+sdi_key <- read.csv(file=file.path(outputdir, "sdi_key.csv"), as.is=T)
 
-# CAUSE CODES
-# 409 noncommunicable diseases
-# 295 Communicable, maternal, neonatal, and nutritional diseases
-# 294 all cause
+# Source helpher functions
+source("code/RR_functions_cmf.R")
 
-# CODES
-# 121 low seafood
-# 97 zinc
-# 96 vitamin A
-# 95 iron
-# 117 processed meat
-# 116 red meat
-#cause
-# 429 breast cancer 
-# 441 Colon and rectum cancer 
-# 493 Ischemic heart disease 
-# 495 Ischemic stroke
-# 496 Intracerebral hemorrhage 
-# 497 Subarachnoid hemorrhage 
-# 976 Diabetes mellitus type 2  
 
 # Build data
 ################################################################################
 
+# Meat causes
 cause_meat<- c(429,441,493,495,496,497,976) 
 cause_meat_no_ischemic<- c(429,441,495,496,497,976)
 
 # Age ids
 age_id <- c(seq(5,20), 30, 31, 32, 33) 
-
 
 # Format population data
 pop <- pop_orig %>%
@@ -95,16 +65,8 @@ pop <- pop_orig %>%
   # Remove another column (b/c Alon did)
   select(-location_id)
 
+# Vector of country ids
 countries_id<-countries_level_3[,c("location_name","location_id")]
-
-#---Function to predict DALYs in 2030 (baseline) based on extrapolating data from 1990. 
-
-r30 <- function(val, year){
-  tt <- loess(val~year, span=10, control = loess.control(surface = "direct"))
-  tt1 <- max(predict(tt, newdata = 2030),0)  # make sure DALYS are not negative
-  return(tt1)
-} 
-
 
 # Format DALYs fish
 omega <- dalys_fish_orig %>% 
@@ -116,264 +78,339 @@ omega <- dalys_fish_orig %>%
   # Rename columns
   rename(population=val.y, DALY=val.x)
 
-
-
 # Calculate omega DALYs in 2030 based on extrapolation
 # This is the baseline values for 2030 
 j <- omega %>% 
   group_by(location_name,age,sex) %>% 
-  summarize(year=year,DALY_omega=DALY,DALY2030_omega = r30(DALY,year),HDI=`Human.Development.Index.(UNDP)`,
-            SDI=SDI,SDI_group=group.SDI,population=population) %>%filter(year==2017)
+  summarize(year=year,
+            DALY_omega=DALY,
+            DALY2030_omega = r30(DALY,year), 
+            # HDI=`Human.Development.Index.(UNDP)`, # alon's computer
+            # SDI=SDI, # alon's computer
+            # SDI_group=group.SDI, # alon's computer
+            HDI=`Human Development Index (UNDP)`, # chris's computer
+            SDI=sdi, # chris's computer
+            SDI_group=sdi_group, # chris's computer
+            population=population) %>%
+  filter(year==2017)
 
 # Calculate country level data for plotting ratio 
-j1 <-j %>%
+j1 <- j %>%
   filter(year==2017)%>%
   group_by(location_name) %>%
   mutate(ratio_DALY=DALY2030_omega/DALY_omega)%>%
-summarize(pop_adjust_DALY = sum(population*DALY_omega)/sum(population),
-pop_adjust_delta_DALY = sum(population*ratio_DALY)/sum(population), 
-population_total = sum(population))
-
-
+  summarize(pop_adjust_DALY = sum(population*DALY_omega)/sum(population),
+            pop_adjust_delta_DALY = sum(population*ratio_DALY)/sum(population), 
+            population_total = sum(population))
 
 # Format DALYs meat
-  meat <- dalys_meat_orig %>% 
-    filter(measure==2 & metric==1 & sex!=3 &rei==116 & cause %in% cause_meat & location %in% countries_level_3$location_id & age %in% age_id) %>% 
-    # Add population information
-    # left_join(countries_id, by=c("location"="location_id")) %>%
-    left_join(pop, by=c("location_name"="location_name", "year"="year_id", "age"="age_group_id", "sex"="sex_id")) %>%
-    # Rename columns
-    rename(population=val.y, DALY=val.x) %>%
-    select(location_name, everything())
- 
+meat <- dalys_meat_orig %>% 
+  filter(measure==2 & metric==1 & sex!=3 &rei==116 & cause %in% cause_meat & location %in% countries_level_3$location_id & age %in% age_id) %>% 
+  # Add population information
+  # left_join(countries_id, by=c("location"="location_id")) %>% # commented out on chris' computer, not alon's
+  left_join(pop, by=c("location_name"="location_name", "year"="year_id", "age"="age_group_id", "sex"="sex_id")) %>%
+  # Rename columns
+  rename(population=val.y, DALY=val.x) %>%
+  select(location_name, everything())
+
 # Calculate red meat DALYs in 2030 based on extrapolation
-  k <- meat %>% 
-    group_by(location_name,age,sex,cause) %>% 
-    summarize(year=year,DALY_meat=DALY,DALY2030_meat = r30(DALY,year),
-              population=population) %>%filter(year==2017)
+k <- meat %>% 
+  group_by(location_name,age,sex,cause) %>% 
+  summarize(year=year,DALY_meat=DALY,
+            DALY2030_meat = r30(DALY,year),
+            population=population) %>%
+  filter(year==2017)
 
-  
 # merge meat and omega n-3 datasets
+tog <- merge(j,k,by=c("location_name"="location_name","age"="age","sex"="sex"))
+tog <- subset(tog, select=-c(population.y))
+
+
+# Format intake distributions
+##########################################################################################
+
+# Merge data
+dists2030 <- dists %>% 
+  # Remove incomplete data (fix later)
+  filter(!is.na(g_shape)) %>% 
+  # Reduce to 2030
+  filter(year==2030) %>% 
+  # Simplify 
+  select(country, iso3, nutrient, sex, age_group, scenario, mean_group, g_shape, g_rate, g_mean, g_mean_diff) %>% 
+  # Add age id and sex id
+  mutate(sex_id=recode(sex, 
+                       "men"=1,
+                       "women"=2) %>% as.numeric(),
+         age_id=recode(age_group,
+                       "0-4"="5",
+                       "5-9"="6",
+                       "10-14"="7",
+                       "15-19"="8",
+                       "20-24"="9",
+                       "25-29"="10",
+                       "30-34"="11",
+                       "35-39"="12",
+                       "40-44"="13",
+                       "45-49"="14",
+                       "50-54"="15",
+                       "55-59"="16",
+                       "60-64"="17",
+                       "65-69"="18",
+                       "70-74"="19",
+                       "75-79"="20",
+                       "80-84"="30",
+                       "85-89"="31",
+                       "90-95"="32",
+                       "90-95"="33") %>% as.numeric()) %>% 
+  select(-c(sex, age_group))
+
+
+# Calculate DALYs
+##########################################################################################
+
+# # Merge distributions with DALYs
+# tog1 <- dists2030 %>% 
+#   # Add DALYs to distributions (fix so that merge isn't based on country)
+#   left_join(tog %>% select(-c(year.x, year.y)), by=c("country"="location_name", "age_id"="age", "sex_id"="sex")) %>% 
+#   # Eliminate age groups below ID=10
+#   filter(age_id>=10) %>% 
+#   # Reduce to ischematic heart disease 
+#   filter(cause==493)
+# 
+# # Loop through each row and compute
+# i <- 1
+# for(i in 1:nrow(tog1)){
+#   
+#   # Build intake distribution function
+#   shape <- tog1$g_shape[i]
+#   rate <- tog1$g_rate[i]
+#   mean_diff <- tog1$g_mean_diff[i]
+#   intake_dist_function <- function(x){
+#     y <- dgamma(x-mean_diff, shape=shape, rate=rate)
+#   }
+#   
+#   # Calculate the DALY2030_omega_hr
+#   age_do <- tog1$age_id[i]
+#   DALY2030_omega <- tog1$DALY2030_omega[i]
+#   DALY2030_omega_hr <- omega_n3_PAF(Intake_br=intake_dist_function, 
+#                                     Intake_hr=intake_dist_function, 
+#                                     age=age_do, 
+#                                     omega_N_raw_2019, 
+#                                     omega_n3_RR, 
+#                                     flag_omega=1) * DALY2030_omega
+#   
+#   # Calculate the DALY2030_red_meat_hr
+#   cause_do <- tog1$cause[i]
+#   DALY2030_meat <- tog1$DALY2030_meat[i]
+#   DALY2030_red_meat_hr = red_meat_PAF(Intake_br=intake_dist_function,  
+#                                       Intake_hr=intake_dist_function, 
+#                                       age=age_do,  
+#                                       meat_outcome=cause_do, 
+#                                       red_meat_raw_2019, 
+#                                       red_meat_RR, 
+#                                       flag_meat=1) * DALY2030_meat
+#   
+#   
+#   #add while taking overlap into consideration using Joint_PAF=1-(1-PAF1)(1-PAF2)      
+#   # where PAF1 is the population attributable factor for meat, and PAF2 - for omega n-3
+#   red_meat_paf <- red_meat_PAF(Intake_br=intake_dist_function,  
+#                                Intake_hr=intake_dist_function, 
+#                                age=age_do,  
+#                                meat_outcome=cause_do, 
+#                                red_meat_raw_2019, 
+#                                red_meat_RR, 
+#                                0)
+#   omega_n3_paf <- omega_n3_PAF(Intake_br=intake_dist_function, 
+#                                Intake_hr=intake_dist_function, 
+#                                age=age_do, 
+#                                omega_N_raw_2019, 
+#                                omega_n3_RR,
+#                                0)
+#   DALY2030_hr_all = (1-(1-red_meat_paf*(1-omega_n3_paf))) * (DALY2030_red_meat_hr + DALY2030_omega_hr)
+#   
+#   
+#   
+#   
+#   #step 2: For all other meat DALYs (except ischemic heart disease) perform per each age-sex-location-outcome
+#   filter(cause %in% cause_meat_no_ischemic)  %>% #all other causes
+#     #for meat
+#     mutate(DALY2030_red_meat_hr = red_meat_PAF(Intake_bs_meat,intake_hr_meat,age,cause,red_meat_raw_2019,red_meat_RR,1)*DALY2030_meat)
+#   mutate(DALY2030_hr_all = DALY2030_red_meat_hr+DALY2030_omega_hr)
+#   #step 3: Sum all DALYs for each age-sex-group. This is the overall burden for the highroad per age-sex-location:
+#   group_by(location,age,sex) %>% #summarize all DALYs per age-sex-location
+#     summarize(DALY2030_hr_total=sum(DALY2030_hr_all))
+#   
+#   
+#   
+# }
+
+
+
+
+# Calculate changes in summary exposure values (SEVs) -- micronutrients
+##########################################################################################
+
+# Nutrients to calculate SEVS for
+nutr_sevs <- c("Zinc", "Iron", "Calcium", "Vitamin A")
+
+# Build data required for micronutrient SEV calculations
+data_sev_mn <- dists2030 %>% 
+  # Reduce to nutrients of interest
+  filter(nutrient %in% nutr_sevs) %>% 
+  # Add SDI group
+  left_join(sdi_key, by=c("country"="location")) %>% 
+  # Reduce to age groups with required data
+  filter(age_id>=5) %>% 
+  # Reduce to rows with the required SEV ingredients: SDI group
+  filter(!is.na(sdi_group) & !is.na(g_shape)) 
   
- tog<- merge(j,k,by=c("location_name"="location_name","age"="age","sex"="sex"))
- tog<-subset(tog, select=-c(population.y))
- 
- 
-#####################################################################################
-
- 
- # Source helper functions
- source("code/RR_functions.R")
- 
- #-----------------------------example of intake distributions for quality control (can delete it later)
- m=10
- m1=255
- Intake_bs_omega<-function(x){y=1/sqrt(2*pi*(m/5)^2)*exp(-(x-m)^2/(2*(m/5)^2))}#normal distribution for example
- Intake_hr_omega<-function(x){y=1/sqrt(2*pi*(m1/5)^2)*exp(-(x-m1)^2/(2*(m1/5)^2))}#normal distribution for example
- r<-seq(0:500)
- df<-omega_n3_SEV(Intake_bs_omega,10,omega_N_raw_2019,omega_n3_RR)
-plot(Intake_bs_omega(r),col='blue')
- 
- m=200
- m1=60
- Intake_bs_meat<-function(x){y=1/sqrt(2*pi*(m/5)^2)*exp(-(x-m)^2/(2*(m/5)^2))}#normal distribution for example
- Intake_hr_meat<-function(x){y=1/sqrt(2*pi*(m1/5)^2)*exp(-(x-m1)^2/(2*(m1/5)^2))}#normal distribution for example
- df<-red_meat_SEV(Intake_bs_meat,10,493,red_meat_raw_2019,red_meat_RR)
- plot(Intake_bs_meat(r),col='blue')
- 
- #c<-zinc_iron_vita_SEV(Intake, 10, 1, "Zinc", "low", EAR_requirements)
- #b<-red_meat_SEV(Intake,10,976, red_meat_2019,red_meat_RR)
- #plot(Intake(seq(0:500)))
- integrant<-function(x){Intake_bs_meat(x)}
- inter<-(integrate(integrant,lower=-Inf,upper=Inf))
- inter$value
- ###------------------------------------------------------------
- 
- 
- #--------------------------calculate DALYs in 2030 for the high road scenario
- # 
- # source('d:/Dropbox (Personal)/Dropbox (Personal)/Nutrient Gaps/Health Benefits calculations/code/Health Benefit claculation BFA/Health-Benefit-Calculation-BFA/Health-Benefit-Calculation-BFA/code/RR_functions.R')
- #do not forget to integrate intakes of meat, omega n-3, and micronutrients per age-sex-location to tog data.frame
-
-DALYs1<-tog %>%  
-   #step 1: For ischemic heart disease (which include omega n-3 and meat) For each age-sex-location:
-   filter(cause==493) %>% #ischematic heart disease 
-   #for omega
-   mutate(DALY2030_omega_hr = omega_n3_PAF(Intake_bs_omega,intake_hr_omega,age,omega_N_raw_2019,omega_n3_RR,1) * DALY2030_omega) %>%
-    #for meat
-   mutate(DALY2030_red_meat_hr=red_meat_PAF(Intake_bs_meat,intake_hr_meat,age,cause,red_meat_raw_2019,red_meat_RR,1)*DALY2030_meat) %>%
-   #add while taking overlap into consideration using Joint_PAF=1-(1-PAF1)(1-PAF2)      where PAF1 is the population attributable factor for meat, and PAF2 - for omega n-3
-   mutate(DALY2030_hr_all=(1-(1-red_meat_PAF(Intake_bs_meat,intake_hr_meat,age,cause,red_meat_raw_2019,red_meat_RR,0)
-                              *(1-omega_n3_PAF(Intake_bs_omega,intake_hr_omega,age,omega_N_raw_2019,omega_n3_RR,0))))*(DALY2030_red_meat_hr+DALY2030_omega_hr)) %>%
-   
-   #step 2: For all other meat DALYs (except ischemic heart disease) perform per each age-sex-location-outcome
-   filter(cause %in% cause_meat_no_ischemic)  %>% #all other causes
-   #for meat
-   mutate(DALY2030_red_meat_hr<-red_meat_PAF(Intake_bs_meat,intake_hr_meat,age,cause,red_meat_raw_2019,red_meat_RR,1)*DALY2030_meat) %>% 
-   mutate(DALY2030_hr_all=DALY2030_red_meat_hr+DALY2030_omega_hr) %>% 
-   #step 3: Sum all DALYs for each age-sex-group. This is the overall burden for the highroad per age-sex-location:
-   group_by(location,age,sex) %>% #summarize all DALYs per age-sex-location
-     summarize(DALY2030_hr_total=sum(DALY2030_hr_all))
+# Loop through micronutrients to calculate SEVs for
+x <- 1
+# sevs_micronutrients <- purrr::map_df(1:nrow(data_sev_mn), function(x){
+for(x in 1:nrow(data_sev_mn)){
   
+  # Parameters
+  print(x)
+  scenario_do <- data_sev_mn$scenario[x]
+  iso3_do <- data_sev_mn$iso3[x]
+  nutr_do <- data_sev_mn$nutrient[x]
+  sdi_group_do <- data_sev_mn$sdi_group[x]
+  age_id_do <- data_sev_mn$age_id[x]
+  sex_id_do <- data_sev_mn$sex_id[x]
+  
+  # Rename nutrient
+  if(nutr_do=="Vitamin A"){nutr_do <- "VitA"}
+  
+  # If gamma distribution....
+  shape <- data_sev_mn$g_shape[x]
+  rate <- data_sev_mn$g_rate[x]
+  x_shift <- data_sev_mn$g_mean_diff[x]
+  intake_function <- function(x){y <- dgamma(x-x_shift, shape=shape, rate=rate)}
 
-   #--------------------------calculate changes in SEVs
-   # source('d:/Dropbox (Personal)/Dropbox (Personal)/Nutrient Gaps/Health Benefits calculations/code/Health Benefit claculation BFA/Health-Benefit-Calculation-BFA/Health-Benefit-Calculation-BFA/code/RR_functions.R')
-   
-   #do not forget to integrate intakes of meat, omega n-3, and micronutrients per age-sex-location to tog data.frame
-   #br are intakes of baseline, while hr = high road
-   
-   SEVs1<-tog %>%  
-     # For each age-sex-location:
-     #for omega n-3 %mg/d
-     mutate(delta_SEV_omega<-omega_n3_SEV(Intake_bs_omega,age,omega_N_raw_2019,omega_n3_RR)-
-              omega_n3_SEV(Intake_hr_omega,age,omega_N_raw_2019,omega_n3_RR)) %>%  #changes in %
-     #for meat %g/d
-     mutate(delta_SEV_meat<-red_meat_SEV(Intake_bs_meat,age,cause, red_meat_2019,red_meat_RR)-
-              red_meat_SEV(Intake_hr_meat,age,cause,red_meat_2019,red_meat_RR)) %>%   #changes in % 
-     #for zinc  %intakes mg/d
-     mutate(delta_SEV_zinc<-micronutrient_SEV(Intake_bs_zinc, age, sex, "Zinc", country_SDIgroup, EAR_requirements)-
-              micronutrient_SEV(Intake_hr_zinc, age, sex, "Zinc", country_SDIgroup, EAR_requirements)) %>% #changes in %
+  # If lognormal distribution...
+  
+  # Calculate SEV
+  sev <- try(micronutrient_SEV(Intake=intake_function, 
+                               age=age_id_do, 
+                               sex=sex_id_do,
+                               nutrient=nutr_do, 
+                               country_SDIgroup=sdi_group_do, 
+                               EAR_requirements))
+  
+  # Record based on try()
+  if(inherits(sev, "try-error")){
+    sev_out <- NA
+  }else{
+    sev_out <- sev
+  }
+  
+  # Record
+  data_sev_mn$sev[x] <- sev_out
+    
+  # Build dataframe row
+  # row_out <- tibble(scenario=scenario_do,
+  #                   nutrient=nutr_do,
+  #                   iso3=iso3_do,
+  #                   sex=sex_id_do,
+  #                   age=age_id_do,
+  #                   sev=sev_out)
 
-     #for iron %intakes mg/d
-     mutate(delta_SEV_iron<-micronutrient_SEV(Intake_bs_iron, age, sex, "Iron", country_SDIgroup, EAR_requirements)-
-              micronutrient_SEV(Intake_hr_iron, age, sex, "Iron", country_SDIgroup, EAR_requirements)) %>%  #changes in %
-   
-     #for calcium %intakes mg/d
-     mutate(delta_SEV_calcium<-micronutrient_SEV(Intake_bs_iron, age, sex, "Calcium", country_SDIgroup, EAR_requirements)-
-              micronutrient_SEV(Intake_hr_iron, age, sex, "Calcium", country_SDIgroup, EAR_requirements)) %>%  #changes in %  
-   
-     #for vitamin A %intakes RAE/d
-     mutate(delta_SEV_vitA<-micronutrient_SEV(Intake_bs_vitA, age, sex, "vitA", country_SDIgroup, EAR_requirements)-
-              micronutrient_SEV(Intake_hr_vitA, age, sex, "vitA", country_SDIgroup, EAR_requirements))  #changes in %  
-     
-     
+}
 
-# Zinc
-#zinc <- dalys_fish_orig %>% 
-#  filter(measure==2 & metric==1 & sex!=3 & rei==97 & age %in% age_id & location %in% countries_level_3$location_id) %>%
-#  arrange(val)
+# Format SEVs
+sev_mn_final <- data_sev_mn %>% 
+  select(scenario, nutrient, country, iso3, sex_id, age_id, sev) %>% 
+  spread(key="scenario", value="sev") %>% 
+  rename(sev_high="High road", sev_base="Base") %>% 
+  mutate(sev_delta=sev_high-sev_base)
 
-# Iron
-#iron <- dalys_fish_orig %>% 
-#  filter(measure==2 & metric==1 & sex!=3 & rei==95 & age %in% age_id & location %in% countries_level_3$location_id) %>% 
-#  arrange(val)
-
-
-
-
-# Alon's plots
-################################################################################
-
-# Plot 1
-##################################
-
-# Plot DALY ratio
-g1 <- ggplot(j, aes(x=fct_reorder(location_name, delta_DALY, .fun='median', .desc = TRUE), y=delta_DALY, color=sdi_group)) +
-  # Plot DALY ratio distribution by age/sex group
-  geom_boxplot(outlier.size = 0.3, alpha=0.1) +
-  # Plot population adjusted DALY
-  geom_point(aes(y=pop_adjust_delta_DALY), alpha=1, shape=19, na.rm=TRUE, size=2.5) +
-  # Limits
-  lims(y=c(0,5)) +
-  # Labels
-  labs(x="", y="DALY ratio (2030 / 2017)") +
-  scale_color_discrete(name="SDI group") +
-  # Theme
-  theme(axis.text.x=element_text(angle = -90, hjust = 0,size=6),
-        legend.position = "none")
-g1
-
-# Plot 2
-##################################
-
-# Prep data for plotting
-j1 <- j %>% 
-  group_by(location) %>% 
-  summarise(population=sum(population),
-            location_name=unique(location_name),
-            pop_adjust_delta_DALY=unique(pop_adjust_delta_DALY),
-            pop_adjust_DALY=unique(pop_adjust_DALY),
-            SDI=unique(sdi_group))
-
-# Plot data
-g2 <- ggplot(j1,aes(x=log10(pop_adjust_DALY), y=pop_adjust_delta_DALY, fill=SDI, size = population)) +
-  geom_point(alpha=0.5, shape=21, color='black')+
-  # Point labels
-  geom_text(aes(label=location_name), alpha=0.5, nudge_x = -0.18, nudge_y = 0.1, size=3, check_overlap = TRUE) +
-  # Limits
-  coord_cartesian(ylim = c(0, 3), xlim = c(0,6)) +
-  # Reference lines
-  geom_hline(yintercept=1, size=0.5, alpha=.2) +
-  geom_vline(xintercept=log10(median(j1$pop_adjust_DALY, na.rm=TRUE)), size=0.5, alpha=.2) +
-  # Axis labels
-  labs(x="log10(DALY) (2017)", y="log10(DALY)(2017)") +
-  # Legends
-  scale_size(name="Population",range = c(2,15), breaks=c(1e+7,1e+8,5e+8,1e+9)) +
-  scale_fill_viridis_d(name="SDI", aesthetics = "colour", option="A") +
-  # Theme
-  theme(legend.position="right")
-g2
-
-# Export plot
-ggsave(g2, file=file.path(plotdir, "plot.pdf"), width=40, height=20, units = "cm", dpi=500) 
+# Export
+write.csv(sev_mn_final, file=file.path("2030_sevs_base_high_road_micronutrients.csv"), row.names=F)
 
 
+# Calculate changes in summary exposure values (SEVs) -- micronutrients
+##########################################################################################
 
-# Chris's plots
-################################################################################
+# Build data required for micronutrient SEV calculations
+data_sev_omega <- dists2030 %>% 
+  # Reduce to nutrients of interest
+  filter(nutrient %in% "Omega-3 fatty acids") %>% 
+  # Reduce to age groups with required data
+  filter(age_id>=10) %>%
+  # Reduce to rows with the required SEV ingredients: SDI group
+  filter(!is.na(g_shape))
 
-# DALY's over time
-data_yr <- j %>% 
-  # Reduce to data of interest
-  select(location_name, )
+# Loop through micronutrients to calculate SEVs for
+x <- 1
+# sevs_micronutrients <- purrr::map_df(1:nrow(data_sev_mn), function(x){
+for(x in 1:nrow(data_sev_omega)){
+  
+  # Parameters
+  print(x)
+  scenario_do <- data_sev_omega$scenario[x]
+  iso3_do <- data_sev_omega$iso3[x]
+  nutr_do <- data_sev_omega$nutrient[x]
+  age_id_do <- data_sev_omega$age_id[x]
+  sex_id_do <- data_sev_omega$sex_id[x]
+  
+  # If gamma distribution....
+  shape <- data_sev_omega$g_shape[x]
+  rate <- data_sev_omega$g_rate[x]
+  x_shift <- data_sev_omega$g_mean_diff[x]
+  intake_function <- function(x){y <- dgamma(x-x_shift, shape=shape, rate=rate)}
+  
+  # If lognormal distribution...
+  
+  # Calculate SEV
+  sev <- try(omega_n3_SEV(Intake=intake_function,
+                          age=age_id_do, 
+                          omega_N_raw_2019,
+                          omega_n3_RR))
+
+  # Record based on try()
+  if(inherits(sev, "try-error")){
+    sev_out <- NA
+  }else{
+    sev_out <- sev
+  }
+  
+  # Record
+  data_sev_omega$sev[x] <- sev_out
+  
+  # Build dataframe row
+  # row_out <- tibble(scenario=scenario_do,
+  #                   nutrient=nutr_do,
+  #                   iso3=iso3_do,
+  #                   sex=sex_id_do,
+  #                   age=age_id_do,
+  #                   sev=sev_out)
+  
+}
+
+# Format SEVs
+sev_omega_final <- data_sev_omega %>% 
+  mutate(nutrient="Omega-3 fatty acids") %>% 
+  select(scenario, nutrient, country, iso3, sex_id, age_id, sev) %>% 
+  spread(key="scenario", value="sev") %>% 
+  rename(sev_high="High road", sev_base="Base") %>% 
+  mutate(sev_delta=sev_high-sev_base)
+
+# Export
+write.csv(sev_omega_final, file=file.path("2030_sevs_base_high_road_omega3s.csv"), row.names=F)
+
+
+# Calculate changes in summary exposure values (SEVs) -- red meat
+##########################################################################################
 
 
 
-# Plot 3 (CMF appraoch)
-##################################
+#for meat %g/d
+# mutate(delta_SEV_meat<-red_meat_SEV(Intake_bs_meat,age,cause, red_meat_2019,red_meat_RR)-
+#          red_meat_SEV(Intake_hr_meat,age,cause,red_meat_2019,red_meat_RR))
 
-# Cap for delta_daly_adj
-delta_daly_adj_cap <- 3
 
-# Clean data
-data_cntry <- j1 %>%
-  ungroup() %>% 
-  # Add ISO3 and country
-  mutate(iso3=countrycode::countrycode(location_name, "country.name", "iso3c"),
-         country=countrycode::countrycode(iso3, "iso3c", "country.name")) %>% 
-  # Arrange columns
-  select(iso3, country, population, SDI, pop_adjust_DALY, pop_adjust_delta_DALY) %>% 
-  rename(sdi_group=SDI, daly_adj=pop_adjust_DALY, delta_daly_adj=pop_adjust_delta_DALY) %>% 
-  # Reduce to useable data
-  filter(!is.na(delta_daly_adj)) %>% 
-  # Add a cap
-  mutate(delta_daly_adj_cap=pmin(delta_daly_adj, delta_daly_adj_cap))
 
-# World
-world <- rnaturalearth::ne_countries(scale="small", returnclass = "sf")
 
-# Add data to world
-data_sf <- world %>% 
-  left_join(data_cntry, by=c("gu_a3"="iso3"))
 
-# Plot data
-g3 <- ggplot(data_sf) +
-  geom_sf(mapping=aes(fill=delta_daly_adj_cap), color="grey30", lwd=0.1)  +
-  # Legend
-  scale_fill_gradientn(name="ΔDALY\n(2030/2017)", colors=RColorBrewer::brewer.pal(n=9, "Greens"), na.value = "grey80",
-                       breaks=seq(0, delta_daly_adj_cap, 1), labels=c(0, 1, 2, "≥3")) +
-  guides(fill = guide_colorbar(ticks.colour = "black", frame.colour = "black")) +
-  # Theme
-  theme_bw() +
-  theme(legend.position = "bottom",
-        axis.text=element_blank(),
-        axis.title=element_blank(),
-        panel.grid.major = element_blank(), 
-        panel.grid.minor = element_blank(),
-        panel.background = element_blank(), 
-        axis.line = element_line(colour = "black"))
-g3
 
-# Export plot
-ggsave(g3, file=file.path(plotdir, "delta_daly_map.png"), width=6.5, height=4, units = "in", dpi=600) 
 

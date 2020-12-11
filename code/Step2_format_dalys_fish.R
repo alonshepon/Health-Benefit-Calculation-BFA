@@ -82,3 +82,6 @@ saveRDS(data2, file = file.path(outputdir, "my_data.rds"))
 saveRDS(country_codes_orig, file = file.path(outputdir, "countries_code.rds"))
 saveRDS(country_codes_level3, file = file.path(outputdir, "countries_level3.rds"))
 
+# Export keys
+write.csv(sdi, file=file.path(outputdir, "sdi_key.csv"), row.names=F)
+

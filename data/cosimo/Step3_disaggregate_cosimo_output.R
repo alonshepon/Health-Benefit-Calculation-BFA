@@ -164,10 +164,31 @@ data <- cosimo_orig %>%
 freeR::complete(data)
 
 
+# Add the distribution fits
+################################################################################
+
+# COME BACK TO THIS
+# Expand 80+ age group
+
+# Read fits
+dists <- readRDS("data/intakes/output/intake_distributions_for_all_cosimo_countries.Rds")
+
+# Add distribution fits
+data1 <- data %>% 
+  # Recode sex for merge
+  mutate(sex=recode(sex, "Females"="women", "Males"="men")) %>% 
+  # Add distribution fits
+  left_join(dists %>% select(-c(country_id)), by=c("iso3"="country_iso3", "nutrient", "sex", "age_group")) %>% 
+  # Build function to describe distribution
+  mutate(g_mean=g_shape/g_rate,
+         g_mean_diff=mean_group-g_mean)
+
+
 # Export
 ################################################################################
 
-
+# Export
+saveRDS(data1, file=file.path(outputdir, "COSIMO_2010_2030_country_nutrient_age_sex_means_and_distributions.Rds"))
 
 
 
