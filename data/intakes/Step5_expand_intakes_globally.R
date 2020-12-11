@@ -58,6 +58,8 @@ cntry_key <- cntry_key_orig %>%
                              "Eastern Asia"="China", 
                              "Eastern Europe"="Italy", 
                              "Melanesia"="Laos & Philippines",  
+                             "Polynesia"="Laos & Philippines",
+                             "Micronesia"="Laos & Philippines",
                              "Middle Africa"="Uganda & Zambia", 
                              "Northern Africa"="Italy",  
                              "Northern America"="United States", 
@@ -103,6 +105,7 @@ dist_key_exp <- purrr::map_df(1:nrow(cntry_key), function(x){
 
 # Inspect
 freeR::complete(dist_key_exp)
+n_distinct(dist_key_exp$country_iso3)
 
 # Export key
 saveRDS(dist_key_exp, file=file.path(outputdir, "intake_distributions_for_all_cosimo_countries.Rds"))

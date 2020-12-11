@@ -28,9 +28,10 @@ cosimo_genus_iso_key <- readxl::read_excel("tables/TableS2_cosimo_genus_countrie
   setNames(c("iso3_cosimo", "country_cosimo", "iso3_genus", "country_genus")) %>% 
   select(iso3_cosimo, iso3_genus)
 
-# Read SPADE-derived scalars (for omega-3s and )
+# Read SPADE-derived scalars (for omega-3s and Vitamin B-12)
 spade_scalars <- readRDS(file.path("data/intakes/output/intake_distribution_age_sex_scalars.Rds")) %>% 
-  mutate(sex=recode(sex, "men"="Males", "women"="Females"))
+  mutate(sex=recode(sex, "men"="Males", "women"="Females"),
+         age_group=as.character(age_group)) 
 
 # Map GENUS coverage
 ################################################################################
@@ -122,9 +123,36 @@ intake_scalars <- genus_exp %>%
   # Rename for COSIMO output consistency
   rename(iso3=iso3_use, age_group=age_range)
 
+# Expands scalar key to include 80+ components
+################################################################################
+
+# Not 80+
+intake_scalars_no80 <- intake_scalars %>% 
+  filter(age_group!="80+")
+
+# 80+
+intake_scalars80 <- intake_scalars %>% 
+  filter(age_group=="80+")
+
+# Expand 80+ data
+plus_groups <- c("80-84", "85-89", "90-94", "95-99")
+intake_scalars80_exp <- purrr::map_df(plus_groups, function(x){
+  edata <-intake_scalars80 %>% mutate(age_group=x)
+})
+
+# Merge pre-80 and expanded 80+
+intake_scalars_exp <- bind_rows(intake_scalars_no80, intake_scalars80_exp) %>% 
+  arrange(iso3, nutrient, sex, age_group, scalar)
+
 
 # Build key for fraction of nutrients
 ################################################################################
+
+# Build country-sex-age key
+cntry_sex_age_key <- expand.grid(iso3=sort(unique(cosimo_orig$iso3)),
+                                 sex=c("Males", "Females"),
+                                 age_group=sort(unique(spade_scalars$age_group))) %>% 
+  arrange(iso3, sex, age_group)
 
 # Build key
 data <- cosimo_orig %>% 
@@ -143,32 +171,44 @@ data <- cosimo_orig %>%
                                "Energy"="Calories",
                                "Total lipids"="Fat",
                                "Vitamin A, RAE"="Vitamin A",
-                               "Vitamin B-12"="Vitamin B6",
+                               "Vitamin B-12"="Vitamin B-12",
                                "Omega-3 fatty acids"="Polyunsaturated fatty acids")) %>% 
   # Add GENUS ISO3s for scalar matching
   left_join(cosimo_genus_iso_key, by=c("iso3"="iso3_cosimo")) %>% 
   mutate(iso3_genus=ifelse(is.na(iso3_genus), iso3, iso3_genus)) %>% 
+  # Add sex/age group
+  left_join(cntry_sex_age_key, by="iso3") %>% 
   # Add GENUS-derived scalars
-  left_join(intake_scalars, by=c("iso3_genus"="iso3", "nutrient_genus"="nutrient")) %>% 
+  left_join(intake_scalars_exp, by=c("iso3_genus"="iso3", "nutrient_genus"="nutrient", "sex", "age_group")) %>% 
   rename(scalar_genus=scalar) %>% 
   # Add SPADE-derived scalars
   left_join(spade_scalars %>% select(country_id,  nutrient, sex, age_group, scalar)) %>%
   rename(scalar_spade=scalar) %>% 
   # Select scalar
-  mutate(scalar=ifelse(nutrient %in% c("Omega-3 fatty acids", "Vitamin B-12"), scalar_spade, scalar_genus)) %>% 
+  mutate(scalar=ifelse(nutrient %in% c("Omega-3 fatty acids", "Vitamin B-12") | is.na(scalar_genus), scalar_spade, scalar_genus)) %>% 
   # Calculate sex-age means
   rename(mean_cntry=value) %>% 
-  mutate(mean_group=mean_cntry * scalar)
+  mutate(mean_group=mean_cntry * scalar) %>% 
+  # Arrange output
+  select(scenario, year, country_id:country,
+         nutrient_code:nutrient_units, sex, age_group,
+         nutrient_genus, iso3_genus, scalar_genus, scalar_spade, scalar, 
+         scenario, mean_cntry, mean_group, everything())
 
 # Inspect data
+# The only rows missing values are 2018-2030 values for countries that don't exist anymore
 freeR::complete(data)
+
+# Inspect missing
+check <- data %>% 
+  filter(is.na(mean_cntry))
+range(check$year)
+sort(unique(check$country))
+
 
 
 # Add the distribution fits
 ################################################################################
-
-# COME BACK TO THIS
-# Expand 80+ age group
 
 # Read fits
 dists <- readRDS("data/intakes/output/intake_distributions_for_all_cosimo_countries.Rds")
@@ -179,9 +219,11 @@ data1 <- data %>%
   mutate(sex=recode(sex, "Females"="women", "Males"="men")) %>% 
   # Add distribution fits
   left_join(dists %>% select(-c(country_id)), by=c("iso3"="country_iso3", "nutrient", "sex", "age_group")) %>% 
-  # Build function to describe distribution
+  # Add means and differences
   mutate(g_mean=g_shape/g_rate,
-         g_mean_diff=mean_group-g_mean)
+         g_mean_diff=mean_group-g_mean) %>% 
+  mutate(ln_mean=exp(ln_meanlog + ln_sdlog^2/2),
+         ln_mean_diff=mean_group-ln_mean)
 
 
 # Export
