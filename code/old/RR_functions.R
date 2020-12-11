@@ -1,10 +1,99 @@
 
+# On Chris' computer
+# Replaced "Intake_hr" with "Intake_hr"
 
-#################################################################################
+
+# a script to build Relative risk (RR), SEV (summary exposure values) and PAF curves (functions) for omega n-3, red meat and micronutrients intakes
+# Read data
+################################################################################
+
+# Clear workspace
+#rm(list = ls())
+
+# Packages
+library(tidyverse)
+library(dosresmeta)
+library(rms)
+library(openxlsx)
+library(dbplyr)
+library(tidyverse)
+library(MASS)
+library(ggplot2)
+library(fitdistrplus)
+library(Hmisc)
+
+# # Directories (outside repository)
+# datadir1 <- "/Users/cfree/Dropbox/Health Benefits calculations/Data/IHME/definitions" # Chris Free's computer
+# datadir2 <- "/Users/cfree/Dropbox/Health Benefits calculations/Data/EAR/" # Chris Free's computer
+# 
+# # Directories (in repository)
+# outputdir <- "output"
+# plotdir <- "figures"
+# codedir <- "code"
+
+
+#read data of RR values for omega n-3 and meat from GBD 2020
+
+# Alon's computer
+# omega_N_raw_2019 <- read.xlsx('d:/Dropbox (Personal)/Dropbox (Personal)/Nutrient Gaps/Health Benefits calculations/code/Health Benefit claculation BFA/Health-Benefit-Calculation-BFA/Health-Benefit-Calculation-BFA/code/omega_RR_2019.xlsx')
+# red_meat_2019 <- read.xlsx('d:/Dropbox (Personal)/Dropbox (Personal)/Nutrient Gaps/Health Benefits calculations/code/Health Benefit claculation BFA/Health-Benefit-Calculation-BFA/Health-Benefit-Calculation-BFA/code/meat_RR_2019.xlsx')
+# EAR_requirements <- read.xlsx('d:/Dropbox (Personal)/Dropbox (Personal)/Nutrient Gaps/Health Benefits calculations/Data/EAR/EAR_requirements_GBDgroups.xlsx')
+
+# Chris
+omega_N_raw_2019 <- read.xlsx('code/omega_RR_2019.xlsx')
+red_meat_raw_2019 <- read.xlsx('code/meat_RR_2019.xlsx')
+EAR_requirements <- read.xlsx('code/EAR_requirements_GBDgroups.xlsx')
+
+
+# Read RR GBD 2019
+#omega_N_raw_2019 <- readxl::read_excel(file.path(datadir1, "omega_RR_2019.XLSX"))
+#EAR_requirements <- readxl::read_excel(file.path(datadir2, "EAR_requirements_GBDgroups.xlsx"))
+#red_meat_2019 <- read.xlsx('d:/Dropbox (Personal)/Dropbox (Personal)/Nutrient Gaps/Health Benefits calculations/code/Health Benefit claculation BFA/Health-Benefit-Calculation-BFA/Health-Benefit-Calculation-BFA/code/meat_RR_2019.xlsx')
+
+#omega_N_raw_2019 <- read.xlsx('d:/Dropbox (Personal)/Dropbox (Personal)/Nutrient Gaps/Health Benefits calculations/code/Health Benefit claculation BFA/Health-Benefit-Calculation-BFA/Health-Benefit-Calculation-BFA/code/omega_RR_2019.xlsx')
+# Helper functions
+################################################################################
+
+# Age groups
+#5 1-4 years 
+#6 5-9 years 
+#7 10-14 years
+#8 15-19 years
+#9 20-24 years
+#10 25-29 years
+#11 30-34 years
+#12 35-39 years
+#13 40-44 years 
+#14 45-49 years 
+#15 50-54 years 
+#16 55-59 years 
+#17 60-64 years 
+#18 65-69 years 
+#19 70-74 years 
+#20 75-79 years
+#30 80-84 years
+#31 85-89 years
+#32 90-94 years
+#33 95-99 years
+
+# RR of omega n-3 (Mozzafarian and Rimm) 
+#x  <- seq(0,1000,1)
+#y1 <- 1.15^((250-x)/100)   # RR of GBD based on Lancet 2017
+#y2 <- -0.0014*x+1.35        # RR of GBD based on linearized Mozzafarian and Rimm 2006
+#df <- data.frame(x,y1,y2)
+
+#ggplot(df, aes(x)) +
+#  geom_line(aes(y=y1), colour="red") +
+#  geom_line(aes(y=y2), colour="green")
+
+
+# Helper functions
+################################################################################
+
+
 # RR
 #################################################################################
-
-# Function of Relative Risk of omega n-3
+#----------------------------------------- Function of Relative Risk of omega n-3
 omega_n3_RR <- function(val,age,omega_N_raw_2019){
   
   # If..
@@ -12,8 +101,8 @@ omega_n3_RR <- function(val,age,omega_N_raw_2019){
     
     R <- 0
     return(R)
-    
-    # Else..    
+  
+  # Else..    
   }else{
     
     agepaste<-paste("age",as.character(age),sep="")
@@ -26,6 +115,11 @@ omega_n3_RR <- function(val,age,omega_N_raw_2019){
   }
 }
 
+
+
+
+
+
 # Function of Relative Risk of high red meat for various outcomes
 red_meat_RR <- function(val,age,meat_outcome, red_meat_2019){
   
@@ -34,21 +128,21 @@ red_meat_RR <- function(val,age,meat_outcome, red_meat_2019){
     
     R <- 0
     return(R)}
-  
-  # Else..(adolescents and adults)   
+    
+    # Else..(adolescents and adults)   
   else{
     x<-c(0,50,100,150,200)   #g/d
     agepaste<-paste("age",as.character(age),sep="")   #age
     
     
     if (meat_outcome==429){ # breast cancer REI_id=429
-      
-      # build age specific RR
-      meat_raw_2019_outcome<-red_meat_2019[red_meat_2019$Diet.high.in.red.meat=="Breast cancer",];
-      y<-meat_raw_2019_outcome[ , grepl( agepaste , names( meat_raw_2019_outcome ) ) ]
-      xtrans<-splinefun(x, y,method = c("monoH.FC"),ties = mean)
-      #plot(x, y)
-      #lines(x, xtrans(x), col='red')
+    
+    # build age specific RR
+    meat_raw_2019_outcome<-red_meat_2019[red_meat_2019$Diet.high.in.red.meat=="Breast cancer",];
+    y<-meat_raw_2019_outcome[ , grepl( agepaste , names( meat_raw_2019_outcome ) ) ]
+    xtrans<-splinefun(x, y,method = c("monoH.FC"),ties = mean)
+    #plot(x, y)
+    #lines(x, xtrans(x), col='red')
     }
     
     if (meat_outcome==441){ # Colon and rectum cancer REI_id=441
@@ -111,9 +205,10 @@ red_meat_RR <- function(val,age,meat_outcome, red_meat_2019){
       #lines(x, xtrans(x), col='red')
     }
     
-    return(xtrans(val))
-  }
+   return(xtrans(val))
 }
+}
+
 
 
 # Function to calculate micronutrient overal risk (deficiencies)
@@ -133,7 +228,7 @@ micronutrient_RR <- function(val, age, sex, nutrient, country_SDIgroup, EAR_requ
   if (nutrient=="Zinc" & country_SDIgroup=="middle"){nutrient<-"Zinc.mod"}
   if (nutrient=="Zinc" & country_SDIgroup=="high"){nutrient<-"Zinc.high"}
   
-  
+
   # load EAR values based on input of nutrient and country SDI 
   EAR <- EAR_requirements %>% filter(age_groups==age & sex_groups==sex)
   EAR <- EAR[ , grepl( nutrient , names( EAR_requirements ) ) ]
@@ -149,14 +244,16 @@ micronutrient_RR <- function(val, age, sex, nutrient, country_SDIgroup, EAR_requ
   
   # Return
   return(r_val)
-  
+
 }
 
-#################################################################################
-# Calculate summary exposure values (SEVs)
+#calculate SEV (summary exposure values) for each sex-age-location group for meat and seafood consumption
+#SEV = integrate(RR*Intake)/RRmax
 #################################################################################
 
+
 # SEV of omega n-3
+
 omega_n3_SEV <- function(Intake,age,omega_N_raw_2019,omega_n3_RR)
 {
   # If..
@@ -176,6 +273,9 @@ omega_n3_SEV <- function(Intake,age,omega_N_raw_2019,omega_n3_RR)
     return(SEV)
   }
 }
+
+
+
 
 # SEV of high red meat for various outcomes
 red_meat_SEV <- function(Intake,age,meat_outcome, red_meat_2019,red_meat_RR){
@@ -277,6 +377,11 @@ red_meat_SEV <- function(Intake,age,meat_outcome, red_meat_2019,red_meat_RR){
   }
 }
 
+
+
+
+
+
 # SEV of zinc/iron/vitamin A
 micronutrient_SEV <- function(Intake, age, sex, nutrient, country_SDIgroup, EAR_requirements){
   
@@ -292,10 +397,9 @@ micronutrient_SEV <- function(Intake, age, sex, nutrient, country_SDIgroup, EAR_
 
 
 ###################################################################################################3
-# Calculate population attributable fractions (PAFs)
-###################################################################################################3
 
-red_meat_PAF <- function(Intake_br,intake_hr,age,meat_outcome, red_meat_2019,red_meat_RR,flag_meat){
+# relative risk changes of high red meat for various intake changes
+red_meat_PAF <- function(Intake_br, Intake_hr, age, meat_outcome, red_meat_2019, red_meat_RR, flag_meat){
   
   # If..
   if(age==5|age==6 | age==7| age==8| age==9){
@@ -319,21 +423,33 @@ red_meat_PAF <- function(Intake_br,intake_hr,age,meat_outcome, red_meat_2019,red
     # build age specific calculation
     integrant_br<-function(x){Intake_br(x)*red_meat_RR(x,age,meat_outcome,red_meat_2019)}
     int_br<-(integrate(integrant_br,lower=-Inf,upper=Inf))
+    int_br_val <- int_br$value
     integrant_hr<-function(x){Intake_hr(x)*red_meat_RR(x,age,meat_outcome,red_meat_2019)}
     int_hr<-(integrate(integrant_hr,lower=-Inf,upper=Inf))
-    
-    if(flag_meat==1){PAF<-(integrant_hr$value-integrant_br$value)/integrant_br$value  #relative change
-    return(PAF)}else
-    {PAF<-(integrant_hr$value-1)/integrant_hr$value
-    return(PAF)}         #serve as a proper PAF
+    int_hr_val <- int_br$value
+ 
+    if(flag_meat==1){
+      PAF<-(int_hr_val)/int_br_val  #relative change
+      return(PAF)
+    }else{
+      PAF<-(int_hr_val-1)/int_hr_val
+      return(PAF)
+    }         #serve as a proper PAF
   }
-  
 }
 
 # PAF of omega n-3
+if(F){
+  Intake_br <- Intake_bs_omega
+  Intake_hr <- Intake_hr_omega
+  age <- 10
+  omega_N_raw_2019 <- omega_N_raw_2019
+  omega_n3_RR <- omega_n3_RR
+  flag_omega <- 1
+}
 
-omega_n3_PAF <- function(Intake_br,intake_hr,age,omega_N_raw_2019,omega_n3_RR,flag_omega)
-{
+# PAF = population attributable factor
+omega_n3_PAF <- function(Intake_br, Intake_hr, age, omega_N_raw_2019, omega_n3_RR, flag_omega){
   # If..
   if(age==5|age==6 | age==7| age==8| age==9){
     
@@ -342,21 +458,29 @@ omega_n3_PAF <- function(Intake_br,intake_hr,age,omega_N_raw_2019,omega_n3_RR,fl
     
     # Else..    
   }else{
-    agepaste<-paste("age",as.character(age),sep="")
-    y<-omega_N_raw_2019[ , grepl( agepaste , names( omega_N_raw_2019 ) ) ]
-    lowest_risk<-last(y)
+    agepaste <- paste("age", as.character(age), sep="")
+    y <- omega_N_raw_2019[ , grepl( agepaste , names( omega_N_raw_2019 ) ) ]
+    lowest_risk <- last(y)
     
-    integrant_br<-function(x){Intake_br(x)*omega_n3_RR(x,age,omega_N_raw_2019)}
-    int_br<-(integrate(integrant_br,lower=-Inf,upper=Inf))
+    integrant_br <- function(x){Intake_br(x)*omega_n3_RR(x,age,omega_N_raw_2019)}
+    int_br <- (integrate(integrant_br,lower=-Inf,upper=Inf)) 
+    int_br_val <- int_br$value
     
-    integrant_hr<-function(x){Intake_hr(x)*omega_n3_RR(x,age,omega_N_raw_2019)}
-    int_hr<-(integrate(integrant_hr,lower=-Inf,upper=Inf))
-    if(flag_omega==1){PAF<-(integrant_hr$value-integrant_br$value)/integrant_br$value  #relative change
-    return(PAF)}else
-    {PAF<-(integrant_h$valuer-lowest_risk)/integrant_hr$value
-    return(PAF)}
+    integrant_hr <- function(x){Intake_hr(x)*omega_n3_RR(x,age,omega_N_raw_2019)}
+    int_hr <-(integrate(integrant_hr,lower=-Inf,upper=Inf))
+    int_hr_val <- int_hr$value
+    
+    if(flag_omega==1){
+      # PAF <- (integrant_hr)/integrant_br  # Alon's computer
+      PAF <- (int_hr_val)/int_br_val  # Chris's computer
+      return(PAF)
+    }else{
+      # PAF<- (integrant_hr-lowest_risk)/integrant_hr # Alon's computer
+      PAF <- (int_hr_val-lowest_risk) / int_hr_val
+      return(PAF)
+    }
   }        #serve as a proper PAF
-  
+
 }
 
 

@@ -9,12 +9,12 @@ rm(list = ls())
 library(tidyverse)
 
 # Directories (outside repository) -- Alon's computer
-# ihmedir1 <- "d:/Dropbox (Personal)/Dropbox (Personal)/Nutrient Gaps/Health Benefits calculations/Data/IHME/" # Alon's computer
-# ihmedir3 <- "d:/Dropbox (Personal)/Dropbox (Personal)/Nutrient Gaps/Health Benefits calculations/Data/IHME3/" # Alon's computer
+# ihmedir1 <- "d:/Dropbox (Personal)/Dropbox (Personal)/Nutrient Gaps/Health Benefits calculations/Data/IHME/" 
+# ihmedir3 <- "d:/Dropbox (Personal)/Dropbox (Personal)/Nutrient Gaps/Health Benefits calculations/Data/IHME3/" 
 
 # Directories (outside repository) -- Chris's computer
-ihmedir1 <- "/Users/cfree/Dropbox/BFA Data/IHME" # Chris's computer
-ihmedir3 <- "/Users/cfree/Dropbox/BFA Data/IHME3" # Chris's computer
+ihmedir1 <- "/Users/cfree/Dropbox/BFA Data/IHME" 
+ihmedir3 <- "/Users/cfree/Dropbox/BFA Data/IHME3" 
 
 # Directories (in repository)
 outputdir <- "output"

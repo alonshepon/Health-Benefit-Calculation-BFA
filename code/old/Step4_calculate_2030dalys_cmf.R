@@ -7,17 +7,8 @@
 rm(list = ls())
 
 # Packages
+library(tidyverse)
 library(countrycode)
-library(tidyverse)
-library(dosresmeta)
-library(rms)
-library(openxlsx)
-library(dbplyr)
-library(tidyverse)
-library(MASS)
-library(ggplot2)
-library(fitdistrplus)
-library(Hmisc)
 
 # Directories (outside repo)
 mypath <- "output" # Chris Free's computer
@@ -54,7 +45,7 @@ dists_meat <- readRDS(file=file.path("data/cosimo/processed/COSIMO_2010_2030_cou
 sdi_key <- read.csv(file=file.path(outputdir, "sdi_key.csv"), as.is=T)
 
 # Source helpher functions
-source("code/RR_functions.R")
+source("code/RR_functions_cmf.R")
 
 
 # Build data
