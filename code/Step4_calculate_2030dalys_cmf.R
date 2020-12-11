@@ -35,7 +35,7 @@ omega_N_raw_2019 <- readxl::read_excel('code/omega_RR_2019.xlsx')
 red_meat_raw_2019 <- readxl::read_excel('code/meat_RR_2019.xlsx')
 EAR_requirements <- readxl::read_excel('code/EAR_requirements_GBDgroups.xlsx')
 
-# Read distributions
+# Read distributions (micronutrients)
 dists <- readRDS(file.path("data/cosimo/processed/COSIMO_2010_2030_country_nutrient_age_sex_means_and_distributions.Rds"))
 
 # Read SDI key
@@ -160,8 +160,8 @@ dists2030 <- dists %>%
                        "75-79"="20",
                        "80-84"="30",
                        "85-89"="31",
-                       "90-95"="32",
-                       "90-95"="33") %>% as.numeric()) %>% 
+                       "90-94"="32",
+                       "95-99"="33") %>% as.numeric()) %>% 
   select(-c(sex, age_group))
 
 
@@ -328,7 +328,7 @@ sev_mn_final <- data_sev_mn %>%
 write.csv(sev_mn_final, file=file.path("2030_sevs_base_high_road_micronutrients.csv"), row.names=F)
 
 
-# Calculate changes in summary exposure values (SEVs) -- micronutrients
+# Calculate changes in summary exposure values (SEVs) -- omega-3 fatty acids
 ##########################################################################################
 
 # Build data required for micronutrient SEV calculations
@@ -401,6 +401,7 @@ write.csv(sev_omega_final, file=file.path("2030_sevs_base_high_road_omega3s.csv"
 
 # Calculate changes in summary exposure values (SEVs) -- red meat
 ##########################################################################################
+
 
 
 
