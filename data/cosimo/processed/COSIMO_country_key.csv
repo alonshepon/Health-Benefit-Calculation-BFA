@@ -1,191 +1,191 @@
-"country_id","iso3","country"
-1,"ARM","Armenia"
-2,"AFG","Afghanistan"
-3,"ALB","Albania"
-4,"DZA","Algeria"
-7,"AGO","Angola"
-8,"ATG","Antigua & Barbuda"
-9,"ARG","Argentina"
-10,"AUS","Australia"
-11,"AUT","Austria"
-12,"BHS","Bahamas"
-14,"BRB","Barbados"
-15,"BLX","Belgium-Luxembourg"
-16,"BGD","Bangladesh"
-17,"BMU","Bermuda"
-19,"BOL","Bolivia"
-20,"BWA","Botswana"
-21,"BRA","Brazil"
-23,"BLZ","Belize"
-25,"SLB","Solomon Islands"
-26,"BRN","Brunei"
-27,"BGR","Bulgaria"
-28,"MMR","Myanmar (Burma)"
-29,"BDI","Burundi"
-32,"CMR","Cameroon"
-33,"CAN","Canada"
-35,"CPV","Cape Verde"
-37,"CAF","Central African Republic"
-38,"LKA","Sri Lanka"
-39,"TCD","Chad"
-40,"CHL","Chile"
-41,"CHN","China"
-44,"COL","Colombia"
-45,"COM","Comoros"
-46,"COG","Congo - Brazzaville"
-48,"CRI","Costa Rica"
-49,"CUB","Cuba"
-50,"CYP","Cyprus"
-51,"CZ2","Czechoslovakia"
-52,"AZE","Azerbaijan"
-53,"BEN","Benin"
-54,"DNK","Denmark"
-55,"DMA","Dominica"
-56,"DOM","Dominican Republic"
-57,"BLR","Belarus"
-58,"ECU","Ecuador"
-59,"EGY","Egypt"
-60,"SLV","El Salvador"
-62,"ET2","Ethiopia PDR"
-63,"EST","Estonia"
-66,"FJI","Fiji"
-67,"FIN","Finland"
-68,"FRA","France"
-70,"PYF","French Polynesia"
-72,"DJI","Djibouti"
-73,"GEO","Georgia"
-74,"GAB","Gabon"
-75,"GMB","Gambia"
-79,"DEU","Germany"
-80,"BIH","Bosnia & Herzegovina"
-81,"GHA","Ghana"
-83,"KIR","Kiribati"
-84,"GRC","Greece"
-86,"GRD","Grenada"
-89,"GTM","Guatemala"
-90,"GIN","Guinea"
-91,"GUY","Guyana"
-93,"HTI","Haiti"
-95,"HND","Honduras"
-96,"HKG","Hong Kong SAR China"
-97,"HUN","Hungary"
-98,"HRV","Croatia"
-99,"ISL","Iceland"
-100,"IND","India"
-101,"IDN","Indonesia"
-102,"IRN","Iran"
-103,"IRQ","Iraq"
-104,"IRL","Ireland"
-105,"ISR","Israel"
-106,"ITA","Italy"
-107,"CIV","Côte d’Ivoire"
-108,"KAZ","Kazakhstan"
-109,"JAM","Jamaica"
-110,"JPN","Japan"
-112,"JOR","Jordan"
-113,"KGZ","Kyrgyzstan"
-114,"KEN","Kenya"
-115,"KHM","Cambodia"
-116,"PRK","North Korea"
-117,"KOR","South Korea"
-118,"KWT","Kuwait"
-119,"LVA","Latvia"
-120,"LAO","Laos"
-121,"LBN","Lebanon"
-122,"LSO","Lesotho"
-123,"LBR","Liberia"
-124,"LBY","Libya"
-126,"LTU","Lithuania"
-128,"MAC","Macau SAR China"
-129,"MDG","Madagascar"
-130,"MWI","Malawi"
-131,"MYS","Malaysia"
-132,"MDV","Maldives"
-133,"MLI","Mali"
-134,"MLT","Malta"
-136,"MRT","Mauritania"
-137,"MUS","Mauritius"
-138,"MEX","Mexico"
-141,"MNG","Mongolia"
-143,"MAR","Morocco"
-144,"MOZ","Mozambique"
-146,"MDA","Moldova"
-147,"NAM","Namibia"
-149,"NPL","Nepal"
-150,"NLD","Netherlands"
-151,"ANT","Netherlands Antilles"
-153,"NCL","New Caledonia"
-154,"MKD","Macedonia"
-155,"VUT","Vanuatu"
-156,"NZL","New Zealand"
-157,"NIC","Nicaragua"
-158,"NER","Niger"
-159,"NGA","Nigeria"
-162,"NOR","Norway"
-165,"PAK","Pakistan"
-166,"PAN","Panama"
-167,"CZE","Czechia"
-168,"PNG","Papua New Guinea"
-169,"PRY","Paraguay"
-170,"PER","Peru"
-171,"PHL","Philippines"
-173,"POL","Poland"
-174,"PRT","Portugal"
-175,"GNB","Guinea-Bissau"
-176,"TLS","Timor-Leste"
-181,"ZWE","Zimbabwe"
-183,"ROU","Romania"
-184,"RWA","Rwanda"
-185,"RUS","Russia"
-186,"SRM","Serbia and Montenegro"
-188,"KNA","St. Kitts & Nevis"
-189,"LCA","St. Lucia"
-191,"VCT","St. Vincent & Grenadines"
-193,"STP","São Tomé & Príncipe"
-194,"SAU","Saudi Arabia"
-195,"SEN","Senegal"
-196,"SYC","Seychelles"
-197,"SLE","Sierra Leone"
-198,"SVN","Slovenia"
-199,"SVK","Slovakia"
-201,"SOM","Somalia"
-202,"ZAF","South Africa"
-203,"ESP","Spain"
-206,"SDN","Sudan"
-207,"SUR","Suriname"
-208,"TJK","Tajikistan"
-209,"SWZ","Swaziland"
-210,"SWE","Sweden"
-211,"CHE","Switzerland"
-212,"SYR","Syria"
-213,"TKM","Turkmenistan"
-214,"TWN","Taiwan"
-215,"TZA","Tanzania"
-216,"THA","Thailand"
-217,"TGO","Togo"
-220,"TTO","Trinidad & Tobago"
-221,"OMN","Oman"
-222,"TUN","Tunisia"
-223,"TUR","Turkey"
-225,"ARE","United Arab Emirates"
-226,"UGA","Uganda"
-228,"USR","USSR"
-229,"GBR","United Kingdom"
-230,"UKR","Ukraine"
-231,"USA","United States"
-233,"BFA","Burkina Faso"
-234,"URY","Uruguay"
-235,"UZB","Uzbekistan"
-236,"VEN","Venezuela"
-237,"VNM","Vietnam"
-238,"ETH","Ethiopia"
-244,"WSM","Samoa"
-248,"YUG","Yugoslav SFR"
-249,"YEM","Yemen"
-250,"COD","Congo - Kinshasa"
-251,"ZMB","Zambia"
-255,"BEL","Belgium"
-256,"LUX","Luxembourg"
-272,"SRB","Serbia"
-273,"MNE","Montenegro"
-299,"PSE","Palestinian Territories"
+"country_id","iso3","country","eu27"
+1,"ARM","Armenia",FALSE
+2,"AFG","Afghanistan",FALSE
+3,"ALB","Albania",FALSE
+4,"DZA","Algeria",FALSE
+7,"AGO","Angola",FALSE
+8,"ATG","Antigua & Barbuda",FALSE
+9,"ARG","Argentina",FALSE
+10,"AUS","Australia",FALSE
+11,"AUT","Austria",TRUE
+12,"BHS","Bahamas",FALSE
+14,"BRB","Barbados",FALSE
+15,"BLX","Belgium-Luxembourg",FALSE
+16,"BGD","Bangladesh",FALSE
+17,"BMU","Bermuda",FALSE
+19,"BOL","Bolivia",FALSE
+20,"BWA","Botswana",FALSE
+21,"BRA","Brazil",FALSE
+23,"BLZ","Belize",FALSE
+25,"SLB","Solomon Islands",FALSE
+26,"BRN","Brunei",FALSE
+27,"BGR","Bulgaria",TRUE
+28,"MMR","Myanmar (Burma)",FALSE
+29,"BDI","Burundi",FALSE
+32,"CMR","Cameroon",FALSE
+33,"CAN","Canada",FALSE
+35,"CPV","Cape Verde",FALSE
+37,"CAF","Central African Republic",FALSE
+38,"LKA","Sri Lanka",FALSE
+39,"TCD","Chad",FALSE
+40,"CHL","Chile",FALSE
+41,"CHN","China",FALSE
+44,"COL","Colombia",FALSE
+45,"COM","Comoros",FALSE
+46,"COG","Congo - Brazzaville",FALSE
+48,"CRI","Costa Rica",FALSE
+49,"CUB","Cuba",FALSE
+50,"CYP","Cyprus",TRUE
+51,"CZ2","Czechoslovakia",FALSE
+52,"AZE","Azerbaijan",FALSE
+53,"BEN","Benin",FALSE
+54,"DNK","Denmark",TRUE
+55,"DMA","Dominica",FALSE
+56,"DOM","Dominican Republic",FALSE
+57,"BLR","Belarus",FALSE
+58,"ECU","Ecuador",FALSE
+59,"EGY","Egypt",FALSE
+60,"SLV","El Salvador",FALSE
+62,"ET2","Ethiopia PDR",FALSE
+63,"EST","Estonia",TRUE
+66,"FJI","Fiji",FALSE
+67,"FIN","Finland",TRUE
+68,"FRA","France",TRUE
+70,"PYF","French Polynesia",FALSE
+72,"DJI","Djibouti",FALSE
+73,"GEO","Georgia",FALSE
+74,"GAB","Gabon",FALSE
+75,"GMB","Gambia",FALSE
+79,"DEU","Germany",TRUE
+80,"BIH","Bosnia & Herzegovina",FALSE
+81,"GHA","Ghana",FALSE
+83,"KIR","Kiribati",FALSE
+84,"GRC","Greece",TRUE
+86,"GRD","Grenada",FALSE
+89,"GTM","Guatemala",FALSE
+90,"GIN","Guinea",FALSE
+91,"GUY","Guyana",FALSE
+93,"HTI","Haiti",FALSE
+95,"HND","Honduras",FALSE
+96,"HKG","Hong Kong SAR China",FALSE
+97,"HUN","Hungary",TRUE
+98,"HRV","Croatia",TRUE
+99,"ISL","Iceland",FALSE
+100,"IND","India",FALSE
+101,"IDN","Indonesia",FALSE
+102,"IRN","Iran",FALSE
+103,"IRQ","Iraq",FALSE
+104,"IRL","Ireland",TRUE
+105,"ISR","Israel",FALSE
+106,"ITA","Italy",TRUE
+107,"CIV","Côte d’Ivoire",FALSE
+108,"KAZ","Kazakhstan",FALSE
+109,"JAM","Jamaica",FALSE
+110,"JPN","Japan",FALSE
+112,"JOR","Jordan",FALSE
+113,"KGZ","Kyrgyzstan",FALSE
+114,"KEN","Kenya",FALSE
+115,"KHM","Cambodia",FALSE
+116,"PRK","North Korea",FALSE
+117,"KOR","South Korea",FALSE
+118,"KWT","Kuwait",FALSE
+119,"LVA","Latvia",TRUE
+120,"LAO","Laos",FALSE
+121,"LBN","Lebanon",FALSE
+122,"LSO","Lesotho",FALSE
+123,"LBR","Liberia",FALSE
+124,"LBY","Libya",FALSE
+126,"LTU","Lithuania",TRUE
+128,"MAC","Macau SAR China",FALSE
+129,"MDG","Madagascar",FALSE
+130,"MWI","Malawi",FALSE
+131,"MYS","Malaysia",FALSE
+132,"MDV","Maldives",FALSE
+133,"MLI","Mali",FALSE
+134,"MLT","Malta",TRUE
+136,"MRT","Mauritania",FALSE
+137,"MUS","Mauritius",FALSE
+138,"MEX","Mexico",FALSE
+141,"MNG","Mongolia",FALSE
+143,"MAR","Morocco",FALSE
+144,"MOZ","Mozambique",FALSE
+146,"MDA","Moldova",FALSE
+147,"NAM","Namibia",FALSE
+149,"NPL","Nepal",FALSE
+150,"NLD","Netherlands",TRUE
+151,"ANT","Netherlands Antilles",FALSE
+153,"NCL","New Caledonia",FALSE
+154,"MKD","Macedonia",FALSE
+155,"VUT","Vanuatu",FALSE
+156,"NZL","New Zealand",FALSE
+157,"NIC","Nicaragua",FALSE
+158,"NER","Niger",FALSE
+159,"NGA","Nigeria",FALSE
+162,"NOR","Norway",FALSE
+165,"PAK","Pakistan",FALSE
+166,"PAN","Panama",FALSE
+167,"CZE","Czechia",TRUE
+168,"PNG","Papua New Guinea",FALSE
+169,"PRY","Paraguay",FALSE
+170,"PER","Peru",FALSE
+171,"PHL","Philippines",FALSE
+173,"POL","Poland",TRUE
+174,"PRT","Portugal",TRUE
+175,"GNB","Guinea-Bissau",FALSE
+176,"TLS","Timor-Leste",FALSE
+181,"ZWE","Zimbabwe",FALSE
+183,"ROU","Romania",TRUE
+184,"RWA","Rwanda",FALSE
+185,"RUS","Russia",FALSE
+186,"SRM","Serbia and Montenegro",FALSE
+188,"KNA","St. Kitts & Nevis",FALSE
+189,"LCA","St. Lucia",FALSE
+191,"VCT","St. Vincent & Grenadines",FALSE
+193,"STP","São Tomé & Príncipe",FALSE
+194,"SAU","Saudi Arabia",FALSE
+195,"SEN","Senegal",FALSE
+196,"SYC","Seychelles",FALSE
+197,"SLE","Sierra Leone",FALSE
+198,"SVN","Slovenia",TRUE
+199,"SVK","Slovakia",TRUE
+201,"SOM","Somalia",FALSE
+202,"ZAF","South Africa",FALSE
+203,"ESP","Spain",TRUE
+206,"SDN","Sudan",FALSE
+207,"SUR","Suriname",FALSE
+208,"TJK","Tajikistan",FALSE
+209,"SWZ","Swaziland",FALSE
+210,"SWE","Sweden",TRUE
+211,"CHE","Switzerland",FALSE
+212,"SYR","Syria",FALSE
+213,"TKM","Turkmenistan",FALSE
+214,"TWN","Taiwan",FALSE
+215,"TZA","Tanzania",FALSE
+216,"THA","Thailand",FALSE
+217,"TGO","Togo",FALSE
+220,"TTO","Trinidad & Tobago",FALSE
+221,"OMN","Oman",FALSE
+222,"TUN","Tunisia",FALSE
+223,"TUR","Turkey",FALSE
+225,"ARE","United Arab Emirates",FALSE
+226,"UGA","Uganda",FALSE
+228,"USR","USSR",FALSE
+229,"GBR","United Kingdom",FALSE
+230,"UKR","Ukraine",FALSE
+231,"USA","United States",FALSE
+233,"BFA","Burkina Faso",FALSE
+234,"URY","Uruguay",FALSE
+235,"UZB","Uzbekistan",FALSE
+236,"VEN","Venezuela",FALSE
+237,"VNM","Vietnam",FALSE
+238,"ETH","Ethiopia",FALSE
+244,"WSM","Samoa",FALSE
+248,"YUG","Yugoslav SFR",FALSE
+249,"YEM","Yemen",FALSE
+250,"COD","Congo - Kinshasa",FALSE
+251,"ZMB","Zambia",FALSE
+255,"BEL","Belgium",TRUE
+256,"LUX","Luxembourg",TRUE
+272,"SRB","Serbia",FALSE
+273,"MNE","Montenegro",FALSE
+299,"PSE","Palestinian Territories",FALSE

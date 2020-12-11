@@ -220,10 +220,13 @@ data1_eu_use <- purrr::map_df(1:nrow(e27_do), function(x) {
 data2 <- bind_rows(data1_no_eu, data1_eu_use) %>% 
   arrange(country, food, nutrient, year)
 
+# Country key for export
 cntry_key_out <- data2 %>% 
   select(country_id, iso3, country) %>% 
   unique() %>% 
-  arrange(country_id)
+  arrange(country_id) %>% 
+  # Mark whether in EU27
+  left_join(cntry_key %>% select(country_id, eu27))
 
 # Export data
 ###########################################
