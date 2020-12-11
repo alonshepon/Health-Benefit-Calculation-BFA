@@ -4,5 +4,6 @@
 .Ruserdata
 
 # Ignore large files folder
-output
+output/my_data.rds
+output/my_meat_data.rds
 data/intakes/processed/
