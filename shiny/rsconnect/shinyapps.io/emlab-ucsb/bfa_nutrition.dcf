@@ -1,0 +1,12 @@
+name: bfa_nutrition
+title: bfa_nutrition
+username:
+account: emlab-ucsb
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 3390596
+bundleId: 3977598
+url: https://emlab-ucsb.shinyapps.io/bfa_nutrition/
+when: 1607733405.28594
+asMultiple: FALSE
+asStatic: FALSE

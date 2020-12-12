@@ -331,7 +331,6 @@ red_meat_PAF <- function(Intake_br,intake_hr,age,meat_outcome, red_meat_2019,red
 }
 
 # PAF of omega n-3
-
 omega_n3_PAF <- function(Intake_br,intake_hr,age,omega_N_raw_2019,omega_n3_RR,flag_omega)
 {
   # If..

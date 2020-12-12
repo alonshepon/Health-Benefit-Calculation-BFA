@@ -56,8 +56,9 @@ dists <- readRDS(file.path("data/cosimo/processed/COSIMO_2010_2030_country_nutri
 # Read distributions (red meat)
 dists_meat <- readRDS(file=file.path("data/cosimo/processed/COSIMO_2010_2030_country_red_meat_age_sex_means_and_distributions.Rds"))
 
-# Read SDI key
-sdi_key <- read.csv(file=file.path(outputdir, "sdi_key.csv"), as.is=T)
+# Read HDI/SDI key
+sdi_hdi_key <- readRDS("data/cosimo/processed/COSIMO_country_key_with_SDI_HDI_info.rds") %>% 
+  select(iso3, sdi, sdi_group, hdi)
 
 # Source helpher functions
 source("code/RR_functions.R")
@@ -180,8 +181,6 @@ inter$value
 
 # Merge data
 dists2030 <- dists %>% 
-  # Remove incomplete data (fix later)
-  filter(!is.na(g_shape)) %>% 
   # Reduce to 2030
   filter(year==2030) %>% 
   # Simplify 
@@ -217,8 +216,6 @@ dists2030 <- dists %>%
 
 # Merge data
 dists2030_meat <- dists_meat %>% 
-  # Remove incomplete data (fix later)
-  filter(!is.na(g_shape)) %>% 
   # Reduce to 2030
   filter(year==2030) %>% 
   # Simplify 
@@ -265,11 +262,9 @@ data_sev_mn <- dists2030 %>%
   # Reduce to nutrients of interest
   filter(nutrient %in% nutr_sevs) %>% 
   # Add SDI group
-  left_join(sdi_key, by=c("country"="location")) %>% 
+  left_join(sdi_hdi_key, by=c("iso3")) %>% 
   # Reduce to age groups with required data
-  filter(age_id>=5) %>% 
-  # Reduce to rows with the required SEV ingredients: SDI group
-  filter(!is.na(sdi_group) & !is.na(g_shape)) 
+  filter(age_id>=5)
 
 # Loop through micronutrients to calculate SEVs for
 x <- 1
@@ -352,9 +347,7 @@ data_sev_omega <- dists2030 %>%
   # Reduce to nutrients of interest
   filter(nutrient %in% "Omega-3 fatty acids") %>% 
   # Reduce to age groups with required data
-  filter(age_id>=10) %>%
-  # Reduce to rows with the required SEV ingredients: SDI group
-  filter(!is.na(g_shape))
+  filter(age_id>=10)
 
 # Loop through micronutrients to calculate SEVs for
 x <- 1
@@ -430,9 +423,7 @@ write.csv(sev_omega_final, file=file.path(outputdir, "2030_sevs_base_high_road_o
 # Build data required for micronutrient SEV calculations
 data_sev_meat <- dists2030_meat %>% 
   # Reduce to age groups with required data
-  filter(age_id>=10) %>%
-  # Reduce to rows with the required SEV ingredients: SDI group
-  filter(!is.na(g_shape))
+  filter(age_id>=10)
 
 # Loop through
 for(x in 1:nrow(data_sev_meat)){

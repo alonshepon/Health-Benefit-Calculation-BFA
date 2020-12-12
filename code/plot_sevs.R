@@ -53,6 +53,12 @@ data <- bind_rows(sevs_mn, sevs_omega, sevs_meat) %>%
   select(nutrient, country, iso3, sex_id, sex, age_id, age_group, everything())
 
 
+# Check completeness
+################################################################################
+
+
+
+
 
 # Build data
 ################################################################################
