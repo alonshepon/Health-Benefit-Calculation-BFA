@@ -23,6 +23,7 @@ sapply(list.files(codedir), function(x) source(file.path(codedir, x)))
 # Read data
 food <- readRDS(file.path(datadir, "COSIMO_2010_2030_food_by_scenario_cntry.Rds"))
 nutrients <- readRDS(file.path(datadir, "COSIMO_2010_2030_nutr_by_scenario_cntry_food.rds"))
+sevs <- readRDS(file.path(datadir, "2030_sevs_base_high_road_final.Rds"))
 
 
 # Parameters
@@ -85,7 +86,15 @@ ui <- fluidPage(
   
   # Summary exposure values
   h4("Summary Exposure Values (SEVs)"), 
-  p(""),
+  
+  # SEV raw values
+  p("The summary exposure values (SEV) is a measure of a population’s exposure to a risk factor that takes into account the extent of exposure by risk level and the severity of that risk’s contribution to disease burden. A value of 0 indicates no risk and a value of 100 indicates the highest level of risk."),
+  plotOutput(outputId = "plot_sevs", width=1000, height=800),
+  br(),
+  
+  # SEV difference
+  p("The figure below illustrates the change in SEVs for a population under the high road scenario relative to the baseline. A difference less than zero indidates that diets under the high road scenario lowered risk. A difference greater than zero indicates that diets under the high road scenario increased risk."),
+  plotOutput(outputId = "plot_sevs_diff", width=1000, height=800),
   br(),
   
   # DALYs
@@ -123,6 +132,18 @@ server <- function(input, output){
   # Plot food over time (relative difference)
   output$plot_nutrients_over_time_diff <- renderPlot({
     g <- plot_nutrients_over_time_diff(data=nutrients, country=input$country, base_theme=base_theme)
+    g
+  })
+  
+  # Plot SEVs
+  output$plot_sevs <- renderPlot({
+    g <- plot_sevs(data=sevs, country=input$country, base_theme=base_theme)
+    g
+  })
+  
+  # Plot SEVs
+  output$plot_sevs_diff <- renderPlot({
+    g <- plot_sevs_diff(data=sevs, country=input$country, base_theme=base_theme)
     g
   })
   

@@ -19,31 +19,16 @@ library(ggplot2)
 library(fitdistrplus)
 library(Hmisc)
 
-# Directories (outside repository) -- Alon's computer
-# mypath<-"d:/Dropbox (Personal)/Dropbox (Personal)/Nutrient Gaps/Health Benefits calculations/code/Health Benefit claculation BFA/Health-Benefit-Calculation-BFA - Copy/"
-# ihmedir3 <- "d:/Dropbox (Personal)/Dropbox (Personal)/Nutrient Gaps/Health Benefits calculations/Data/IHME3/" # Alon's computer
-
-# Directories (outside repository) -- Chris's computer
-mypath <- "output"
-ihmedir3 <- "/Users/cfree/Dropbox/BFA Data/IHME3" 
-
 # Directories (in repository)
 outputdir <- "output"
 plotdir <- "figures"
 codedir <- "code"
 
 # Read DALYs data
-# dalys_fishANDmeat_orig <- readRDS(file.path(ihmedir, "my_data.rds")) # Alon's computer
-dalys_fishANDmeat_orig <- readRDS(file.path(outputdir, "my_data.rds")) # Chris's computer
+dalys_fishANDmeat_orig <- readRDS(file.path(outputdir, "my_data.rds"))
 
 # Read population data
-# pop_orig <- readRDS(file.path(ihmedir, "population_all.rds")) # Alon's computer
-pop_orig <- readRDS(file.path(outputdir, "population_all.rds")) # Chris's computer
-
-# Read other data -- Alon's computer
-# omega_N_raw_2019 <- read.xlsx('d:/Dropbox (Personal)/Dropbox (Personal)/Nutrient Gaps/Health Benefits calculations/code/Health Benefit claculation BFA/Health-Benefit-Calculation-BFA/Health-Benefit-Calculation-BFA/code/omega_RR_2019.xlsx')
-# red_meat_2019 <- read.xlsx('d:/Dropbox (Personal)/Dropbox (Personal)/Nutrient Gaps/Health Benefits calculations/code/Health Benefit claculation BFA/Health-Benefit-Calculation-BFA/Health-Benefit-Calculation-BFA/code/meat_RR_2019.xlsx')
-# EAR_requirements <- read.xlsx('d:/Dropbox (Personal)/Dropbox (Personal)/Nutrient Gaps/Health Benefits calculations/Data/EAR/EAR_requirements_GBDgroups.xlsx')
+pop_orig <- readRDS(file.path(outputdir, "population_all.rds"))
 
 # Read other data (in repository)
 omega_N_raw_2019 <- read.xlsx('data/omega_RR_2019.xlsx')
@@ -495,54 +480,44 @@ write.csv(sev_meat_final, file=file.path(outputdir, "2030_sevs_base_high_road_me
 
 
 
-
-
-
-
-
-
-# Old approach
+# Calculate DALYs
 #####################################################################################
 
-# 
-# ##-----------------calculate PAF for fish and meat separately for all the outcomes by age-sex-country
-# 
-# source('d:/Dropbox (Personal)/Dropbox (Personal)/Nutrient Gaps/Health Benefits calculations/code/Health Benefit claculation BFA/Health-Benefit-Calculation-BFA/Health-Benefit-Calculation-BFA/code/NEW_RR_functions.R')
-# #do not forget to integrate intakes of meat, omega n-3, and micronutrients per age-sex-location to tog data.frame
-# 
-# DALYs1<-dalys_fishANDmeat %>%  
-#   #step 1: For ischemic heart disease (which include omega n-3 and meat) For each age-sex-location:
-#   filter(cause==493) %>% #ischematic heart disease 
-#   #for omega
-#   mutate(DALY2030_omega<-omega_n3_PAF(Intake_bs_omega,intake_hr_omega,age,omega_N_raw_2019,omega_n3_RR,0)*DALY2030) %>%
-#   #for meat
-#   mutate(DALY2030_red_meat<-red_meat_PAF(Intake_bs_meat,intake_hr_meat,age,cause,red_meat_raw_2019,red_meat_RR,0)*DALY2030) %>%
-#   #add while taking overlap into consideration using Joint_PAF=1-(1-PAF1)(1-PAF2)      where PAF1 is the population attributable factor for meat, and PAF2 - for omega n-3
-#   mutate(DALY2030_all=(1-(1-red_meat_PAF(Intake_bs_meat,intake_hr_meat,age,cause,red_meat_raw_2019,red_meat_RR,0)
-#                              *(1-omega_n3_PAF(Intake_bs_omega,intake_hr_omega,age,omega_N_raw_2019,omega_n3_RR,0))))*(DALY2030_red_meat+DALY2030_omega))%>%
-#   
-#   
-#   filter(cause %in% cause_meat_no_ischemic)  %>% #all other causes of meat
-#   #for meat
-#   mutate(DALY2030_all<-red_meat_PAF(Intake_bs_meat,intake_hr_meat,age,cause,red_meat_raw_2019,red_meat_RR,0)*DALY2030)  %>%
-#   
-#   
-#   ##------------calculate DALYs for high road (hr) scenario
-#   ## PAF* when flag of PAF function (last entry) is set to 1; otherwise its regular PAF
-#   
-#   #step 1: For ischemic heart disease (which include omega n-3 and meat) For each age-sex-location:
-#   filter(cause==493) %>% #ischematic heart disease 
-#   mutate(deltaDALY2030_all_hr=(1-(1-red_meat_PAF(Intake_bs_meat,intake_hr_meat,age,cause,red_meat_raw_2019,red_meat_RR,1)
-#                           *(1-omega_n3_PAF(Intake_bs_omega,intake_hr_omega,age,omega_N_raw_2019,omega_n3_RR,1))))*(DALY2030_all),
-#          DALY2030_all_hr=deltaDALY2030_all_hr+DALY2030_all)%>%
-#   
-#   #step 2: For all other meat DALYs (except ischemic heart disease) perform per each age-sex-location-outcome
-#   filter(cause %in% cause_meat_no_ischemic)  %>% #all other causes of meat
-#   #for meat
-#   mutate(deltaDALY2030_all_hr<-red_meat_PAF(Intake_bs_meat,intake_hr_meat,age,cause,red_meat_raw_2019,red_meat_RR,1)*DALY2030_all,
-#          DALY2030_all_hr=deltaDALY2030_all_hr+DALY2030_all) %>%
-#   #sum all DALYS of all outcomes
-#   group_by(location_name,age,sex) %>%summarize(DALY2030_br=sum(DALY2030_all,na.rm = TRUE),DALY2030_hr=sum(DALY2030_all_hr,na.rm = TRUE))
-# 
-# 
-# 
+if(F){
+
+  DALYs1<-dalys_fishANDmeat %>%
+    #step 1: For ischemic heart disease (which include omega n-3 and meat) For each age-sex-location:
+    filter(cause==493) %>% #ischematic heart disease
+    #for omega
+    mutate(DALY2030_omega<-omega_n3_PAF(Intake_bs_omega,intake_hr_omega,age,omega_N_raw_2019,omega_n3_RR,0)*DALY2030) %>%
+    #for meat
+    mutate(DALY2030_red_meat<-red_meat_PAF(Intake_bs_meat,intake_hr_meat,age,cause,red_meat_raw_2019,red_meat_RR,0)*DALY2030) %>%
+    #add while taking overlap into consideration using Joint_PAF=1-(1-PAF1)(1-PAF2)      where PAF1 is the population attributable factor for meat, and PAF2 - for omega n-3
+    mutate(DALY2030_all=(1-(1-red_meat_PAF(Intake_bs_meat,intake_hr_meat,age,cause,red_meat_raw_2019,red_meat_RR,0)
+                               *(1-omega_n3_PAF(Intake_bs_omega,intake_hr_omega,age,omega_N_raw_2019,omega_n3_RR,0))))*(DALY2030_red_meat+DALY2030_omega))%>%
+  
+  
+    filter(cause %in% cause_meat_no_ischemic)  %>% #all other causes of meat
+    #for meat
+    mutate(DALY2030_all<-red_meat_PAF(Intake_bs_meat,intake_hr_meat,age,cause,red_meat_raw_2019,red_meat_RR,0)*DALY2030)  %>%
+  
+  
+    ##------------calculate DALYs for high road (hr) scenario
+    ## PAF* when flag of PAF function (last entry) is set to 1; otherwise its regular PAF
+  
+    #step 1: For ischemic heart disease (which include omega n-3 and meat) For each age-sex-location:
+    filter(cause==493) %>% #ischematic heart disease
+    mutate(deltaDALY2030_all_hr=(1-(1-red_meat_PAF(Intake_bs_meat,intake_hr_meat,age,cause,red_meat_raw_2019,red_meat_RR,1)
+                            *(1-omega_n3_PAF(Intake_bs_omega,intake_hr_omega,age,omega_N_raw_2019,omega_n3_RR,1))))*(DALY2030_all),
+           DALY2030_all_hr=deltaDALY2030_all_hr+DALY2030_all)%>%
+  
+    #step 2: For all other meat DALYs (except ischemic heart disease) perform per each age-sex-location-outcome
+    filter(cause %in% cause_meat_no_ischemic)  %>% #all other causes of meat
+    #for meat
+    mutate(deltaDALY2030_all_hr<-red_meat_PAF(Intake_bs_meat,intake_hr_meat,age,cause,red_meat_raw_2019,red_meat_RR,1)*DALY2030_all,
+           DALY2030_all_hr=deltaDALY2030_all_hr+DALY2030_all) %>%
+    #sum all DALYS of all outcomes
+    group_by(location_name,age,sex) %>%summarize(DALY2030_br=sum(DALY2030_all,na.rm = TRUE),DALY2030_hr=sum(DALY2030_all_hr,na.rm = TRUE))
+
+}
+
