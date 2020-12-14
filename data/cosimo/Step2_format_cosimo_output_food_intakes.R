@@ -150,8 +150,9 @@ food_eu_use <- purrr::map_df(1:nrow(e27_do), function(x) {
 
 # Merge EU-expanded and non-EU data
 food <- bind_rows(food_no_eu, food_eu_use) %>% 
+  # Add corrected country
+  mutate(country=countrycode(iso3, "iso3c", "country.name")) %>% 
   arrange(country, food, year)
-
 
 # Export
 ################################################################################

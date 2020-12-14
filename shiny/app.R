@@ -25,7 +25,11 @@ food <- readRDS(file.path(datadir, "COSIMO_2010_2030_food_by_scenario_cntry.Rds"
 nutrients <- readRDS(file.path(datadir, "COSIMO_2010_2030_nutr_by_scenario_cntry_food.rds"))
 sevs <- readRDS(file.path(datadir, "2030_sevs_base_high_road_final.Rds"))
 nutr_dists <- readRDS(file.path(datadir, "COSIMO2030_country_nutrient_age_sex_means_and_distributions.Rds"))
-ears <- readRDS(file.path(datadir, "ears.Rds"))
+
+# Read EARS and reduce to nutrients in COSIMO output
+ears <- readRDS(file.path(datadir, "ears.Rds")) %>% 
+  filter(nutrient %in% unique(nutr_dists$nutrient) & nutrient !="Protein")
+
 
 # Parameters
 ################################################################################
@@ -89,7 +93,7 @@ ui <- fluidPage(
   h4("Subnational intake distributions"), 
   
   # Group means
-  p("This shows subnational intake distributions in 2030 under the baseline and high road scenarios. The subnational distributions were derived from the COSIMO country-level mean and GENUS and SPADE derived scalars for determining the subnational group means."),
+  p("This shows subnational intake distributions in 2030 under the baseline and high road scenarios. The subnational distributions were derived from the COSIMO country-level mean and GENUS and SPADE derived scalars for determining the subnational group means. The lines show the EARS overlaid on top of the distributions."),
   plotOutput(outputId = "plot_subnational_nutr_dist_means", width=700, height=1400),
   br(),
   

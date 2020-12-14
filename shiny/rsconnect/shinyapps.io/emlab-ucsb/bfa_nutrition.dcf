@@ -5,8 +5,8 @@ account: emlab-ucsb
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 3390596
-bundleId: 3988072
+bundleId: 3988604
 url: https://emlab-ucsb.shinyapps.io/bfa_nutrition/
-when: 1607968592.76666
+when: 1607976036.05087
 asMultiple: FALSE
 asStatic: FALSE

@@ -240,7 +240,7 @@ dists2030_meat <- dists_meat %>%
 ##########################################################################################
 
 # Nutrients to calculate SEVS for
-nutr_sevs <- c("Zinc", "Iron", "Calcium", "Vitamin A")
+nutr_sevs <- c("Zinc", "Iron", "Calcium", "Vitamin A, RAE")
 
 # Build data required for micronutrient SEV calculations
 data_sev_mn <- dists2030 %>% 
@@ -252,7 +252,7 @@ data_sev_mn <- dists2030 %>%
   filter(age_id>=5)
 
 # Loop through micronutrients to calculate SEVs for
-x <- 1
+x <- 91
 # sevs_micronutrients <- purrr::map_df(1:nrow(data_sev_mn), function(x){
 for(x in 1:nrow(data_sev_mn)){
   
@@ -267,7 +267,7 @@ for(x in 1:nrow(data_sev_mn)){
   best_dist <- data_sev_mn$best_dist[x]
   
   # Rename nutrient
-  if(nutr_do=="Vitamin A"){nutr_do <- "VitA"}
+  if(nutr_do=="Vitamin A, RAE"){nutr_do <- "VitA"}
   
   # If gamma distribution....
   if(best_dist=="gamma"){
@@ -404,6 +404,8 @@ write.csv(sev_omega_final, file=file.path(outputdir, "2030_sevs_base_high_road_o
 
 # Calculate changes in summary exposure values (SEVs) -- red meat
 ##########################################################################################
+
+# CHANGE TO CALCULATE FOR EACH CAUSE AND AVERAGE
 
 # Build data required for micronutrient SEV calculations
 data_sev_meat <- dists2030_meat %>% 
@@ -605,7 +607,7 @@ for(i in 1:nrow(dalys)){
   
   # DALY combinbed
   
-  DALY2030_red_meat <- (1-(1-DALY2030_red_meat1 * (1-DALY2030_omega1) ) ) * (DALY2030_red_meat2 + DALY2030_omega2)
+  DALY2030_red_meat <- (1 - (1-DALY2030_red_meat1) * (1-DALY2030_omega1) )  * (DALY2030_red_meat2 + DALY2030_omega2)
   
   
   # DALYs for not ischemic heart disease (cause!=493)
@@ -634,13 +636,13 @@ DALY2030_red_meat_hr <- red_meat_PAF(Intake_bs_meat,intake_hr_meat,age,cause,red
 
 DALY2030_omega_hr <- omega_n3_PAF(Intake_bs_omega,intake_hr_omega,age,omega_N_raw_2019,omega_n3_RR,1)
 
-deltaDALY2030_all_hr = (1 - (1 - DALY2030_red_meat_hr * (1 - DALY2030_omega_hr) ) ) * (DALY2030_all) 
+deltaDALY2030_all_hr = (1 - (1 - DALY2030_red_meat_hr) * (1 - DALY2030_omega_hr) )  * (DALY2030_all) 
 
 DALY2030_all_hr = deltaDALY2030_all_hr + DALY2030_all
 
 # DALY combinbed
 
-DALY2030_red_meat <- (1-(1-DALY2030_red_meat1 * (1-DALY2030_omega1) ) ) * (DALY2030_red_meat2 + DALY2030_omega2)
+DALY2030_red_meat <- (1-(1-DALY2030_red_meat1) * (1-DALY2030_omega1) ) * (DALY2030_red_meat2 + DALY2030_omega2)
 
 
 # DALYs for not ischemic heart disease (cause!=493)

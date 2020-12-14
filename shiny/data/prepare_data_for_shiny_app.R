@@ -9,11 +9,27 @@ rm(list = ls())
 # Packages
 library(tidyverse)
 
-# Directories (in repository)
+# Directories
 shinydir <- "shiny/data"
+cosimodir <- "data/cosimo/processed"
+outputdir <- "output"
 
 # Read age group key
 age_key <- readxl::read_excel("data/age_group_key.xlsx")
+
+# COSIMO data
+################################################################################
+
+# Read
+nutrients <- readRDS(file.path(cosimodir, "COSIMO_2010_2030_nutr_by_scenario_cntry_food.rds"))
+food <- readRDS(file.path(cosimodir, "COSIMO_2010_2030_food_by_scenario_cntry.rds"))
+sevs <- readRDS(file.path(outputdir, "2030_sevs_base_high_road_final.Rds"))
+
+# Export
+saveRDS(nutrients, file=file.path(shinydir, "COSIMO_2010_2030_nutr_by_scenario_cntry_food.rds"))
+saveRDS(food, file=file.path(shinydir, "COSIMO_2010_2030_food_by_scenario_cntry.Rds"))
+saveRDS(sevs, file=file.path(shinydir, "2030_sevs_base_high_road_final.Rds"))
+
 
 # Subnational distributions
 ################################################################################
@@ -50,16 +66,32 @@ ears <- ears_orig %>%
   rename(age_id=age_groups, 
          sex_id=sex_groups) %>% 
   # Format nutrient
-  mutate(nutrient_long=tidyr::seperate(col="nutrient_long", sep=" ", into=c("nutrient", "")))
+  separate(col="nutrient_long", sep=" ", into=c("nutrient", "sdi_group")) %>%
+  mutate(nutrient=recode(nutrient, 
+                         "VitA"="Vitamin A, RAE"),
+         sdi_group=ifelse(is.na(sdi_group), "All", sdi_group),
+         sdi_group=stringr::str_to_title(sdi_group),
+         sdi_group=recode(sdi_group,
+                          "5%"="Very low",
+                          "10%"="Low",
+                          "12%"="Middle",
+                          "15%"="High",
+                          "Mod"="Middle"),
+         sdi_group=factor(sdi_group, levels=c("All", "High", "Middle", "Low", "Very low"))) %>% 
   # Add sex/age
   mutate(sex=ifelse(sex_id==1, "men", "women")) %>% 
   left_join(age_key) %>% 
   mutate(age_group=factor(age_group, levels=age_key$age_group)) %>% 
   # Arrange
-  select(nutrient, sex_id, sex, age_id, age_group, ear, everything())
+  select(nutrient, sdi_group, sex_id, sex, age_id, age_group, ear, everything())
+
+# Inspect data
+str(ears)
+table(ears$nutrient)
+table(ears$sdi_group)
 
 # Export
-saveRDS(ears, "data/ears.Rds")
+saveRDS(ears, "shiny/data/ears.Rds")
   
   
   

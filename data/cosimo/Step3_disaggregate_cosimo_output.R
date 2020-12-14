@@ -211,7 +211,8 @@ sort(unique(check$country))
 ################################################################################
 
 # Read fits
-dists <- readRDS("data/intakes/output/intake_distributions_for_all_cosimo_countries.Rds")
+dists <- readRDS("data/intakes/output/intake_distributions_for_all_cosimo_countries.Rds") %>% 
+  mutate(nutrient=recode(nutrient, "Vitamin A"="Vitamin A, RAE"))
 
 # Add distribution fits
 data1 <- data %>% 

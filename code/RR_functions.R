@@ -24,6 +24,7 @@ omega_n3_RR <- function(val,age,omega_N_raw_2019){
     #lines(x, xtrans(x), col='red')
     return(xtrans(val))
   }
+  
 }
 
 # Function of Relative Risk of high red meat for various outcomes
@@ -324,7 +325,7 @@ red_meat_PAF <- function(Intake_br,intake_hr,age,meat_outcome, red_meat_2019,red
     
     if(flag_meat==1){PAF<-(integrant_hr$value-integrant_br$value)/integrant_br$value  #relative change
     return(PAF)}else
-    {PAF<-(integrant_hr$value-1)/integrant_hr$value
+    {PAF<-(integrant_br$value-1)/integrant_br$value
     return(PAF)}         #serve as a proper PAF
   }
   
@@ -352,7 +353,7 @@ omega_n3_PAF <- function(Intake_br,intake_hr,age,omega_N_raw_2019,omega_n3_RR,fl
     int_hr<-(integrate(integrant_hr,lower=-Inf,upper=Inf))
     if(flag_omega==1){PAF<-(integrant_hr$value-integrant_br$value)/integrant_br$value  #relative change
     return(PAF)}else
-    {PAF<-(integrant_h$valuer-lowest_risk)/integrant_hr$value
+    {PAF<-(integrant_br$valuer-lowest_risk)/integrant_br$value
     return(PAF)}
   }        #serve as a proper PAF
   
