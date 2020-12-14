@@ -24,7 +24,8 @@ sapply(list.files(codedir), function(x) source(file.path(codedir, x)))
 food <- readRDS(file.path(datadir, "COSIMO_2010_2030_food_by_scenario_cntry.Rds"))
 nutrients <- readRDS(file.path(datadir, "COSIMO_2010_2030_nutr_by_scenario_cntry_food.rds"))
 sevs <- readRDS(file.path(datadir, "2030_sevs_base_high_road_final.Rds"))
-
+nutr_dists <- readRDS(file.path(datadir, "COSIMO2030_country_nutrient_age_sex_means_and_distributions.Rds"))
+ears <- readRDS(file.path(datadir, "ears.Rds"))
 
 # Parameters
 ################################################################################
@@ -84,6 +85,14 @@ ui <- fluidPage(
   plotOutput(outputId = "plot_nutrients_over_time_diff", width=1000, height=800),
   br(),
   
+  # Subnational intake distributions
+  h4("Subnational intake distributions"), 
+  
+  # Group means
+  p("This shows subnational intake distributions in 2030 under the baseline and high road scenarios. The subnational distributions were derived from the COSIMO country-level mean and GENUS and SPADE derived scalars for determining the subnational group means."),
+  plotOutput(outputId = "plot_subnational_nutr_dist_means", width=700, height=1400),
+  br(),
+  
   # Summary exposure values
   h4("Summary Exposure Values (SEVs)"), 
   
@@ -132,6 +141,12 @@ server <- function(input, output){
   # Plot food over time (relative difference)
   output$plot_nutrients_over_time_diff <- renderPlot({
     g <- plot_nutrients_over_time_diff(data=nutrients, country=input$country, base_theme=base_theme)
+    g
+  })
+  
+  # Plot subnational intake distributions
+  output$plot_subnational_nutr_dist_means <- renderPlot({
+    g <- plot_subnational_nutr_dist_means(data=nutr_dists, ears=ears, country=input$country, base_theme=base_theme)
     g
   })
   

@@ -483,6 +483,185 @@ write.csv(sev_meat_final, file=file.path(outputdir, "2030_sevs_base_high_road_me
 # Calculate DALYs
 #####################################################################################
 
+# Build data for DALY calculations
+###############################################
+
+# Distribution data
+#############################
+
+# Format omega distributions for merge
+omega_dists <- dists2030 %>% 
+  filter(nutrient=="Omega-3 fatty acids") %>% 
+  select(scenario, country, iso3, nutrient, sex_id, age_id, everything())
+
+# Format red meat distributions for merge
+meat_dists <- dists2030_meat %>% 
+  select(scenario, country, iso3, nutrient, sex_id, age_id, everything())
+
+# Merge
+dists4dalys <- bind_rows(omega_dists, meat_dists)
+
+# DALY data
+#############################
+
+# Country key
+cntry_key_daly <- j %>% 
+  ungroup() %>% 
+  select(location_name) %>% 
+  unique() %>% 
+  mutate(iso3=countrycode(location_name, "country.name", "iso3c"),
+         country=countrycode(iso3, "iso3c", "country.name"))
+
+# Formats DALY's before adding to distributons
+dalys_clean <- j %>% 
+  ungroup() %>% 
+  # Remove useless columns
+  select(-c(year, HDI, SDI, SDI_group, population)) %>% 
+  # Add country info
+  left_join(cntry_key_daly) %>% 
+  select(-location_name) %>% 
+  # Rename columns
+  rename(age_id=age, sex_id=sex) %>% 
+  # Rearrange
+  select(country, iso3, sex_id, age_id, everything()) %>% 
+  arrange(country, iso3, sex_id, age_id)
+
+# Merge DALY and distributions
+#############################
+
+# Build data
+data <- dists4dalys %>% 
+  left_join(dalys_clean %>% select(-country), by=c("iso3", "sex_id", "age_id")) %>% 
+  # Remove missing data
+  filter(!is.na(cause))
+
+
+# Baseline
+###############################################################
+
+# Setup container
+dalys <- data %>% 
+  select(country, iso3, sex_id, age_id) %>% 
+  unique() %>% 
+  arrange(country, iso3, sex_id, age_id)
+
+# Loop through base data
+for(i in 1:nrow(dalys)){
+  
+  # Parameters
+  print(i)
+  iso3_do <-dalys$iso3[i]
+  age_id_do <- dalys$age_id[i]
+  sex_id_do <- dalys$sex_id[i]
+  
+  # Subset data
+  sdata <- data %>% 
+    filter(iso3==iso3_do & sex_id==sex_id_do & age_id==age_id_do)
+  
+  # Extract omega/red meat distributions for baseline and high road
+  omega_dist_base <- sdata %>% 
+    filter(nutrient=="Omega-3 fatty acids" & scenario=="Base" & cause==493)
+  omega_dist_high <- sdata %>% 
+    filter(nutrient=="Omega-3 fatty acids" & scenario=="High road" & cause==493)
+
+  # If gamma distribution....
+  if(best_dist=="gamma"){
+    shape <- data_sev_meat$g_shape[x]
+    rate <- data_sev_meat$g_rate[x]
+    x_shift <- data_sev_meat$g_mean_diff[x]
+    intake_function <- function(x){y <- dgamma(x-x_shift, shape=shape, rate=rate)}
+  }
+  
+  # If lognormal distribution...
+  if(best_dist=="log-normal"){
+    mu <- data_sev_meat$ln_meanlog[x]
+    sigma <- data_sev_meat$ln_sdlog[x]
+    x_shift <- data_sev_meat$ln_mean_diff[x]
+    intake_function <- function(x){y <- dlnorm(x-x_shift, meanlog=mu, sdlog=sigma)}
+  }
+  
+  
+  # DALYs for ischemic heart disease (cause==493)
+  #######################################################
+  
+  # DALY OMEGA
+  DALY2030_omega1 <- omega_n3_PAF(Intake_br = Intake_bs_omega,
+                                  intake_hr = intake_hr_omega,
+                                  age = age,
+                                  omega_N_raw_2019,
+                                  omega_n3_RR,
+                                  flag_omega = 0)
+  DALY2030_omega2 <- DALY2030_omega1 * DALY2030
+  
+  # DALY red meat
+  DALY2030_red_meat1 <- red_meat_PAF(Intake_bs_meat, 
+                                     intake_hr_meat,
+                                     age, 
+                                     cause, 
+                                     red_meat_raw_2019, 
+                                     red_meat_RR,
+                                     0) 
+  DALY2030_red_meat2 <- DALY2030_red_meat1 * DALY2030
+  
+  # DALY combinbed
+  
+  DALY2030_red_meat <- (1-(1-DALY2030_red_meat1 * (1-DALY2030_omega1) ) ) * (DALY2030_red_meat2 + DALY2030_omega2)
+  
+  
+  # DALYs for not ischemic heart disease (cause!=493)
+  #######################################################
+  
+  DALY2030_all <- red_meat_PAF(Intake_bs_meat,
+                               intake_hr_meat,
+                               age,
+                               cause,
+                               red_meat_raw_2019,
+                               red_meat_RR,
+                               0) * DALY2030
+  
+  
+}
+
+
+
+# High road
+###############################################################
+
+# DALYs for ischemic heart disease (cause==493)
+#######################################################
+
+DALY2030_red_meat_hr <- red_meat_PAF(Intake_bs_meat,intake_hr_meat,age,cause,red_meat_raw_2019,red_meat_RR,1)
+
+DALY2030_omega_hr <- omega_n3_PAF(Intake_bs_omega,intake_hr_omega,age,omega_N_raw_2019,omega_n3_RR,1)
+
+deltaDALY2030_all_hr = (1 - (1 - DALY2030_red_meat_hr * (1 - DALY2030_omega_hr) ) ) * (DALY2030_all) 
+
+DALY2030_all_hr = deltaDALY2030_all_hr + DALY2030_all
+
+# DALY combinbed
+
+DALY2030_red_meat <- (1-(1-DALY2030_red_meat1 * (1-DALY2030_omega1) ) ) * (DALY2030_red_meat2 + DALY2030_omega2)
+
+
+# DALYs for not ischemic heart disease (cause!=493)
+#######################################################
+
+DALY2030_all <- red_meat_PAF(Intake_bs_meat,
+                             intake_hr_meat,
+                             age,
+                             cause,
+                             red_meat_raw_2019,
+                             red_meat_RR,
+                             0) * DALY2030
+
+
+
+
+
+#####################################################################################
+# Original code
+#####################################################################################
+
 if(F){
 
   DALYs1<-dalys_fishANDmeat %>%
