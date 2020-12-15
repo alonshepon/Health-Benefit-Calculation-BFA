@@ -20,15 +20,21 @@ age_key <- readxl::read_excel("data/age_group_key.xlsx")
 # COSIMO data
 ################################################################################
 
-# Read
+# Read data
 nutrients <- readRDS(file.path(cosimodir, "COSIMO_2010_2030_nutr_by_scenario_cntry_food.rds"))
 food <- readRDS(file.path(cosimodir, "COSIMO_2010_2030_food_by_scenario_cntry.rds"))
-sevs <- readRDS(file.path(outputdir, "2030_sevs_base_high_road_final.Rds"))
 
-# Export
+# Export data
 saveRDS(nutrients, file=file.path(shinydir, "COSIMO_2010_2030_nutr_by_scenario_cntry_food.rds"))
 saveRDS(food, file=file.path(shinydir, "COSIMO_2010_2030_food_by_scenario_cntry.Rds"))
+
+# Read output
+sevs <- readRDS(file.path(outputdir, "2030_sevs_base_high_road_final.Rds"))
+dalys <- readRDS(file.path(outputdir, "2030_dalys_base_high_road_summarized.Rds"))
+
+# Export output
 saveRDS(sevs, file=file.path(shinydir, "2030_sevs_base_high_road_final.Rds"))
+saveRDS(dalys, file=file.path(shinydir, "2030_dalys_base_high_road_summarized.Rds"))
 
 
 # Subnational distributions

@@ -30,6 +30,9 @@ nutr_dists <- readRDS(file.path(datadir, "COSIMO2030_country_nutrient_age_sex_me
 ears <- readRDS(file.path(datadir, "ears.Rds")) %>% 
   filter(nutrient %in% unique(nutr_dists$nutrient) & nutrient !="Protein")
 
+# Read DALYs
+dalys <- readRDS(file.path(datadir, "2030_dalys_base_high_road_summarized.Rds"))
+
 
 # Parameters
 ################################################################################
@@ -97,7 +100,7 @@ ui <- fluidPage(
   plotOutput(outputId = "plot_subnational_nutr_dist_means", width=700, height=1400),
   br(),
   
-  # Summary exposure values
+  # SEVs
   h4("Summary Exposure Values (SEVs)"), 
   
   # SEV raw values
@@ -105,13 +108,24 @@ ui <- fluidPage(
   plotOutput(outputId = "plot_sevs", width=1000, height=800),
   br(),
   
-  # SEV difference
+  # SEV differences
   p("The figure below illustrates the change in SEVs for a population under the high road scenario relative to the baseline. A difference less than zero indidates that diets under the high road scenario lowered risk. A difference greater than zero indicates that diets under the high road scenario increased risk."),
   plotOutput(outputId = "plot_sevs_diff", width=1000, height=800),
   br(),
   
   # DALYs
   h4("Disability-Adjusted Life Years (DALYs)"), 
+  
+  # DALY raw values
+  p(""),
+  plotOutput(outputId = "plot_dalys", width=800, height=300),
+  br(),
+  
+  # DALY differences
+  p(""),
+  plotOutput(outputId = "plot_dalys_diff", width=800, height=300),
+  br(),
+  
   p(""),
   br()
 
@@ -160,11 +174,24 @@ server <- function(input, output){
     g
   })
   
-  # Plot SEVs
+  # Plot SEV differences
   output$plot_sevs_diff <- renderPlot({
     g <- plot_sevs_diff(data=sevs, country=input$country, base_theme=base_theme)
     g
   })
+  
+  # Plot DALYs
+  output$plot_dalys <- renderPlot({
+    g <- plot_dalys(data=dalys, country=input$country, base_theme=base_theme)
+    g
+  })
+  
+  # Plot DALY differences
+  output$plot_dalys_diff <- renderPlot({
+    g <- plot_dalys_diff(data=dalys, country=input$country, base_theme=base_theme)
+    g
+  })
+  
   
   
   
