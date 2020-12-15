@@ -18,7 +18,7 @@ plot_subnational_nutr_dist_means <- function(data, ears, country, base_theme){
     # Add ears
     geom_line(ears, mapping=aes(x=age_group, y=ear, group=sdi_group, linetype=sdi_group), inherit.aes=F, color="black") +
     # Labels
-    labs(x="Age group", y="Mean daily intake per capita") +
+    labs(x="Age group", y="Mean daily intake per capita", title=paste0("Mean daily per capita nutrient intake by sex and age group: ", country_do)) +
     scale_fill_discrete(name="Scenario") +
     scale_linetype(name="SDI group") +
     # Theme

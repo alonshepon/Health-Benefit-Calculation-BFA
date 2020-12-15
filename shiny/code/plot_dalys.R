@@ -20,8 +20,10 @@ plot_dalys <- function(data, country, base_theme){
   g <- ggplot(sdata, aes(x=age_group, y=dalys, fill=scenario)) +
     facet_grid(~sex, scale="free_y") +
     geom_bar(stat="identity", position="dodge") +
+    # Add horizontal line
+    geom_hline(yintercept=0, color="grey30", linetype="dotted") +
     # Labels
-    labs(x="Age group", y="DALYs", title=paste0("Disability-adjutsed life years (DALYs): ", country_do)) +
+    labs(x="Age group", y="DALYs", title=paste0("Disability-adjusted life years (DALYs): ", country_do)) +
     scale_fill_discrete(name="Scenario") +
     # Theme
     theme_bw() + base_theme + 

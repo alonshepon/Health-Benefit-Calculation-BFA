@@ -67,24 +67,24 @@ ui <- fluidPage(
                  choices = countries2030,  multiple = F, options = NULL),
   
   # Diets
-  h4("Change in diets under baseline and high road scenarios"),
+  h4("Change in food consumption under base and high road scenarios"),
   
   # Food intake by country
-  p(""),
+  p("The figure below shows the change in mean daily per capita food consumption under the base and high road scenarios."),
   plotOutput(outputId = "plot_food_over_time", width=1000, height=800),
   br(),
-  
-  # Nutrient intake by country
-  p(""),
-  plotOutput(outputId = "plot_nutrients_over_time", width=1000, height=800),
-  br(),
-  
-  # Diets
-  h4("Relative difference between high road and baseline scenarios"),
   
   # Food intake by country
   p("The figure below illustrates the difference in mean daily food consumption under the high road and baseline scenario over time. A difference greater than zero indicates increased consumption of a food under the high road scenario relative to the baseline scenario. A difference less than zero indicates reduced consumption of a food under the high road scenario relative to the baseline scenario."),
   plotOutput(outputId = "plot_food_over_time_diff", width=1000, height=800),
+  br(),
+  
+  # Diets
+  h4("Change in nutrient intake under base and high road scenarios"),
+  
+  # Nutrient intake by country
+  p("The figure below illustrates the change in mean daily per capita nutrient intake under the base and high road scenarios."),
+  plotOutput(outputId = "plot_nutrients_over_time", width=1000, height=800),
   br(),
   
   # Nutrient intake by country
@@ -105,12 +105,12 @@ ui <- fluidPage(
   
   # SEV raw values
   p("The summary exposure values (SEV) is a measure of a population’s exposure to a risk factor that takes into account the extent of exposure by risk level and the severity of that risk’s contribution to disease burden. A value of 0 indicates no risk and a value of 100 indicates the highest level of risk."),
-  plotOutput(outputId = "plot_sevs", width=1000, height=800),
+  plotOutput(outputId = "plot_sevs", width=800, height=800),
   br(),
   
   # SEV differences
   p("The figure below illustrates the change in SEVs for a population under the high road scenario relative to the baseline. A difference less than zero indidates that diets under the high road scenario lowered risk. A difference greater than zero indicates that diets under the high road scenario increased risk."),
-  plotOutput(outputId = "plot_sevs_diff", width=1000, height=800),
+  plotOutput(outputId = "plot_sevs_diff", width=800, height=800),
   br(),
   
   # DALYs
