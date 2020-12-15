@@ -49,7 +49,17 @@ file_key <- tibble(filename=intake_files) %>%
                          "processed_meat"="Processed meat",
                          "red_meat"="Red meat",
                          "vita"="Vitamin A",
-                         "zinc"="Zinc"))
+                         "zinc"="Zinc")) %>% 
+  # Add nutrient units
+  mutate(nutrient_units=recode(nutrient, 
+                               "Calcium"="mg/p/d",             
+                               "Iron"="mg/p/d",                
+                               "Omega-3 fatty acids"="g/p/d", # g of Eicosapentaenoic acid + Docosahexaenoic acid/person/day
+                               "Processed meat"="g/p/d",       
+                               "Red meat"="g/p/d",            
+                               "Vitamin A"="µg/p/d",  # µg RAE/person/day         
+                               "Vitamin B-12"="µg/p/d",        
+                               "Zinc"="mg/p/d"))
 
 # Loop through intake files
 data_orig <- purrr::map_df(intake_files, function(x){
@@ -128,7 +138,7 @@ data <- data_orig %>%
   mutate(age_group=recode(age_group, "100-Inf"="100+")) %>% 
   left_join(age_group_key) %>% 
   # Arrange columns
-  select(filename, country, nutrient, sex, age_group_id, age_group, age_yr, id, intake) %>% 
+  select(filename, country, nutrient, nutrient_units, sex, age_group_id, age_group, age_yr, id, intake) %>% 
   arrange(country, nutrient, sex, age_yr, id) %>% 
   # Remove un-needed data
   filter(nutrient!="Processed meat" & sex!="women (adult)")

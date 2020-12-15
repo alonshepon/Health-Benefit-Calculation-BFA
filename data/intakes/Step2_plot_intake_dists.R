@@ -37,10 +37,11 @@ write.csv(range_key, file=file.path(inputdir, "habitual_nutrient_intake_ranges.c
 
 # Data coverage
 coverage <- data %>% 
-  group_by(country, nutrient, sex, age_yr) %>% 
+  group_by(country, nutrient, nutrient_units, sex, age_yr) %>% 
   summarize(n=n()) %>% 
   mutate(data_yn=n>0, 
-         sex=stringr::str_to_title(sex)) %>% 
+         sex=stringr::str_to_title(sex),
+         nutrient_label=paste0(nutrient, " (", nutrient_units, ")")) %>% 
   # Remove children
   filter(sex!="Children")
 
@@ -78,9 +79,10 @@ ggsave(g, filename=file.path(plotdir,"intake_data_coverage.png"),
 
 # Key
 key <- data %>% 
-  select(country, nutrient) %>% 
+  select(country, nutrient, nutrient_units) %>% 
   unique() %>% 
-  arrange(country, nutrient)
+  arrange(country, nutrient) %>% 
+  mutate(nutrient_label=paste0(nutrient, " (", nutrient_units, ")"))
 
 # Setup theme
 my_theme <-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
@@ -104,18 +106,20 @@ for(i in 1:nrow(key)){
   
   # Subset data
   country_do <- key$country[i]
-  nutrient_do <- key$ nutrient[i]
+  nutrient_do <- key$nutrient[i]
+  units_do <- key$nutrient_units[i]
   sdata <- data %>% 
     filter(country==country_do, nutrient==nutrient_do)
   print(paste(i, country_do, nutrient_do))
   
   # Plot data
+  x_label <- paste0("Habitual intake (", units_do, ")")
   plot_title <- paste0(country_do, ": ", nutrient_do, " intake")
   g <- ggplot(sdata, aes(x=intake, fill=sex)) +
     facet_wrap(~age_group, ncol=4, scales="free_y") +
     geom_density(alpha=0.6, lwd=0.2) +
     # Labels
-    labs(x="Habitual intake", y="Density", title=plot_title) +
+    labs(x=x_label, y="Density", title=plot_title) +
     # Legends
     scale_fill_discrete(name="") +
     # Theme

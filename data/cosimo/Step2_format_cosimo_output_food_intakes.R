@@ -22,6 +22,9 @@ food_hi_orig  <- read.csv(file.path(inputdir, "FoodConsumptionScenario.csv"), as
 # Read country key
 cntry_key_cosimo <- read.csv(file.path(outputdir, "COSIMO_country_key.csv"), as.is=T)
 
+# Note:
+# Units are reported to be kg/p/day but are actually kg/p/year
+# I convert them to g/p/day
 
 # Helper functions
 ################################################################################
@@ -152,7 +155,13 @@ food_eu_use <- purrr::map_df(1:nrow(e27_do), function(x) {
 food <- bind_rows(food_no_eu, food_eu_use) %>% 
   # Add corrected country
   mutate(country=countrycode(iso3, "iso3c", "country.name")) %>% 
-  arrange(country, food, year)
+  arrange(country, food, year) %>% 
+  #Convert values from kg/p/year to g/p/day
+  mutate(value_lo=value_lo*1000/365,
+         value_hi=value_hi*1000/365,
+         value_diff=value_diff*1000/365) %>% 
+  # Remove nutrient columns
+  select(-c(nutrient_id, nutrient))
 
 # Export
 ################################################################################
