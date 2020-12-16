@@ -17,7 +17,7 @@ omega_n3_RR <- function(val,age,omega_N_raw_2019){
   }else{
     
     agepaste<-paste("age",as.character(age),sep="")
-    x<-omega_N_raw_2019$x*1000   #mg/d
+    x<-omega_N_raw_2019$x # keep in grams
     y<-omega_N_raw_2019[ , grepl( agepaste , names( omega_N_raw_2019 ) ) ]
     xtrans<-splinefun(x, y,method = c("monoH.FC"),ties = mean)
     return(xtrans(val))
@@ -158,6 +158,9 @@ omega_n3_SEV <- function(Intake,age,omega_N_raw_2019,omega_n3_RR){
     SEV<-max((int$value-RRmax)/(1-RRmax)*100,0)
   }
   
+  # Prevent negative
+  SEV <- pmax(SEV, 0)
+  
   return(SEV)
   
 }
@@ -259,6 +262,9 @@ red_meat_SEV <- function(Intake,age,meat_outcome, red_meat_2019,red_meat_RR){
     
   }
   
+  # Prevent negative
+  SEV <- pmax(SEV, 0)
+  
   return(SEV)
   
 }
@@ -269,6 +275,10 @@ micronutrient_SEV <- function(Intake, age, sex, nutrient, country_SDIgroup, EAR_
   integrant<-function(x){micronutrient_RR(x,age,sex, nutrient, country_SDIgroup, EAR_requirements)*Intake(x)}
   res<-integrate(integrant, lower=-Inf,upper=Inf)
   SEV<-res$value*100
+  
+  # Prevent negative
+  SEV <- pmax(SEV, 0)
+  
   # Return
   return(SEV)
   
@@ -314,6 +324,9 @@ red_meat_PAF <- function(Intake_br, Intake_hr, age, meat_outcome, red_meat_2019,
     }        
   }
   
+  # Prevent negative
+  PAF <- pmax(0, PAF)
+  
   return(PAF)
   
 }
@@ -347,12 +360,11 @@ omega_n3_PAF <- function(Intake_br, Intake_hr, age, omega_N_raw_2019, omega_n3_R
     
   }
   
+  # Prevent negative
+  PAF <- pmax(0, PAF)
+  
   return(PAF)
   
 }
-
-
-
-
 
 

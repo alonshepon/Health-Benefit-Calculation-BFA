@@ -126,7 +126,9 @@ dalys_fishANDmeat <- dalys_fishANDmeat_orig %>%
 # Calculate DALYs in 2030 based on extrapolation 
 j <- dalys_fishANDmeat %>% 
   group_by(location_name,age,sex,cause) %>% 
-  summarize(year=year,DALY=DALY,DALY2030 = r30(DALY,year),
+  summarize(year=year,
+            DALY=DALY,
+            DALY2030 = r30(DALY,year),
             HDI=`Human Development Index (UNDP)`,
             SDI=sdi,cause=cause, 
             SDI_group=sdi_group,
@@ -235,253 +237,6 @@ dists2030_meat <- dists_meat %>%
   select(-c(sex, age_group))
 
 
-
-# Calculate changes in summary exposure values (SEVs) -- micronutrients
-##########################################################################################
-
-# Nutrients to calculate SEVS for
-nutr_sevs <- c("Zinc", "Iron", "Calcium", "Vitamin A, RAE")
-
-# Build data required for micronutrient SEV calculations
-data_sev_mn <- dists2030 %>% 
-  # Reduce to nutrients of interest
-  filter(nutrient %in% nutr_sevs) %>% 
-  # Add SDI group
-  left_join(sdi_hdi_key, by=c("iso3")) %>% 
-  # Reduce to age groups with required data
-  filter(age_id>=5)
-
-# Loop through micronutrients to calculate SEVs for
-x <- 91
-# sevs_micronutrients <- purrr::map_df(1:nrow(data_sev_mn), function(x){
-for(x in 1:nrow(data_sev_mn)){
-  
-  # Parameters
-  print(x)
-  scenario_do <- data_sev_mn$scenario[x]
-  iso3_do <- data_sev_mn$iso3[x]
-  nutr_do <- data_sev_mn$nutrient[x]
-  sdi_group_do <- data_sev_mn$sdi_group[x]
-  age_id_do <- data_sev_mn$age_id[x]
-  sex_id_do <- data_sev_mn$sex_id[x]
-  best_dist <- data_sev_mn$best_dist[x]
-  
-  # Rename nutrient
-  if(nutr_do=="Vitamin A, RAE"){nutr_do <- "VitA"}
-  
-  # If gamma distribution....
-  if(best_dist=="gamma"){
-    shape <- data_sev_mn$g_shape[x]
-    rate <- data_sev_mn$g_rate[x]
-    x_shift <- data_sev_mn$g_mean_diff[x]
-    intake_function <- function(x){y <- dgamma(x-x_shift, shape=shape, rate=rate)}
-  }
-  
-  # If lognormal distribution...
-  if(best_dist=="log-normal"){
-    mu <- data_sev_mn$ln_meanlog[x]
-    sigma <- data_sev_mn$ln_sdlog[x]
-    x_shift <- data_sev_mn$ln_mean_diff[x]
-    intake_function <- function(x){y <- dlnorm(x-x_shift, meanlog=mu, sdlog=sigma)}
-  }
-  
-  # Calculate SEV
-  sev <- try(micronutrient_SEV(Intake=intake_function, 
-                               age=age_id_do, 
-                               sex=sex_id_do,
-                               nutrient=nutr_do, 
-                               country_SDIgroup=sdi_group_do, 
-                               EAR_requirements))
-  
-  # Record based on try()
-  if(inherits(sev, "try-error")){
-    sev_out <- NA
-  }else{
-    sev_out <- sev
-  }
-  
-  # Record
-  data_sev_mn$sev[x] <- sev_out
-  
-  # Build dataframe row
-  # row_out <- tibble(scenario=scenario_do,
-  #                   nutrient=nutr_do,
-  #                   iso3=iso3_do,
-  #                   sex=sex_id_do,
-  #                   age=age_id_do,
-  #                   sev=sev_out)
-  
-}
-
-# Format SEVs
-sev_mn_final <- data_sev_mn %>% 
-  select(scenario, nutrient, country, iso3, sex_id, age_id, sev) %>% 
-  spread(key="scenario", value="sev") %>% 
-  rename(sev_high="High road", sev_base="Base") %>% 
-  mutate(sev_delta=sev_high-sev_base)
-
-# Export
-write.csv(sev_mn_final, file=file.path(outputdir, "2030_sevs_base_high_road_micronutrients.csv"), row.names=F)
-
-
-# Calculate changes in summary exposure values (SEVs) -- omega-3 fatty acids
-##########################################################################################
-
-# Build data required for micronutrient SEV calculations
-data_sev_omega <- dists2030 %>% 
-  # Reduce to nutrients of interest
-  filter(nutrient %in% "Omega-3 fatty acids") %>% 
-  # Reduce to age groups with required data
-  filter(age_id>=10)
-
-# Loop through micronutrients to calculate SEVs for
-x <- 1
-# sevs_micronutrients <- purrr::map_df(1:nrow(data_sev_mn), function(x){
-for(x in 1:nrow(data_sev_omega)){
-  
-  # Parameters
-  print(x)
-  scenario_do <- data_sev_omega$scenario[x]
-  iso3_do <- data_sev_omega$iso3[x]
-  nutr_do <- data_sev_omega$nutrient[x]
-  age_id_do <- data_sev_omega$age_id[x]
-  sex_id_do <- data_sev_omega$sex_id[x]
-  best_dist <- data_sev_omega$best_dist[x]
-
-  # If gamma distribution....
-  if(best_dist=="gamma"){
-    shape <- data_sev_omega$g_shape[x]
-    rate <- data_sev_omega$g_rate[x]
-    x_shift <- data_sev_omega$g_mean_diff[x]
-    intake_function <- function(x){y <- dgamma(x-x_shift, shape=shape, rate=rate)}
-  }
-  
-  # If lognormal distribution...
-  if(best_dist=="log-normal"){
-    mu <- data_sev_omega$ln_meanlog[x]
-    sigma <- data_sev_omega$ln_sdlog[x]
-    x_shift <- data_sev_omega$ln_mean_diff[x]
-    intake_function <- function(x){y <- dlnorm(x-x_shift, meanlog=mu, sdlog=sigma)}
-  }
-  
-  # Calculate SEV
-  sev <- try(omega_n3_SEV(Intake=intake_function,
-                          age=age_id_do, 
-                          omega_N_raw_2019,
-                          omega_n3_RR))
-  
-  # Record based on try()
-  if(inherits(sev, "try-error")){
-    sev_out <- NA
-  }else{
-    sev_out <- sev
-  }
-  
-  # Record
-  data_sev_omega$sev[x] <- sev_out
-  
-  # Build dataframe row
-  # row_out <- tibble(scenario=scenario_do,
-  #                   nutrient=nutr_do,
-  #                   iso3=iso3_do,
-  #                   sex=sex_id_do,
-  #                   age=age_id_do,
-  #                   sev=sev_out)
-  
-}
-
-# Format SEVs
-sev_omega_final <- data_sev_omega %>% 
-  mutate(nutrient="Omega-3 fatty acids") %>% 
-  select(scenario, nutrient, country, iso3, sex_id, age_id, sev) %>% 
-  spread(key="scenario", value="sev") %>% 
-  rename(sev_high="High road", sev_base="Base") %>% 
-  mutate(sev_delta=sev_high-sev_base)
-
-# Export
-write.csv(sev_omega_final, file=file.path(outputdir, "2030_sevs_base_high_road_omega3s.csv"), row.names=F)
-
-
-# Calculate changes in summary exposure values (SEVs) -- red meat
-##########################################################################################
-
-# CHANGE TO CALCULATE FOR EACH CAUSE AND AVERAGE
-
-# Build data required for micronutrient SEV calculations
-data_sev_meat <- dists2030_meat %>% 
-  # Reduce to age groups with required data
-  filter(age_id>=10)
-
-# Loop through
-for(x in 1:nrow(data_sev_meat)){
-  
-  # Parameters
-  print(x)
-  scenario_do <- data_sev_meat$scenario[x]
-  iso3_do <- data_sev_meat$iso3[x]
-  nutr_do <- data_sev_meat$nutrient[x]
-  age_id_do <- data_sev_meat$age_id[x]
-  sex_id_do <- data_sev_meat$sex_id[x]
-  best_dist <- data_sev_meat$best_dist[x]
-  
-  # If gamma distribution....
-  if(best_dist=="gamma"){
-    shape <- data_sev_meat$g_shape[x]
-    rate <- data_sev_meat$g_rate[x]
-    x_shift <- data_sev_meat$g_mean_diff[x]
-    intake_function <- function(x){y <- dgamma(x-x_shift, shape=shape, rate=rate)}
-  }
-  
-  # If lognormal distribution...
-  if(best_dist=="log-normal"){
-    mu <- data_sev_meat$ln_meanlog[x]
-    sigma <- data_sev_meat$ln_sdlog[x]
-    x_shift <- data_sev_meat$ln_mean_diff[x]
-    intake_function <- function(x){y <- dlnorm(x-x_shift, meanlog=mu, sdlog=sigma)}
-  }
-  
-  # Calculate SEV
-  sev <- try(red_meat_SEV(Intake=intake_function,
-                          age=age_id_do,
-                          meat_outcome=493,
-                          red_meat_2019=red_meat_raw_2019,
-                          red_meat_RR))
-  
-  # Record based on try()
-  if(inherits(sev, "try-error")){
-    sev_out <- NA
-  }else{
-    sev_out <- sev
-  }
-  
-  # Record
-  data_sev_meat$sev[x] <- sev_out
-  
-  # Build dataframe row
-  # row_out <- tibble(scenario=scenario_do,
-  #                   nutrient=nutr_do,
-  #                   iso3=iso3_do,
-  #                   sex=sex_id_do,
-  #                   age=age_id_do,
-  #                   sev=sev_out)
-  
-}
-
-# Format SEVs
-sev_meat_final <- data_sev_meat %>% 
-  mutate(nutrient="Red meat") %>% 
-  select(scenario, nutrient, country, iso3, sex_id, age_id, sev) %>% 
-  spread(key="scenario", value="sev") %>% 
-  rename(sev_high="High road", sev_base="Base") %>% 
-  mutate(sev_delta=sev_high-sev_base)
-
-# Export
-write.csv(sev_meat_final, file=file.path(outputdir, "2030_sevs_base_high_road_meat.csv"), row.names=F)
-
-
-
-
-
 # Calculate DALYs
 #####################################################################################
 
@@ -569,7 +324,7 @@ dalys <- data %>%
 for(i in 1:nrow(dalys)){
   
   # Parameters
-  print(i)
+  if(i %in% seq(100, 100000, 100)){print(i)}
   iso3_do <-dalys$iso3[i]
   age_id_do <- dalys$age_id[i]
   sex_id_do <- dalys$sex_id[i]
@@ -589,18 +344,18 @@ for(i in 1:nrow(dalys)){
   
   # If gamma distribution....
   if(omega_dist_base_type=="gamma"){
-    shape <- omega_dist_base$g_shape
-    rate <- omega_dist_base$g_rate
-    x_shift <- omega_dist_base$g_mean_diff
-    omega_intake_base <- function(x){y <- dgamma(x-x_shift, shape=shape, rate=rate)}
+    shape_o_b <- omega_dist_base$g_shape
+    rate_o_b <- omega_dist_base$g_rate
+    x_shift_o_b <- omega_dist_base$g_mean_diff
+    omega_intake_base <- function(x){y <- dgamma(x-x_shift_o_b, shape=shape_o_b, rate=rate_o_b)}
   }
   
   # If lognormal distribution...
   if(omega_dist_base_type=="log-normal"){
-    mu <- omega_dist_base$ln_meanlog
-    sigma <- omega_dist_base$ln_sdlog
-    x_shift <- omega_dist_base$ln_mean_diff
-    omega_intake_base <- function(x){y <- dlnorm(x-x_shift, meanlog=mu, sdlog=sigma)}
+    mu_o_b <- omega_dist_base$ln_meanlog
+    sigma_o_b <- omega_dist_base$ln_sdlog
+    x_shift_o_b <- omega_dist_base$ln_mean_diff
+    omega_intake_base <- function(x){y <- dlnorm(x-x_shift_o_b, meanlog=mu_o_b, sdlog=sigma_o_b)}
   }
   
   # High road
@@ -613,21 +368,21 @@ for(i in 1:nrow(dalys)){
   
   # If gamma distribution....
   if(omega_dist_high_type=="gamma"){
-    shape <- omega_dist_high$g_shape
-    rate <- omega_dist_high$g_rate
-    x_shift <- omega_dist_high$g_mean_diff
-    omega_intake_high <- function(x){y <- dgamma(x-x_shift, shape=shape, rate=rate)}
+    shape_o_hr <- omega_dist_high$g_shape
+    rate_o_hr <- omega_dist_high$g_rate
+    x_shift_o_hr <- omega_dist_high$g_mean_diff
+    omega_intake_high <- function(x){y <- dgamma(x-x_shift_o_hr, shape=shape_o_hr, rate=rate_o_hr)}
   }
   
   # If lognormal distribution...
   if(omega_dist_high_type=="log-normal"){
-    mu <- omega_dist_high$ln_meanlog
-    sigma <- omega_dist_high$ln_sdlog
-    x_shift <- omega_dist_high$ln_mean_diff
-    omega_intake_high <- function(x){y <- dlnorm(x-x_shift, meanlog=mu, sdlog=sigma)}
+    mu_o_hr <- omega_dist_high$ln_meanlog
+    sigma_o_hr <- omega_dist_high$ln_sdlog
+    x_shift_o_hr <- omega_dist_high$ln_mean_diff
+    omega_intake_high <- function(x){y <- dlnorm(x-x_shift_o_hr, meanlog=mu_o_hr, sdlog=sigma_o_hr)}
   }
   
-  # Setup omega intake distribution
+  # Setup meat intake distribution
   ############################################
   
   # Base
@@ -640,18 +395,18 @@ for(i in 1:nrow(dalys)){
   
   # If gamma distribution....
   if(meat_dist_base_type=="gamma"){
-    shape <- meat_dist_base$g_shape
-    rate <- meat_dist_base$g_rate
-    x_shift <- meat_dist_base$g_mean_diff
-    meat_intake_base <- function(x){y <- dgamma(x-x_shift, shape=shape, rate=rate)}
+    shape_m_b <- meat_dist_base$g_shape
+    rate_m_b <- meat_dist_base$g_rate
+    x_shift_m_b <- meat_dist_base$g_mean_diff
+    meat_intake_base <- function(x){y <- dgamma(x-x_shift_m_b, shape=shape_m_b, rate=rate_m_b)}
   }
   
   # If lognormal distribution...
   if(meat_dist_base_type=="log-normal"){
-    mu <- meat_dist_base$ln_meanlog
-    sigma <- meat_dist_base$ln_sdlog
-    x_shift <- meat_dist_base$ln_mean_diff
-    meat_intake_base <- function(x){y <- dlnorm(x-x_shift, meanlog=mu, sdlog=sigma)}
+    mu_m_b <- meat_dist_base$ln_meanlog
+    sigma_m_b <- meat_dist_base$ln_sdlog
+    x_shift_m_b <- meat_dist_base$ln_mean_diff
+    meat_intake_base <- function(x){y <- dlnorm(x-x_shift_m_b, meanlog=mu_m_b, sdlog=sigma_m_b)}
   }
   
   # High road
@@ -664,18 +419,28 @@ for(i in 1:nrow(dalys)){
   
   # If gamma distribution....
   if(meat_dist_high_type=="gamma"){
-    shape <- meat_dist_high$g_shape
-    rate <- meat_dist_high$g_rate
-    x_shift <- meat_dist_high$g_mean_diff
-    meat_intake_high <- function(x){y <- dgamma(x-x_shift, shape=shape, rate=rate)}
+    shape_m_hr <- meat_dist_high$g_shape
+    rate_m_hr <- meat_dist_high$g_rate
+    x_shift_m_hr <- meat_dist_high$g_mean_diff
+    meat_intake_high <- function(x){y <- dgamma(x-x_shift_m_hr, shape=shape_m_hr, rate=rate_m_hr)}
   }
   
   # If lognormal distribution...
   if(meat_dist_high_type=="log-normal"){
-    mu <- meat_dist_high$ln_meanlog
-    sigma <- meat_dist_high$ln_sdlog
-    x_shift <- meat_dist_high$ln_mean_diff
-    meat_intake_high <- function(x){y <- dlnorm(x-x_shift, meanlog=mu, sdlog=sigma)}
+    mu_m_hr <- meat_dist_high$ln_meanlog
+    sigma_m_hr <- meat_dist_high$ln_sdlog
+    x_shift_m_hr <- meat_dist_high$ln_mean_diff
+    meat_intake_high <- function(x){y <- dlnorm(x-x_shift_m_hr, meanlog=mu_m_hr, sdlog=sigma_m_hr)}
+  }
+  
+  if(F){
+    
+    x <- -300:2000
+    y_lo <- meat_intake_base(x)
+    y_hi <- meat_intake_high(x)
+    plot(x, y_lo, type="l", col="red")
+    lines(x, y_hi, col="blue")
+    
   }
   
   # Calculate DALYs
@@ -744,12 +509,12 @@ for(i in 1:nrow(dalys)){
     
     # DALY combined
     DALY2030_all <- try(red_meat_PAF(Intake_br = meat_intake_base, 
-                                 Intake_hr = meat_intake_high,
-                                 age = age_id_do,
-                                 meat_outcome = cause_do,
-                                 red_meat_2019 = red_meat_raw_2019,
-                                 red_meat_RR,
-                                 flag_meat = 0) * DALY2030)
+                                     Intake_hr = meat_intake_high,
+                                     age = age_id_do,
+                                     meat_outcome = cause_do,
+                                     red_meat_2019 = red_meat_raw_2019,
+                                     red_meat_RR,
+                                     flag_meat = 0) * DALY2030)
     
     # Step 2
     ########################
@@ -770,7 +535,6 @@ for(i in 1:nrow(dalys)){
   if(inherits(DALY2030_all, "try-error")){DALY2030_all <- NA}
   if(inherits(deltaDALY2030_all_hr, "try-error")){deltaDALY2030_all_hr <- NA}
   if(inherits(DALY2030_all_hr, "try-error")){DALY2030_all_hr <- NA}
-  
   
   # Record results
   dalys$DALY2030_all[i] <- DALY2030_all

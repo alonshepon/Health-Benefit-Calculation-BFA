@@ -15,9 +15,9 @@ plotdir <- "figures"
 codedir <- "code"
 
 # Read other data (in repository)
-omega_N_raw_2019 <- read.xlsx('data/omega_RR_2019.xlsx')
-red_meat_raw_2019 <- read.xlsx('data/meat_RR_2019.xlsx')
-EAR_requirements <- read.xlsx('data/EAR_requirements_GBDgroups.xlsx')
+omega_N_raw_2019 <- openxlsx::read.xlsx('data/omega_RR_2019.xlsx')
+red_meat_raw_2019 <- openxlsx::read.xlsx('data/meat_RR_2019.xlsx')
+EAR_requirements <- openxlsx::read.xlsx('data/EAR_requirements_GBDgroups.xlsx')
 
 # Read distributions (micronutrients)
 dists <- readRDS(file.path("data/cosimo/processed/COSIMO_2010_2030_country_nutrient_age_sex_means_and_distributions.Rds"))
@@ -346,20 +346,32 @@ write.csv(sev_omega_final, file=file.path(outputdir, "2030_sevs_base_high_road_o
 # CHANGE TO CALCULATE FOR EACH CAUSE AND AVERAGE
 
 # Build data required for micronutrient SEV calculations
-data_sev_meat <- dists2030_meat %>% 
+data_sev_meat_1cause <- dists2030_meat %>% 
   # Reduce to age groups with required data
   filter(age_id>=10)
+
+# Expand for each each
+data_sev_meat <- purrr::map_df(cause_meat, function(x){
+  
+  df <- data_sev_meat_1cause %>% 
+    mutate(cause=x)
+  
+})
+
+data_sev_meat <- data_sev_meat %>% 
+  arrange(country, scenario, sex_id, age_id)
 
 # Loop through
 for(x in 1:nrow(data_sev_meat)){
   
   # Parameters
-  print(x)
+  if(x %in% seq(100,80000,100)){print(x)}
   scenario_do <- data_sev_meat$scenario[x]
   iso3_do <- data_sev_meat$iso3[x]
   nutr_do <- data_sev_meat$nutrient[x]
   age_id_do <- data_sev_meat$age_id[x]
   sex_id_do <- data_sev_meat$sex_id[x]
+  cause_do <- data_sev_meat$cause[x]
   best_dist <- data_sev_meat$best_dist[x]
   
   # If gamma distribution....
@@ -378,10 +390,10 @@ for(x in 1:nrow(data_sev_meat)){
     intake_function <- function(x){y <- dlnorm(x-x_shift, meanlog=mu, sdlog=sigma)}
   }
   
-  # Calculate SEV
+  # Calculate SEV 
   sev <- try(red_meat_SEV(Intake=intake_function,
                           age=age_id_do,
-                          meat_outcome=493,
+                          meat_outcome=cause_do,
                           red_meat_2019=red_meat_raw_2019,
                           red_meat_RR))
   
@@ -400,7 +412,7 @@ for(x in 1:nrow(data_sev_meat)){
 # Format SEVs
 sev_meat_final <- data_sev_meat %>% 
   mutate(nutrient="Red meat") %>% 
-  select(scenario, nutrient, country, iso3, sex_id, age_id, sev) %>% 
+  select(scenario, nutrient, country, iso3, sex_id, age_id, cause, sev) %>% 
   spread(key="scenario", value="sev") %>% 
   rename(sev_high="High road", sev_base="Base") %>% 
   mutate(sev_delta=sev_high-sev_base)
