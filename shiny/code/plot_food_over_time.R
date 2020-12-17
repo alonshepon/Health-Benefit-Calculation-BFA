@@ -20,7 +20,7 @@ plot_food_over_time <- function(data, country, base_theme){
            food=recode(food, "Hfcs"="HFCS"))
   
   # Plot data
-  g <- ggplot(sdata, aes(x=year, y=value*1000/365, color=scenario)) +
+  g <- ggplot(sdata, aes(x=year, y=value, color=scenario)) +
     facet_wrap(~food, ncol=4, scale="free_y") +
     geom_line() +
     # Add vertcial line

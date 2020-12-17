@@ -31,7 +31,7 @@ c_avgs <- sevs %>%
   group_by(nutrient, iso3, country) %>% 
   summarize(sev_delta_avg=mean(sev_delta, na.rm=T)) %>% 
   ungroup() %>% 
-  filter(!is.na(c_avgs))
+  filter(!is.na(sev_delta_avg))
 
 
 # Plot data

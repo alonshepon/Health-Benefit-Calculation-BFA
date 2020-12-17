@@ -14,7 +14,7 @@ plot_food_over_time_diff <- function(data, country, base_theme){
            food=recode(food, "Hfcs"="HFCS"))
   
   # Plot data
-  g <- ggplot(sdata, aes(x=year, y=value_diff*1000/365)) +
+  g <- ggplot(sdata, aes(x=year, y=value_diff)) +
     facet_wrap(~food, ncol=4, scale="free_y") +
     geom_line() +
     # Add horizontal line

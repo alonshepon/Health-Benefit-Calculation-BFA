@@ -4,7 +4,7 @@
 # RR
 #################################################################################
 
-# Function of Relative Risk of omega n-3
+# Function of Relative Risk of omega n-3  #input in units of mg/d
 omega_n3_RR <- function(val,age,omega_N_raw_2019){
   
   # If..
@@ -17,15 +17,18 @@ omega_n3_RR <- function(val,age,omega_N_raw_2019){
   }else{
     
     agepaste<-paste("age",as.character(age),sep="")
-    x<-omega_N_raw_2019$x # keep in grams
+    x<-omega_N_raw_2019$x  #g/d
     y<-omega_N_raw_2019[ , grepl( agepaste , names( omega_N_raw_2019 ) ) ]
+    #add extra points to extend the RR function for outliers
+    x<-heemod:::insert(x,pos=length(x),2); y<-heemod:::insert(y,pos=length(y),last(y));
+    x<-heemod:::insert(x,pos=0,-0.2); y<-heemod:::insert(y,pos=0,1);
     xtrans<-splinefun(x, y,method = c("monoH.FC"),ties = mean)
     return(xtrans(val))
   }
   
 }
 
-# Function of Relative Risk of high red meat for various outcomes
+# Function of Relative Risk of high red meat for various outcomes #input in units of g/d
 red_meat_RR <- function(val,age,meat_outcome, red_meat_2019){
   
   # If..
@@ -45,6 +48,9 @@ red_meat_RR <- function(val,age,meat_outcome, red_meat_2019){
       # build age specific RR
       meat_raw_2019_outcome<-red_meat_2019[red_meat_2019$Diet.high.in.red.meat=="Breast cancer",];
       y<-meat_raw_2019_outcome[ , grepl( agepaste , names( meat_raw_2019_outcome ) ) ]
+      #add extra points to extend the RR function for outliers
+      x<-heemod:::insert(x,pos=length(x),1000); y<-heemod:::insert(y,pos=length(y),last(y));
+      x<-heemod:::insert(x,pos=0,-200); y<-heemod:::insert(y,pos=0,1);
       xtrans<-splinefun(x, y,method = c("monoH.FC"),ties = mean)
     }
     
@@ -53,6 +59,9 @@ red_meat_RR <- function(val,age,meat_outcome, red_meat_2019){
       # build age specific RR
       meat_raw_2019_outcome<-red_meat_2019[red_meat_2019$Diet.high.in.red.meat=="Colon and rectum cancer",];
       y<-meat_raw_2019_outcome[ , grepl( agepaste , names( meat_raw_2019_outcome ) ) ]
+      #add extra points to extend the RR function for outliers
+      x<-heemod:::insert(x,pos=length(x),1000); y<-heemod:::insert(y,pos=length(y),last(y));
+      x<-heemod:::insert(x,pos=0,-200); y<-heemod:::insert(y,pos=0,1);
       xtrans<-splinefun(x, y,method = c("monoH.FC"),ties = mean)
     }
     
@@ -61,6 +70,9 @@ red_meat_RR <- function(val,age,meat_outcome, red_meat_2019){
       # build age specific RR
       meat_raw_2019_outcome<-red_meat_2019[red_meat_2019$Diet.high.in.red.meat=="Ischemic heart disease",];
       y<-meat_raw_2019_outcome[ , grepl( agepaste , names( meat_raw_2019_outcome ) ) ]
+      #add extra points to extend the RR function for outliers
+      x<-heemod:::insert(x,pos=length(x),1000); y<-heemod:::insert(y,pos=length(y),last(y));
+      x<-heemod:::insert(x,pos=0,-200); y<-heemod:::insert(y,pos=0,1);
       xtrans<-splinefun(x, y,method = c("monoH.FC"),ties = mean)
     }
     
@@ -69,6 +81,9 @@ red_meat_RR <- function(val,age,meat_outcome, red_meat_2019){
       # build age specific RR
       meat_raw_2019_outcome<-red_meat_2019[red_meat_2019$Diet.high.in.red.meat=="Ischemic stroke",];
       y<-meat_raw_2019_outcome[ , grepl( agepaste , names( meat_raw_2019_outcome ) ) ]
+      #add extra points to extend the RR function for outliers
+      x<-heemod:::insert(x,pos=length(x),1000); y<-heemod:::insert(y,pos=length(y),last(y));
+      x<-heemod:::insert(x,pos=0,-200); y<-heemod:::insert(y,pos=0,1);
       xtrans<-splinefun(x, y,method = c("monoH.FC"),ties = mean)
     }
     
@@ -78,6 +93,9 @@ red_meat_RR <- function(val,age,meat_outcome, red_meat_2019){
       meat_raw_2019_outcome<-red_meat_2019[red_meat_2019$Diet.high.in.red.meat=="Intracerebral hemorrhage",];
       y<-meat_raw_2019_outcome[ , grepl( agepaste , names( meat_raw_2019_outcome ) ) ]
       xtrans<-splinefun(x, y,method = c("monoH.FC"),ties = mean)
+      #add extra points to extend the RR function for outliers
+      x<-heemod:::insert(x,pos=length(x),1000); y<-heemod:::insert(y,pos=length(y),last(y));
+      x<-heemod:::insert(x,pos=0,-200); y<-heemod:::insert(y,pos=0,1);
     }
     
     if (meat_outcome==497){ # Subarachnoid hemorrhage REI_id=496 
@@ -85,6 +103,9 @@ red_meat_RR <- function(val,age,meat_outcome, red_meat_2019){
       # build age specific RR
       meat_raw_2019_outcome<-red_meat_2019[red_meat_2019$Diet.high.in.red.meat=="Subarachnoid hemorrhage",];
       y<-meat_raw_2019_outcome[ , grepl( agepaste , names( meat_raw_2019_outcome ) ) ]
+      #add extra points to extend the RR function for outliers
+      x<-heemod:::insert(x,pos=length(x),1000); y<-heemod:::insert(y,pos=length(y),last(y));
+      x<-heemod:::insert(x,pos=0,-200); y<-heemod:::insert(y,pos=0,1);
       xtrans<-splinefun(x, y,method = c("monoH.FC"),ties = mean)
     }
     
@@ -93,6 +114,9 @@ red_meat_RR <- function(val,age,meat_outcome, red_meat_2019){
       # build age specific RR
       meat_raw_2019_outcome<-red_meat_2019[red_meat_2019$Diet.high.in.red.meat=="Diabetes mellitus type 2",];
       y<-meat_raw_2019_outcome[ , grepl( agepaste , names( meat_raw_2019_outcome ) ) ]
+      #add extra points to extend the RR function for outliers
+      x<-heemod:::insert(x,pos=length(x),1000); y<-heemod:::insert(y,pos=length(y),last(y));
+      x<-heemod:::insert(x,pos=0,-200); y<-heemod:::insert(y,pos=0,1);
       xtrans<-splinefun(x, y,method = c("monoH.FC"),ties = mean)
     }
     
@@ -147,19 +171,19 @@ omega_n3_SEV <- function(Intake,age,omega_N_raw_2019,omega_n3_RR){
   if(age==5|age==6 | age==7| age==8| age==9){
     
     SEV <- 0
-
-  # Else..    
+    
+    # Else..    
   }else{
     agepaste<-paste("age",as.character(age),sep="")
     y<-omega_N_raw_2019[ , grepl( agepaste , names( omega_N_raw_2019 ) ) ]
     RRmax<-last(y)
     integrant<-function(x){Intake(x)*omega_n3_RR(x,age,omega_N_raw_2019)}
-    int<-(integrate(integrant,lower=-Inf,upper=Inf))
-    SEV<-max((int$value-RRmax)/(1-RRmax)*100,0)
+    int<-(integrate(integrant,lower=-0.2,upper=2))
+    SEV<-((int$value-RRmax)/(1-RRmax)*100)
   }
   
   # Prevent negative
-  SEV <- pmax(SEV, 0)
+  #SEV <- pmax(SEV, 0)
   
   return(SEV)
   
@@ -172,8 +196,8 @@ red_meat_SEV <- function(Intake,age,meat_outcome, red_meat_2019,red_meat_RR){
   if(age==5|age==6 | age==7| age==8| age==9){
     
     SEV <- 0
-  
-  # Else..(adolescents and adults)   
+    
+    # Else..(adolescents and adults)   
   }else{
     agepaste<-paste("age",as.character(age),sep="")   #age
     
@@ -185,8 +209,8 @@ red_meat_SEV <- function(Intake,age,meat_outcome, red_meat_2019,red_meat_RR){
       y<-meat_raw_2019_outcome[ , grepl( agepaste , names( meat_raw_2019_outcome ) ) ]
       RRmax<-last(y)
       integrant<-function(x){Intake(x)*red_meat_RR(x,age,meat_outcome,red_meat_2019)}
-      int<-(integrate(integrant,lower=-Inf,upper=Inf))
-      SEV<-min((int$value-1)/(RRmax-1)*100,100)
+      int<-(integrate(integrant,lower=-200,upper=1000))
+      SEV<-((int$value-1)/(RRmax-1)*100)
       
     }
     
@@ -197,8 +221,8 @@ red_meat_SEV <- function(Intake,age,meat_outcome, red_meat_2019,red_meat_RR){
       y<-meat_raw_2019_outcome[ , grepl( agepaste , names( meat_raw_2019_outcome ) ) ]
       RRmax<-last(y)
       integrant<-function(x){Intake(x)*red_meat_RR(x,age,meat_outcome,red_meat_2019)}
-      int<-(integrate(integrant,lower=-Inf,upper=Inf))
-      SEV<-min((int$value-1)/(RRmax-1)*100,100)
+      int<-(integrate(integrant,lower=-200,upper=1000))
+      SEV<-((int$value-1)/(RRmax-1)*100)
     }
     
     if (meat_outcome==493){ # Ischemic heart disease REI_id=493
@@ -208,8 +232,8 @@ red_meat_SEV <- function(Intake,age,meat_outcome, red_meat_2019,red_meat_RR){
       y<-meat_raw_2019_outcome[ , grepl( agepaste , names( meat_raw_2019_outcome ) ) ]
       RRmax<-last(y)
       integrant<-function(x){Intake(x)*red_meat_RR(x,age,meat_outcome,red_meat_2019)}
-      int<-(integrate(integrant,lower=-Inf,upper=Inf))
-      SEV<-min((int$value-1)/(RRmax-1)*100,100)
+      int<-(integrate(integrant,lower=-200,upper=1000))
+      SEV<-((int$value-1)/(RRmax-1)*100)
       
     }
     
@@ -220,8 +244,8 @@ red_meat_SEV <- function(Intake,age,meat_outcome, red_meat_2019,red_meat_RR){
       y<-meat_raw_2019_outcome[ , grepl( agepaste , names( meat_raw_2019_outcome ) ) ]
       RRmax<-last(y)
       integrant<-function(x){Intake(x)*red_meat_RR(x,age,meat_outcome,red_meat_2019)}
-      int<-(integrate(integrant,lower=-Inf,upper=Inf))
-      SEV<-min((int$value-1)/(RRmax-1)*100,100)
+      int<-(integrate(integrant,lower=-200,upper=1000))
+      SEV<-((int$value-1)/(RRmax-1)*100)
     }
     
     if (meat_outcome==496){ # Intracerebral hemorrhage REI_id=496
@@ -231,8 +255,8 @@ red_meat_SEV <- function(Intake,age,meat_outcome, red_meat_2019,red_meat_RR){
       y<-meat_raw_2019_outcome[ , grepl( agepaste , names( meat_raw_2019_outcome ) ) ]
       RRmax<-last(y)
       integrant<-function(x){Intake(x)*red_meat_RR(x,age,meat_outcome,red_meat_2019)}
-      int<-(integrate(integrant,lower=-Inf,upper=Inf))
-      SEV<-min((int$value-1)/(RRmax-1)*100,100)
+      int<-(integrate(integrant,lower=-200,upper=1000))
+      SEV<-((int$value-1)/(RRmax-1)*100)
       
     }
     
@@ -243,8 +267,8 @@ red_meat_SEV <- function(Intake,age,meat_outcome, red_meat_2019,red_meat_RR){
       y<-meat_raw_2019_outcome[ , grepl( agepaste , names( meat_raw_2019_outcome ) ) ]
       RRmax<-last(y)
       integrant<-function(x){Intake(x)*red_meat_RR(x,age,meat_outcome,red_meat_2019)}
-      int<-(integrate(integrant,lower=-Inf,upper=Inf))
-      SEV<-min((int$value-1)/(RRmax-1)*100,100)
+      int<-(integrate(integrant,lower=-200,upper=1000))
+      SEV<-((int$value-1)/(RRmax-1)*100)
       
     }
     
@@ -255,15 +279,15 @@ red_meat_SEV <- function(Intake,age,meat_outcome, red_meat_2019,red_meat_RR){
       y<-meat_raw_2019_outcome[ , grepl( agepaste , names( meat_raw_2019_outcome ) ) ]
       RRmax<-last(y)
       integrant<-function(x){Intake(x)*red_meat_RR(x,age,meat_outcome,red_meat_2019)}
-      int<-(integrate(integrant,lower=-Inf,upper=Inf))
-      SEV<-min((int$value-1)/(RRmax-1)*100,100)
+      int<-(integrate(integrant,lower=-200,upper=1000))
+      SEV<-((int$value-1)/(RRmax-1)*100)
       
     }
     
   }
   
   # Prevent negative
-  SEV <- pmax(SEV, 0)
+  #SEV <- pmax(SEV, 0)
   
   return(SEV)
   
@@ -273,11 +297,11 @@ red_meat_SEV <- function(Intake,age,meat_outcome, red_meat_2019,red_meat_RR){
 micronutrient_SEV <- function(Intake, age, sex, nutrient, country_SDIgroup, EAR_requirements){
   
   integrant<-function(x){micronutrient_RR(x,age,sex, nutrient, country_SDIgroup, EAR_requirements)*Intake(x)}
-  res<-integrate(integrant, lower=-Inf,upper=Inf)
+  res<-integrate(integrant, lower=-200,upper=5000)
   SEV<-res$value*100
   
   # Prevent negative
-  SEV <- pmax(SEV, 0)
+  #SEV <- pmax(SEV, 0)
   
   # Return
   return(SEV)
@@ -297,8 +321,8 @@ red_meat_PAF <- function(Intake_br, Intake_hr, age, meat_outcome, red_meat_2019,
   if(age==5|age==6 | age==7| age==8| age==9){
     
     PAF <- 0
-  
-  # Else..(adolescents and adults)   
+    
+    # Else..(adolescents and adults)   
   }else{
     agepaste<-paste("age",as.character(age),sep="")   #age
     
@@ -313,9 +337,9 @@ red_meat_PAF <- function(Intake_br, Intake_hr, age, meat_outcome, red_meat_2019,
     
     # build age specific calculation
     integrant_br <- function(x){Intake_br(x)*red_meat_RR(x,age,meat_outcome,red_meat_2019)}
-    int_br <- (integrate(integrant_br,lower=-Inf,upper=Inf))
+    int_br <- (integrate(integrant_br,lower=-200,upper=1000))
     integrant_hr <- function(x){Intake_hr(x)*red_meat_RR(x,age,meat_outcome,red_meat_2019)}
-    int_hr <- (integrate(integrant_hr,lower=-Inf,upper=Inf))
+    int_hr <- (integrate(integrant_hr,lower=-200,upper=1000))
     
     if(flag_meat==1){
       PAF <- (int_hr$value-int_br$value) / int_br$value  #relative change
@@ -325,7 +349,7 @@ red_meat_PAF <- function(Intake_br, Intake_hr, age, meat_outcome, red_meat_2019,
   }
   
   # Prevent negative
-  PAF <- pmax(0, PAF)
+  #PAF <- pmax(0, PAF)
   
   return(PAF)
   
@@ -338,8 +362,8 @@ omega_n3_PAF <- function(Intake_br, Intake_hr, age, omega_N_raw_2019, omega_n3_R
   if(age==5|age==6 | age==7| age==8| age==9){
     
     PAF <- 0
-
-  # Else..    
+    
+    # Else..    
   }else{
     
     agepaste<-paste("age",as.character(age),sep="")
@@ -347,10 +371,10 @@ omega_n3_PAF <- function(Intake_br, Intake_hr, age, omega_N_raw_2019, omega_n3_R
     lowest_risk<-last(y)
     
     integrant_br <- function(x){Intake_br(x)*omega_n3_RR(x,age,omega_N_raw_2019)}
-    int_br <- (integrate(integrant_br,lower=-Inf,upper=Inf))
+    int_br <- (integrate(integrant_br,lower=-0.2,upper=2))
     
     integrant_hr <- function(x){Intake_hr(x)*omega_n3_RR(x,age,omega_N_raw_2019)}
-    int_hr <- (integrate(integrant_hr,lower=-Inf,upper=Inf))
+    int_hr <- (integrate(integrant_hr,lower=-0.2,upper=2))
     
     if(flag_omega==1){
       PAF <- (int_hr$value-int_br$value)/int_br$value  #relative change
@@ -361,7 +385,7 @@ omega_n3_PAF <- function(Intake_br, Intake_hr, age, omega_N_raw_2019, omega_n3_R
   }
   
   # Prevent negative
-  PAF <- pmax(0, PAF)
+  #PAF <- pmax(0, PAF)
   
   return(PAF)
   

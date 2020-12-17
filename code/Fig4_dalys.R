@@ -38,8 +38,8 @@ cdata <- dalys %>%
   # Remove a crazy one
   filter(country!="Taiwan") %>% 
   # Cap DALY difference
-  mutate(dalys_diff_cap=pmin(dalys_diff, 10), 
-         dalys_diff_cap=pmax(dalys_diff_cap, -10))
+  mutate(dalys_diff_cap=pmin(dalys_diff, 100), 
+         dalys_diff_cap=pmax(dalys_diff_cap, -100))
 
 # Add to world
 cdata_sf <- world %>% 

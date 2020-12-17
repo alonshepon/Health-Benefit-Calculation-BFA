@@ -40,6 +40,9 @@ dalys <- readRDS(file.path(datadir, "2030_dalys_base_high_road_summarized.Rds"))
 # Countries with data in 2030
 countries2030 <- nutrients %>% pull(country) %>% unique() %>% sort()
 
+# Nutrients
+nutrients_show <- c("Calcium", "Iron", "Vitamin A, RAE", "Vitamin B-12", "Zinc", "Omega-3 fatty acids")
+
 # Base theme
 base_theme <- theme(axis.text=element_text(size=14),
                     axis.title=element_text(size=16),
@@ -98,6 +101,15 @@ ui <- fluidPage(
   # Group means
   p("This shows subnational intake distributions in 2030 under the baseline and high road scenarios. The subnational distributions were derived from the COSIMO country-level mean and GENUS and SPADE derived scalars for determining the subnational group means. The lines show the EARS overlaid on top of the distributions."),
   plotOutput(outputId = "plot_subnational_nutr_dist_means", width=700, height=1400),
+  br(),
+  
+  # Select species
+  selectizeInput(inputId = "nutrient", label = "Select a nutrient:", 
+                 choices = nutrients_show,  multiple = F, options = NULL),
+  
+  # Within group distribution
+  p(""),
+  plotOutput(outputId = "plot_nutr_dists", width=800, height=800),
   br(),
   
   # SEVs
@@ -165,6 +177,12 @@ server <- function(input, output){
   # Plot subnational intake distributions
   output$plot_subnational_nutr_dist_means <- renderPlot({
     g <- plot_subnational_nutr_dist_means(data=nutr_dists, ears=ears, country=input$country, base_theme=base_theme)
+    g
+  })
+  
+  # Plot subnational intake distributions
+  output$plot_nutr_dists <- renderPlot({
+    g <- plot_nutr_dists(data=nutr_dists, country=input$country, nutrient=input$nutrient, base_theme=base_theme)
     g
   })
   
