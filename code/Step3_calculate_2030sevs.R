@@ -89,33 +89,6 @@ cause_meat_no_ischemic <- c(429,441,495,496,497,976)
 
 
 
-# Example code
-#####################################################################################
-
-# example of intake distributions for quality control (can delete it later)
-m=10
-m1=255
-Intake_bs_omega<-function(x){y=1/sqrt(2*pi*(m/5)^2)*exp(-(x-m)^2/(2*(m/5)^2))}#normal distribution for example
-Intake_hr_omega<-function(x){y=1/sqrt(2*pi*(m1/5)^2)*exp(-(x-m1)^2/(2*(m1/5)^2))}#normal distribution for example
-r<-seq(0:500)
-df<-omega_n3_SEV(Intake_bs_omega,10,omega_N_raw_2019,omega_n3_RR)
-plot(Intake_bs_omega(r),col='blue')
-
-m=200
-m1=60
-Intake_bs_meat<-function(x){y=1/sqrt(2*pi*(m/5)^2)*exp(-(x-m)^2/(2*(m/5)^2))}#normal distribution for example
-Intake_hr_meat<-function(x){y=1/sqrt(2*pi*(m1/5)^2)*exp(-(x-m1)^2/(2*(m1/5)^2))}#normal distribution for example
-df<-red_meat_SEV(Intake_bs_meat,10,493,red_meat_raw_2019,red_meat_RR)
-plot(Intake_bs_meat(r),col='blue')
-
-#c<-zinc_iron_vita_SEV(Intake, 10, 1, "Zinc", "low", EAR_requirements)
-#b<-red_meat_SEV(Intake,10,976, red_meat_2019,red_meat_RR)
-#plot(Intake(seq(0:500)))
-integrant<-function(x){Intake_bs_meat(x)}
-inter<-(integrate(integrant,lower=-Inf,upper=Inf))
-inter$value
-
-
 # Format intake distributions
 ##########################################################################################
 
@@ -123,6 +96,8 @@ inter$value
 dists2030 <- dists %>% 
   # Reduce to 2030
   filter(year==2030) %>% 
+  # Reduce to distributions with a mean
+  filter(!is.na(mean_group)) %>% 
   # Simplify 
   select(country, iso3, nutrient, sex, age_group, scenario, mean_group, best_dist, 
          g_shape, g_rate, g_mean, g_mean_diff,
@@ -157,7 +132,9 @@ dists2030 <- dists %>%
 # Merge data
 dists2030_meat <- dists_meat %>% 
   # Reduce to 2030
-  filter(year==2030) %>% 
+  filter(year==2030) %>%
+  # Reduce to distributions with a mean
+  filter(!is.na(mean_group)) %>% 
   # Simplify 
   select(country, iso3, nutrient, sex, age_group, scenario, mean_group, best_dist, 
          g_shape, g_rate, g_mean, g_mean_diff,
@@ -230,6 +207,8 @@ for(x in 1:nrow(data_sev_mn)){
     rate <- data_sev_mn$g_rate[x]
     x_shift <- data_sev_mn$g_mean_diff[x]
     intake_function <- function(x){y <- dgamma(x-x_shift, shape=shape, rate=rate)}
+    val_hi <- qgamma(p=0.9999, shape = shape, rate=rate) + x_shift
+    val_lo <- qgamma(p=0.0001, shape = shape, rate=rate) + x_shift
   }
   
   # If lognormal distribution...
@@ -238,6 +217,16 @@ for(x in 1:nrow(data_sev_mn)){
     sigma <- data_sev_mn$ln_sdlog[x]
     x_shift <- data_sev_mn$ln_mean_diff[x]
     intake_function <- function(x){y <- dlnorm(x-x_shift, meanlog=mu, sdlog=sigma)}
+    val_hi <- qlnorm(p=0.9999, meanlog=mu, sdlog=sigma) + x_shift
+    val_lo <- qlnorm(p=0.0001, meanlog=mu, sdlog=sigma) + x_shift
+  }
+  
+  # Plot dists 
+  if(F){
+    x <- seq(-200, 2000, by=1)
+    y <- intake_function(x=x)
+    plot(x, y, type="l")
+    abline(v=c(val_lo, val_hi), lty=1)
   }
   
   # Calculate SEV
@@ -246,7 +235,9 @@ for(x in 1:nrow(data_sev_mn)){
                                sex=sex_id_do,
                                nutrient=nutr_do, 
                                country_SDIgroup=sdi_group_do, 
-                               EAR_requirements))
+                               EAR_requirements,
+                               val_lo=val_lo,
+                               val_hi=val_hi))
   
   # Record based on try()
   if(inherits(sev, "try-error")){
@@ -300,6 +291,8 @@ for(x in 1:nrow(data_sev_omega)){
     rate <- data_sev_omega$g_rate[x]
     x_shift <- data_sev_omega$g_mean_diff[x]
     intake_function <- function(x){y <- dgamma(x-x_shift, shape=shape, rate=rate)}
+    val_hi <- qgamma(p=0.9999, shape = shape, rate=rate) + x_shift
+    val_lo <- qgamma(p=0.0001, shape = shape, rate=rate) + x_shift
   }
   
   # If lognormal distribution...
@@ -308,11 +301,23 @@ for(x in 1:nrow(data_sev_omega)){
     sigma <- data_sev_omega$ln_sdlog[x]
     x_shift <- data_sev_omega$ln_mean_diff[x]
     intake_function <- function(x){y <- dlnorm(x-x_shift, meanlog=mu, sdlog=sigma)}
+    val_hi <- qlnorm(p=0.9999, meanlog=mu, sdlog=sigma) + x_shift
+    val_lo <- qlnorm(p=0.0001, meanlog=mu, sdlog=sigma) + x_shift
+  }
+  
+  # Plot dists 
+  if(F){
+    x <- seq(-1,5,by=0.01)
+    y <- intake_function(x=x)
+    plot(x, y, type="l")
+    abline(v=c(val_lo, val_hi), lty=1)
   }
   
   # Calculate SEV
   sev <- try(omega_n3_SEV(Intake=intake_function,
                           age=age_id_do, 
+                          val_hi=val_hi,
+                          val_lo=val_lo,
                           omega_N_raw_2019,
                           omega_n3_RR))
   
@@ -343,7 +348,6 @@ write.csv(sev_omega_final, file=file.path(outputdir, "2030_sevs_base_high_road_o
 # Calculate changes in summary exposure values (SEVs) -- red meat
 ##########################################################################################
 
-# CHANGE TO CALCULATE FOR EACH CAUSE AND AVERAGE
 
 # Build data required for micronutrient SEV calculations
 data_sev_meat_1cause <- dists2030_meat %>% 
@@ -380,6 +384,8 @@ for(x in 1:nrow(data_sev_meat)){
     rate <- data_sev_meat$g_rate[x]
     x_shift <- data_sev_meat$g_mean_diff[x]
     intake_function <- function(x){y <- dgamma(x-x_shift, shape=shape, rate=rate)}
+    val_hi <- qgamma(p=0.9999, shape = shape, rate=rate) + x_shift
+    val_lo <- qgamma(p=0.0001, shape = shape, rate=rate) + x_shift
   }
   
   # If lognormal distribution...
@@ -388,11 +394,23 @@ for(x in 1:nrow(data_sev_meat)){
     sigma <- data_sev_meat$ln_sdlog[x]
     x_shift <- data_sev_meat$ln_mean_diff[x]
     intake_function <- function(x){y <- dlnorm(x-x_shift, meanlog=mu, sdlog=sigma)}
+    val_hi <- qlnorm(p=0.9999, meanlog=mu, sdlog=sigma) + x_shift
+    val_lo <- qlnorm(p=0.0001, meanlog=mu, sdlog=sigma) + x_shift
+  }
+  
+  # Plot dists 
+  if(F){
+    x_vals <- seq(-100,500,by=1)
+    y <- intake_function(x=x_vals)
+    plot(x_vals, y, type="l")
+    abline(v=c(val_lo, val_hi), lty=1)
   }
   
   # Calculate SEV 
   sev <- try(red_meat_SEV(Intake=intake_function,
                           age=age_id_do,
+                          val_hi=val_hi,
+                          val_lo=val_lo,
                           meat_outcome=cause_do,
                           red_meat_2019=red_meat_raw_2019,
                           red_meat_RR))

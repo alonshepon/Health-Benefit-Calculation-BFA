@@ -16,7 +16,10 @@ plotdir <- "figures"
 
 # Read data
 sevs <- readRDS(file.path(outputdir, "2030_sevs_base_high_road_final.Rds")) %>% 
-  mutate(sev_delta_cap=pmin(sev_delta, 2) %>% pmax(., -2))
+  mutate(sev_delta_cap=pmin(sev_delta, 2) %>% pmax(., -2)) %>% 
+  # Rename Vitamin A
+  mutate(nutrient=recode(nutrient, 
+                         "Vitamin A, RAE"="Vitamin A"))
 
 # World
 world <- rnaturalearth::ne_countries("small", returnclass = "sf")
@@ -25,13 +28,14 @@ world <- rnaturalearth::ne_countries("small", returnclass = "sf")
 # Build data
 ################################################################################
 
-
 # Calculate country-level means
 c_avgs <- sevs %>% 
+  # Remove NAs
+  filter(!is.na(sev_delta)) %>%
+  # Calculate country means
   group_by(nutrient, iso3, country) %>% 
   summarize(sev_delta_avg=mean(sev_delta, na.rm=T)) %>% 
-  ungroup() %>% 
-  filter(!is.na(sev_delta_avg))
+  ungroup()
 
 
 # Plot data
@@ -43,7 +47,7 @@ base_theme <-  theme(axis.text=element_text(size=6),
                      legend.text=element_text(size=6),
                      legend.title=element_text(size=8),
                      strip.text=element_text(size=8),
-                     plot.title=element_text(size=10),
+                     plot.title=element_text(size=9),
                      # Gridlines
                      panel.grid.major = element_blank(), 
                      panel.grid.minor = element_blank(),
@@ -65,12 +69,12 @@ plot_map <- function(nutrient){
     coord_sf(y=c(-55, NA)) +
     # Legend and labels
     labs(title=nutr_do) +
-    scale_fill_gradient2(name="ΔSEVs in 2030 (%)\n(high - base)", 
+    scale_fill_gradient2(name="ΔSEVs (%)\n(high - base)", 
                          low="navy", high="darkred", mid="white", midpoint=0) +
-    guides(fill = guide_colorbar(ticks.colour = "black", frame.colour = "black")) +
+    guides(fill = guide_colorbar(ticks.colour = "black", frame.colour = "black", barwidth = 0.8, barheight = 3)) +
     # Theme
     theme_bw() + base_theme +
-    theme(legend.position=c(0.2,0.4),
+    theme(legend.position=c(0.11,0.37),
           axis.text = element_blank(),
           axis.title=element_blank(), 
           legend.background = element_rect(fill=alpha('blue', 0)))
@@ -79,24 +83,34 @@ plot_map <- function(nutrient){
 }
 
 # Plot boxplot
-plot_boxplot <- function(nutrient){
+plot_boxplot <- function(nutrient, legend=F){
   
   # Format data
   nutr_do <- nutrient
   sdata <- sevs %>% 
     filter(nutrient==nutr_do)
   
+  # Legend position
+  if(legend){
+    pos <- c(0.66,0.17)
+  }else{
+    pos <- "none"
+  }
+  
   # Plot data
   g <- ggplot(sdata, aes(x=age_group, y=sev_delta_cap, fill=sex)) +
-    geom_boxplot(outlier.size = 0.3, lwd=0.3) +
+    geom_boxplot(outlier.size = 0.3, lwd=0.1, outlier.color = "grey50", outlier.alpha = 0.3) +
     # Add horizontal line
     geom_hline(yintercept=0, col="grey30", linetype="dotted") +
     # Labels
-    labs(x="Age group", y="ΔSEVs in 2030 (%)\n(high - base)", title=nutr_do) +
+    labs(x="Age group", y="ΔSEVs in 2030 (%)\n(high - base)", title="") +
+    scale_fill_discrete(name="") +
     # Theme
     theme_bw() +
     base_theme +
-    theme(legend.position = "none",
+    theme(legend.position = pos,
+          legend.direction = "horizontal",
+          legend.background = element_rect(fill=alpha('blue', 0)),
           axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
   g
   
@@ -106,15 +120,15 @@ plot_boxplot <- function(nutrient){
 # Plot maps
 map1 <- plot_map("Calcium")
 map2 <- plot_map("Iron")
-map3 <- plot_map("Vitamin A, RAE")
+map3 <- plot_map("Vitamin A")
 map4 <- plot_map("Zinc")
 map5 <- plot_map("Omega-3 fatty acids")
 map6 <- plot_map("Red meat")
 
 # Plot boxplots
-box1 <- plot_boxplot("Calcium")
+box1 <- plot_boxplot("Calcium", legend=T)
 box2 <- plot_boxplot("Iron")
-box3 <- plot_boxplot("Vitamin A, RAE")
+box3 <- plot_boxplot("Vitamin A")
 box4 <- plot_boxplot("Zinc")
 box5 <- plot_boxplot("Omega-3 fatty acids")
 box6 <- plot_boxplot("Red meat")

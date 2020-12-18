@@ -136,33 +136,6 @@ j <- dalys_fishANDmeat %>%
   filter(year==2017)
 
 
-# Example
-#####################################################################################
-
-# example of intake distributions for quality control (can delete it later)
-m=10
-m1=255
-Intake_bs_omega<-function(x){y=1/sqrt(2*pi*(m/5)^2)*exp(-(x-m)^2/(2*(m/5)^2))}#normal distribution for example
-Intake_hr_omega<-function(x){y=1/sqrt(2*pi*(m1/5)^2)*exp(-(x-m1)^2/(2*(m1/5)^2))}#normal distribution for example
-r<-seq(0:500)
-df<-omega_n3_SEV(Intake_bs_omega,10,omega_N_raw_2019,omega_n3_RR)
-plot(Intake_bs_omega(r),col='blue')
-
-m=200
-m1=60
-Intake_bs_meat<-function(x){y=1/sqrt(2*pi*(m/5)^2)*exp(-(x-m)^2/(2*(m/5)^2))}#normal distribution for example
-Intake_hr_meat<-function(x){y=1/sqrt(2*pi*(m1/5)^2)*exp(-(x-m1)^2/(2*(m1/5)^2))}#normal distribution for example
-df<-red_meat_SEV(Intake_bs_meat,10,493,red_meat_raw_2019,red_meat_RR)
-plot(Intake_bs_meat(r),col='blue')
-
-#c<-zinc_iron_vita_SEV(Intake, 10, 1, "Zinc", "low", EAR_requirements)
-#b<-red_meat_SEV(Intake,10,976, red_meat_2019,red_meat_RR)
-#plot(Intake(seq(0:500)))
-integrant<-function(x){Intake_bs_meat(x)}
-inter<-(integrate(integrant,lower=-Inf,upper=Inf))
-inter$value
-
-
 # Format intake distributions
 ##########################################################################################
 
@@ -348,6 +321,8 @@ for(i in 1:nrow(dalys)){
     rate_o_b <- omega_dist_base$g_rate
     x_shift_o_b <- omega_dist_base$g_mean_diff
     omega_intake_base <- function(x){y <- dgamma(x-x_shift_o_b, shape=shape_o_b, rate=rate_o_b)}
+    val_hi_o_br <- qgamma(p=0.9999, shape = shape_o_b, rate=rate_o_b) + x_shift_o_b
+    val_lo_o_br <- qgamma(p=0.0001, shape = shape_o_b, rate=rate_o_b) + x_shift_o_b
   }
   
   # If lognormal distribution...
@@ -356,6 +331,8 @@ for(i in 1:nrow(dalys)){
     sigma_o_b <- omega_dist_base$ln_sdlog
     x_shift_o_b <- omega_dist_base$ln_mean_diff
     omega_intake_base <- function(x){y <- dlnorm(x-x_shift_o_b, meanlog=mu_o_b, sdlog=sigma_o_b)}
+    val_hi_o_br <- qlnorm(p=0.9999, meanlog=mu_o_b, sdlog=sigma_o_b) + x_shift_o_b
+    val_lo_o_br <- qlnorm(p=0.0001, meanlog=mu_o_b, sdlog=sigma_o_b) + x_shift_o_b
   }
   
   # High road
@@ -372,6 +349,8 @@ for(i in 1:nrow(dalys)){
     rate_o_hr <- omega_dist_high$g_rate
     x_shift_o_hr <- omega_dist_high$g_mean_diff
     omega_intake_high <- function(x){y <- dgamma(x-x_shift_o_hr, shape=shape_o_hr, rate=rate_o_hr)}
+    val_hi_o_hr <- qgamma(p=0.9999, shape = shape_o_hr, rate=rate_o_hr) + x_shift_o_hr
+    val_lo_o_hr <- qgamma(p=0.0001, shape = shape_o_hr, rate=rate_o_hr) + x_shift_o_hr
   }
   
   # If lognormal distribution...
@@ -380,6 +359,8 @@ for(i in 1:nrow(dalys)){
     sigma_o_hr <- omega_dist_high$ln_sdlog
     x_shift_o_hr <- omega_dist_high$ln_mean_diff
     omega_intake_high <- function(x){y <- dlnorm(x-x_shift_o_hr, meanlog=mu_o_hr, sdlog=sigma_o_hr)}
+    val_hi_o_hr <- qlnorm(p=0.9999, meanlog=mu_o_hr, sdlog=sigma_o_hr) + x_shift_o_hr
+    val_lo_o_hr <- qlnorm(p=0.0001, meanlog=mu_o_hr, sdlog=sigma_o_hr) + x_shift_o_hr
   }
   
   # Setup meat intake distribution
@@ -399,6 +380,8 @@ for(i in 1:nrow(dalys)){
     rate_m_b <- meat_dist_base$g_rate
     x_shift_m_b <- meat_dist_base$g_mean_diff
     meat_intake_base <- function(x){y <- dgamma(x-x_shift_m_b, shape=shape_m_b, rate=rate_m_b)}
+    val_hi_m_br <- qgamma(p=0.9999, shape = shape_m_b, rate=rate_m_b) + x_shift_m_b
+    val_lo_m_br <- qgamma(p=0.0001, shape = shape_m_b, rate=rate_m_b) + x_shift_m_b
   }
   
   # If lognormal distribution...
@@ -407,6 +390,8 @@ for(i in 1:nrow(dalys)){
     sigma_m_b <- meat_dist_base$ln_sdlog
     x_shift_m_b <- meat_dist_base$ln_mean_diff
     meat_intake_base <- function(x){y <- dlnorm(x-x_shift_m_b, meanlog=mu_m_b, sdlog=sigma_m_b)}
+    val_hi_m_br <- qlnorm(p=0.9999, meanlog=mu_m_b, sdlog=sigma_m_b) + x_shift_m_b
+    val_lo_m_br <- qlnorm(p=0.0001, meanlog=mu_m_b, sdlog=sigma_m_b) + x_shift_m_b
   }
   
   # High road
@@ -423,6 +408,8 @@ for(i in 1:nrow(dalys)){
     rate_m_hr <- meat_dist_high$g_rate
     x_shift_m_hr <- meat_dist_high$g_mean_diff
     meat_intake_high <- function(x){y <- dgamma(x-x_shift_m_hr, shape=shape_m_hr, rate=rate_m_hr)}
+    val_hi_m_hr <- qgamma(p=0.9999, shape = shape_m_hr, rate=rate_m_hr) + x_shift_m_hr
+    val_lo_m_hr <- qgamma(p=0.0001, shape = shape_m_hr, rate=rate_m_hr) + x_shift_m_hr
   }
   
   # If lognormal distribution...
@@ -431,6 +418,8 @@ for(i in 1:nrow(dalys)){
     sigma_m_hr <- meat_dist_high$ln_sdlog
     x_shift_m_hr <- meat_dist_high$ln_mean_diff
     meat_intake_high <- function(x){y <- dlnorm(x-x_shift_m_hr, meanlog=mu_m_hr, sdlog=sigma_m_hr)}
+    val_hi_m_hr <- qlnorm(p=0.9999, meanlog=mu_m_hr, sdlog=sigma_m_hr) + x_shift_m_hr
+    val_lo_m_hr <- qlnorm(p=0.0001, meanlog=mu_m_hr, sdlog=sigma_m_hr) + x_shift_m_hr
   }
   
   if(F){
@@ -440,6 +429,7 @@ for(i in 1:nrow(dalys)){
     y_hi <- meat_intake_high(x)
     plot(x, y_lo, type="l", col="red")
     lines(x, y_hi, col="blue")
+    abline(v=c(val_lo_m_br, val_hi_m_br))
     
   }
   
@@ -460,17 +450,25 @@ for(i in 1:nrow(dalys)){
                                     age = age_id_do,
                                     omega_N_raw_2019,
                                     omega_n3_RR,
-                                    flag_omega = 0))
+                                    flag_omega = 0,
+                                    val_lo_br=val_lo_o_br,
+                                    val_hi_br=val_hi_o_br,
+                                    val_lo_hr=val_lo_o_hr,
+                                    val_hi_hr=val_hi_o_hr))
     DALY2030_omega2 <- try(DALY2030_omega1 * DALY2030)
     
     # DALY red meat
     DALY2030_meat1 <- try(red_meat_PAF(Intake_br = meat_intake_base, 
-                                   Intake_hr = meat_intake_high,
-                                   age = age_id_do,
-                                   meat_outcome = cause_do,
-                                   red_meat_2019 = red_meat_raw_2019, 
-                                   red_meat_RR,
-                                   flag_meat = 0)) 
+                                       Intake_hr = meat_intake_high,
+                                       age = age_id_do,
+                                       meat_outcome = cause_do,
+                                       red_meat_2019 = red_meat_raw_2019, 
+                                       red_meat_RR,
+                                       flag_meat = 0,
+                                       val_lo_br=val_lo_m_br,
+                                       val_hi_br=val_hi_m_br,
+                                       val_lo_hr=val_lo_m_hr,
+                                       val_hi_hr=val_hi_m_hr)) 
     DALY2030_meat2 <- try(DALY2030_meat1 * DALY2030)
     
     # DALY combined
@@ -484,7 +482,11 @@ for(i in 1:nrow(dalys)){
                                       age = age_id_do,
                                       omega_N_raw_2019,
                                       omega_n3_RR,
-                                      flag_omega = 1))
+                                      flag_omega = 1,
+                                      val_lo_br=val_lo_o_br,
+                                      val_hi_br=val_hi_o_br,
+                                      val_lo_hr=val_lo_o_hr,
+                                      val_hi_hr=val_hi_o_hr))
     
     DALY2030_red_meat_hr <- try(red_meat_PAF(Intake_br = meat_intake_base, 
                                          Intake_hr = meat_intake_high,
@@ -492,7 +494,11 @@ for(i in 1:nrow(dalys)){
                                          meat_outcome = cause_do,
                                          red_meat_2019 = red_meat_raw_2019, 
                                          red_meat_RR,
-                                         flag_meat = 1))
+                                         flag_meat = 1,
+                                         val_lo_br=val_lo_m_br,
+                                         val_hi_br=val_hi_m_br,
+                                         val_lo_hr=val_lo_m_hr,
+                                         val_hi_hr=val_hi_m_hr))
     
     deltaDALY2030_all_hr <- try((1 - (1 - DALY2030_red_meat_hr) * (1 - DALY2030_omega_hr) )  * (DALY2030_all)) 
     
@@ -514,7 +520,11 @@ for(i in 1:nrow(dalys)){
                                      meat_outcome = cause_do,
                                      red_meat_2019 = red_meat_raw_2019,
                                      red_meat_RR,
-                                     flag_meat = 0) * DALY2030)
+                                     flag_meat = 0,
+                                     val_lo_br=val_lo_m_br,
+                                     val_hi_br=val_hi_m_br,
+                                     val_lo_hr=val_lo_m_hr,
+                                     val_hi_hr=val_hi_m_hr) * DALY2030)
     
     # Step 2
     ########################
@@ -525,7 +535,11 @@ for(i in 1:nrow(dalys)){
                                          meat_outcome = cause_do,
                                          red_meat_2019 = red_meat_raw_2019, 
                                          red_meat_RR,
-                                         flag_meat = 1) * DALY2030_all)
+                                         flag_meat = 1,
+                                         val_lo_br=val_lo_m_br,
+                                         val_hi_br=val_hi_m_br,
+                                         val_lo_hr=val_lo_m_hr,
+                                         val_hi_hr=val_hi_m_hr) * DALY2030_all)
     
     DALY2030_all_hr <- try(deltaDALY2030_all_hr + DALY2030_all)
     
