@@ -58,7 +58,7 @@ data <- bind_rows(sevs_mn, sevs_omega, sevs_meat) %>%
 
 # Export
 saveRDS(data, file.path(outputdir, "2030_sevs_base_high_road_final.Rds"))
-
+write.csv(data, file.path(outputdir, "2030_sevs_base_high_road_final.csv"), row.names = F)
 
 # Plot data
 ################################################################################

@@ -52,7 +52,10 @@ dalys_sum <- dalys %>%
 
 # Export
 saveRDS(dalys, file.path(outputdir, "2030_dalys_base_high_road_cleaned.Rds"))
+write.csv(dalys, file.path(outputdir, "2030_dalys_base_high_road_cleaned.csv"), row.names = F)
+
 saveRDS(dalys_sum, file.path(outputdir, "2030_dalys_base_high_road_summarized.Rds"))
+write.csv(dalys_sum, file.path(outputdir, "2030_dalys_base_high_road_summarized.csv"), row.names = F)
 
 
 
