@@ -16,8 +16,8 @@ outputdir <- "data/cosimo/processed"
 plotdir <- "data/cosimo/figures"
 
 # Read data
-food_lo_orig <- readxl::read_excel(file.path(inputdir, "FoodConsNutriBaseScen.xlsx"), sheet=3)
-food_hi_orig <- readxl::read_excel(file.path(inputdir, "FoodConsNutriBaseScen.xlsx"), sheet=4)
+food_lo_orig <- readxl::read_excel(file.path(inputdir, "ResultsUpdate2.xlsx"), sheet=3)
+food_hi_orig <- readxl::read_excel(file.path(inputdir, "ResultsUpdate2.xlsx"), sheet=4)
 
 # Read country key
 eu27_key <- read.csv(file.path(outputdir, "COSIMO_AGLINK_2020_country_key.csv"), as.is=T) %>% 
@@ -106,6 +106,15 @@ food_merge <- bind_rows(food_merge_a, food_merge_b)
 
 # Inspect
 freeR::complete(food_merge)
+
+# # Merge high and low road
+# food_merge <- food_lo  %>% 
+#   left_join(food_hi) %>% 
+#   # Add percentage
+#   mutate(value_diff=value_hi-value_lo,
+#          value_diff_perc=(value_hi-value_lo)/value_lo*100) %>% 
+#   # Arrange
+#   arrange(country, food, year)
   
 # Build keys
 ################################################################################
@@ -198,10 +207,27 @@ gstats <- food %>%
 g <- ggplot(gstats, aes(x=year, y=intake, color=scenario)) +
   geom_line() +
   facet_wrap(~food, ncol=4, scales="free_y") +
-  labs(x="", y="Mean intake") +
+  labs(x="", y="Mean intake (g/p/d)") +
   theme_bw() +
-  theme(legend.position = "bottom")
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
+        axis.text=element_text(size=6),
+        axis.title=element_text(size=8),
+        legend.text=element_text(size=6),
+        legend.title=element_text(size=8),
+        strip.text=element_text(size=8),
+        plot.title=element_text(size=10),
+        # Gridlines
+        panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(), 
+        axis.line = element_line(colour = "black"),
+        # Legend
+        legend.position="bottom")
 g
+
+# Export
+ggsave(g, filename=file.path(plotdir, "COSIMO_food_check.png"), 
+       width=6.5, height=6.5, units="in", dpi=600)
 
 
 

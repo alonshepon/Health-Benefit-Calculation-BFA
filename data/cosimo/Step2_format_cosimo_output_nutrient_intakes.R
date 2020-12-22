@@ -16,8 +16,8 @@ outputdir <- "data/cosimo/processed"
 plotdir <- "data/cosimo/figures"
 
 # Read data
-data_lo_orig <- readxl::read_excel(file.path(inputdir, "FoodConsNutriBaseScen.xlsx"), sheet=2)
-data_hi_orig <- readxl::read_excel(file.path(inputdir, "FoodConsNutriBaseScen.xlsx"), sheet=1)
+data_lo_orig <- readxl::read_excel(file.path(inputdir, "ResultsUpdate2.xlsx"), sheet=1)
+data_hi_orig <- readxl::read_excel(file.path(inputdir, "ResultsUpdate2.xlsx"), sheet=2)
 
 # Read country key
 eu27_key <- read.csv(file.path(outputdir, "COSIMO_AGLINK_2020_country_key.csv"), as.is=T) %>% 
@@ -114,9 +114,9 @@ data_orig <- data_lo %>%
   mutate(iso3=ifelse(iso3=="", "EUN", iso3)) %>% 
   # Arrange
   select(iso3, country, food_code, food, nutrient_code, nutrient, nutrient_units, year, everything()) %>% 
-  arrange(country, food, nutrient, year) %>% 
+  arrange(country, food, nutrient, year) #%>% 
   # Remove Total Food (which is missing in high road)
-  filter(food!="Total food")
+  # filter(food!="Total food")
 
 # Inspect data
 str(data_orig)
@@ -237,19 +237,39 @@ saveRDS(data2, file=file.path(outputdir, "COSIMO_2010_2030_nutr_by_scenario_cntr
 
 # Global stats
 gstats <- data2 %>% 
+  filter(food=="Total food") %>% 
   group_by(nutrient, nutrient_units, year) %>% 
   summarize(value_lo=mean(value_lo, na.rm=T),
             value_hi=mean(value_hi, na.rm=T)) %>% 
   gather(key="scenario", value="intake", 4:ncol(.)) %>% 
-  mutate(scenario=recode(scenario, "value_lo"="Base", "value_hi"="High"))
+  mutate(scenario=recode(scenario, "value_lo"="Base", "value_hi"="High"),
+         nutrient_label=paste0(nutrient, " (", nutrient_units, ")"))
 
 # Plot
 g <- ggplot(gstats, aes(x=year, y=intake, color=scenario)) +
   geom_line() +
-  facet_wrap(~nutrient, ncol=4, scales="free_y") +
+  facet_wrap(~nutrient_label, ncol=4, scales="free_y") +
   labs(x="", y="Mean intake") +
   theme_bw() +
-  theme(legend.position = "bottom")
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
+        axis.text=element_text(size=6),
+        axis.title=element_text(size=8),
+        legend.text=element_text(size=6),
+        legend.title=element_text(size=8),
+        strip.text=element_text(size=8),
+        plot.title=element_text(size=10),
+        # Gridlines
+        panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(), 
+        axis.line = element_line(colour = "black"),
+        # Legend
+        legend.position="bottom")
 g
+
+# Export
+ggsave(g, filename=file.path(plotdir, "COSIMO_nutrient_check.png"), 
+       width=6.5, height=6.5, units="in", dpi=600)
+
 
 
