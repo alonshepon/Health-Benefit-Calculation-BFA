@@ -28,6 +28,9 @@ world <- rnaturalearth::ne_countries("small", returnclass = "sf")
 # Build data
 ################################################################################
 
+# Nutrient order
+nutrients <- c("Omega-3 fatty acids", "Vitamin B-12", "Iron", "Zinc", "Calcium", "Vitamin A")
+
 # Calculate country-level means
 c_avgs <- sevs %>% 
   # Remove NAs
@@ -35,7 +38,9 @@ c_avgs <- sevs %>%
   # Calculate country means
   group_by(nutrient, iso3, country) %>% 
   summarize(sev_delta_avg=mean(sev_delta, na.rm=T)) %>% 
-  ungroup()
+  ungroup() %>% 
+  # Order nutrients
+  mutate(nutrient=factor(nutrient, levels=nutrients))
 
 
 # Plot data
@@ -46,7 +51,7 @@ base_theme <-  theme(axis.text=element_text(size=6),
                      axis.title=element_text(size=8),
                      legend.text=element_text(size=6),
                      legend.title=element_text(size=8),
-                     strip.text=element_text(size=8),
+                     strip.text=element_text(size=),
                      plot.title=element_text(size=9),
                      # Gridlines
                      panel.grid.major = element_blank(), 
@@ -116,21 +121,56 @@ plot_boxplot <- function(nutrient, legend=F){
   
 }
 
+# Plot boxplot
+plot_boxplot2 <- function(nutrient, legend=F){
+  
+  # Format data
+  nutr_do <- nutrient
+  sdata <- sevs %>% 
+    filter(nutrient==nutr_do)
+  
+  # Legend position
+  if(legend){
+    pos <- c(0.66,0.17)
+  }else{
+    pos <- "none"
+  }
+  
+  # Plot data
+  g <- ggplot(sdata, aes(x=age_group, y=sev_delta_cap, fill=sex)) +
+    facet_wrap(~sex) +
+    geom_boxplot(outlier.size = 0.3, lwd=0.1, outlier.color = "grey50", outlier.alpha = 0.3) +
+    # Add horizontal line
+    geom_hline(yintercept=0, col="grey30", linetype="dotted") +
+    # Labels
+    labs(x="Age group", y="ΔSEVs in 2030 (%)\n(high - base)", title="") +
+    scale_fill_discrete(name="") +
+    # Theme
+    theme_bw() +
+    base_theme +
+    theme(legend.position = pos,
+          legend.direction = "horizontal",
+          legend.background = element_rect(fill=alpha('blue', 0)),
+          axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+  g
+  
+}
+
 # Plot maps
-map1 <- plot_map("Calcium")
-map2 <- plot_map("Iron")
-map3 <- plot_map("Vitamin A")
-map4 <- plot_map("Vitamin B-12")
-map5 <- plot_map("Zinc")
-map6 <- plot_map("Omega-3 fatty acids")
+map1 <- plot_map("Omega-3 fatty acids")
+map2 <- plot_map("Vitamin B-12")
+map3 <- plot_map("Iron")
+map4 <- plot_map("Zinc")
+map5 <- plot_map("Calcium")
+map6 <- plot_map("Vitamin A")
 
 # Plot boxplots
-box1 <- plot_boxplot("Calcium", legend=T)
-box2 <- plot_boxplot("Iron")
-box3 <- plot_boxplot("Vitamin A")
-box4 <- plot_boxplot("Vitamin B-12")
-box5 <- plot_boxplot("Zinc")
-box6 <- plot_boxplot("Omega-3 fatty acids")
+box1 <- plot_boxplot2("Omega-3 fatty acids")
+box2 <- plot_boxplot2("Vitamin B-12")
+box3 <- plot_boxplot2("Iron")
+box4 <- plot_boxplot2("Zinc")
+box5 <- plot_boxplot2("Calcium")
+box6 <- plot_boxplot2("Vitamin A")
 
 # Merge plots
 g <- gridExtra::grid.arrange(map1, box1,
@@ -139,10 +179,33 @@ g <- gridExtra::grid.arrange(map1, box1,
                              map4, box4,
                              map5, box5,
                              map6, box6,
-                             ncol=2, widths=c(0.6, 0.4))
+                             ncol=2)
 
 # Export
-ggsave(g, filename=file.path(plotdir, "Fig4_sevs.png"), 
-       width=6.5, height=10.5, units="in", dpi=600)
+ggsave(g, filename=file.path(plotdir, "Fig4_sevs_facet.png"), 
+       width=7, height=10.5, units="in", dpi=600)
+
+
+# # Plot boxplots
+# box1 <- plot_boxplot("Omega-3 fatty acids")
+# box2 <- plot_boxplot("Vitamin B-12")
+# box3 <- plot_boxplot("Iron")
+# box4 <- plot_boxplot("Zinc")
+# box5 <- plot_boxplot("Calcium")
+# box6 <- plot_boxplot("Vitamin A")
+
+# # Merge plots
+# g <- gridExtra::grid.arrange(map1, box1,
+#                              map2, box2,
+#                              map3, box3, 
+#                              map4, box4,
+#                              map5, box5,
+#                              map6, box6,
+#                              ncol=2, widths=c(0.6, 0.4))
+
+# # Export
+# ggsave(g, filename=file.path(plotdir, "Fig4_sevs.png"), 
+#        width=6.5, height=10.5, units="in", dpi=600)
+
 
 
