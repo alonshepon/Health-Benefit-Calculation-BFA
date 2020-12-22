@@ -28,7 +28,7 @@ world <- rnaturalearth::ne_countries(scale="small", returnclass = "sf")
 # Food groups
 sort(unique(data_orig$food))
 
-# Format data
+# Fish
 fish <- data_orig %>% 
   # Reduce to 2030
   filter(year==2030 & food=="Fish") %>% 
@@ -40,7 +40,7 @@ fish <- data_orig %>%
          fish_diff=value_diff, 
          fish_pdiff=value_diff_perc)
 
-# Format data
+# Red meat
 meat <- data_orig %>% 
   # Reduce to 2030
   filter(year==2030 & food %in% c("Bovine", "Ovine", "Pork")) %>% 
@@ -60,7 +60,7 @@ meat <- data_orig %>%
          meat_diff=value_diff, 
          meat_pdiff=value_diff_perc)
 
-
+# Dairy
 dairy <- data_orig %>% 
   # Reduce to 2030
   filter(year==2030 & food %in% c("Butter", "Milk and Dairy")) %>% 
@@ -80,8 +80,8 @@ dairy <- data_orig %>%
          dairy_diff=value_diff, 
          dairy_pdiff=value_diff_perc)
 
-# Format data
-chicken <- data_orig %>% 
+# Poultry
+poultry <- data_orig %>% 
   # Reduce to 2030
   filter(year==2030 & food %in% c("Poultry")) %>% 
   # Simplify
@@ -100,7 +100,7 @@ chicken <- data_orig %>%
          poultry_diff=value_diff, 
          poultry_pdiff=value_diff_perc)
 
-# Format data
+# Eggs
 eggs <- data_orig %>% 
   # Reduce to 2030
   filter(year==2030 & food %in% c("Eggs")) %>% 
@@ -120,32 +120,61 @@ eggs <- data_orig %>%
          eggs_diff=value_diff, 
          eggs_pdiff=value_diff_perc)
 
+# Eggs
+other <- data_orig %>% 
+  # Reduce to 2030
+  filter(year==2030 & food %in% c("Eggs", "Poultry", "Butter", "Milk and Dairy")) %>% 
+  # Simplify
+  select(iso3, country, food, value_lo, value_hi) %>% 
+  # Summarize
+  group_by(iso3, country) %>% 
+  summarize(value_lo=sum(value_lo),
+            value_hi=sum(value_hi)) %>% 
+  ungroup() %>% 
+  mutate(food="Eggs", 
+         value_diff=value_hi-value_lo,
+         value_diff_perc=(value_hi-value_lo)/value_lo*100) %>% 
+  # Rename
+  rename(other_lo=value_lo, 
+         other_hi=value_hi, 
+         other_diff=value_diff, 
+         other_pdiff=value_diff_perc)
+
 # Threshhold value
-val <- 0.25
+val <- 0.0
 
 # Build data
 data <- fish %>% 
   select(-food) %>% 
   # Add red meat
   left_join(meat %>% select(-c(country, food)), by="iso3") %>% 
-  # Add chicken
-  left_join(chicken %>% select(-c(country, food)), by="iso3") %>% 
-  # Add chicken
+  # Add poultry
+  left_join(poultry %>% select(-c(country, food)), by="iso3") %>% 
+  # Add eggs
   left_join(eggs %>% select(-c(country, food)), by="iso3") %>% 
   # Add dairy
   left_join(dairy %>% select(-c(country, food)), by="iso3") %>% 
+  # Add poultry-eggs-dairy merged
+  left_join(other %>% select(-c(country, food)), by="iso3") %>% 
   # Quantify directions
   mutate(fish_dir=ifelse(fish_pdiff > val, "up",
                          ifelse(fish_pdiff < -1*val, "down", "stable")),
          meat_dir=ifelse(meat_pdiff > val, "up",
                          ifelse(meat_pdiff < -1*val, "down", "stable")),
-         poultry_dir=ifelse(poultry_pdiff > val, "up",
-                            ifelse(poultry_pdiff < -1*val, "down", "stable")),
-         eggs_dir=ifelse(eggs_pdiff > val, "up",
-                          ifelse(eggs_pdiff < -1*val, "down", "stable")),
-         dairy_dir=ifelse(dairy_pdiff > val, "up",
-                         ifelse(dairy_pdiff < -1*val, "down", "stable")),
-         dir_type=paste(fish_dir, meat_dir, poultry_dir, dairy_dir, sep="-"))
+         other_dir=ifelse(other_pdiff > val, "up",
+                         ifelse(other_pdiff < -1*val, "down", "stable")),
+         dir_type=paste(meat_dir, other_dir, sep="-")) %>% 
+  # Reclassify directions
+  mutate(dir_type=recode(dir_type,
+                         "down-up"="RM lower, PED lower",
+                         "down-down"="Both RM/PED lower",
+                         "down-stable"="RM lower, PED similar",
+                         "stable-down"="RM similar, PED lower",
+                         "stable-stable"="Both RM/PED similar",
+                         "stable-up"="RM similar, PED higher",
+                         "up-stable"="RM higher, PED similar",
+                         "up-up"="Both RM/PED higher", 
+                         "up-down"="RM higher, PED lower"))
 
 table(data$dir_type)
 
@@ -238,7 +267,7 @@ g3
 g4 <- ggplot(data_sf) +
   geom_sf(mapping=aes(fill=eggs_pdiff), lwd=0.1, color="grey30") +
   # Labels
-  labs(title="C. Egg consumption") +
+  labs(title="D. Egg consumption") +
   # Legend
   scale_fill_gradient2(name="% difference\nin 2030 intake\n(high vs. base)", 
                        midpoint=0, low="darkred", high="navy", mid="white", na.value = "grey80") +
@@ -258,7 +287,7 @@ g4
 g5 <- ggplot(data_sf) +
   geom_sf(mapping=aes(fill=dairy_pdiff), lwd=0.1, color="grey30") +
   # Labels
-  labs(title="C. Dairy consumption") +
+  labs(title="E. Dairy consumption") +
   # Legend
   scale_fill_gradient2(name="% difference\nin 2030 intake\n(high vs. base)", 
                        midpoint=0, low="darkred", high="navy", mid="white", na.value = "grey80") +
@@ -278,7 +307,7 @@ g5
 g6 <- ggplot(data_sf) +
   geom_sf(mapping=aes(fill=dir_type), lwd=0.1, color="grey30") +
   # Labels
-  labs(title="E. Consumption categories") +
+  labs(title="F. Consumption categories") +
   # Legend
   scale_fill_discrete(name="High vs. base\n(AF higher in all)", na.translate=F) +
   # Crop out Antarctica
@@ -290,29 +319,6 @@ g6 <- ggplot(data_sf) +
 g6
 
 
-
-# Plot scatterplot
-#############################
-
-# Plot scatterplot
-g7 <- ggplot(data_sf, mapping=aes(x=fish_pdiff, y=meat_pdiff, color=continent)) +
-  geom_point(size=4) +
-  # Lines
-  geom_hline(yintercept=0) +
-  geom_vline(xintercept=0) +
-  # Labels
-  labs(x="% difference in fish consumption in 2030\nbetween high and base scenarios",
-       y="% difference in red meat consumption in 2030\nbetween high and base scenarios") +
-  # Legend
-  scale_color_discrete(name="Continent") +
-  # Theme
-  theme_bw() +
-  theme(panel.grid.major = element_blank(), 
-        panel.grid.minor = element_blank(),
-        panel.background = element_blank())
-g7
-
-
 # Merge plots
 #############################
 
@@ -322,7 +328,8 @@ g <- gridExtra::grid.arrange(g1, g2,
                              g5, g6, ncol=2)
 
 # Export
-ggsave(g, filename=file.path(plotdir, "Fig2_fish_meat_poultry_eggs_dairy.png"), 
+figname <- paste0("Fig2_diet_changes_6panel", val, ".png")
+ggsave(g, filename=file.path(plotdir, figname), 
        width=6.5, height=4.5, units="in", dpi=600)
 
 
