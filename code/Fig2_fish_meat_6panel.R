@@ -141,7 +141,7 @@ other <- data_orig %>%
          other_pdiff=value_diff_perc)
 
 # Threshhold value
-val <- 0.0
+val <- 0.2
 
 # Build data
 data <- fish %>% 
@@ -166,15 +166,16 @@ data <- fish %>%
          dir_type=paste(meat_dir, other_dir, sep="-")) %>% 
   # Reclassify directions
   mutate(dir_type=recode(dir_type,
-                         "down-up"="RM lower, PED lower",
-                         "down-down"="Both RM/PED lower",
-                         "down-stable"="RM lower, PED similar",
-                         "stable-down"="RM similar, PED lower",
-                         "stable-stable"="Both RM/PED similar",
-                         "stable-up"="RM similar, PED higher",
-                         "up-stable"="RM higher, PED similar",
-                         "up-up"="Both RM/PED higher", 
-                         "up-down"="RM higher, PED lower"))
+                         "down-up"="",
+                         "down-down"="Non-Aquatic ASF decrease",
+                         "down-stable"="Non-Aquatic ASF decrease",
+                         "stable-down"="Non-Aquatic ASF decrease",
+                         "stable-stable"="Non-Aquatic ASF stable",
+                         "stable-up"="All ASF increase",
+                         "up-stable"="All ASF increase",
+                         "up-up"="All ASF increase", 
+                         "up-down"="")) %>% 
+  mutate(dir_type=factor(dir_type, levels=c("All ASF increase", "Non-Aquatic ASF stable", "Non-Aquatic ASF decrease")))
 
 table(data$dir_type)
 
@@ -216,7 +217,7 @@ g1 <- ggplot(data_sf) +
   coord_sf(y=c(-55, NA)) +
   # Theme
   theme_bw() + base_theme +
-  theme(legend.position = c(0.10,0.37))
+  theme(legend.position = c(0.10,0.40))
 g1
 
 
@@ -237,7 +238,7 @@ g2 <- ggplot(data_sf) +
   coord_sf(y=c(-55, NA)) +
   # Theme
   theme_bw() + base_theme +
-  theme(legend.position = c(0.10,0.37))
+  theme(legend.position = c(0.10,0.40))
 g2
 
 # Plot poultry
@@ -257,7 +258,7 @@ g3 <- ggplot(data_sf) +
   coord_sf(y=c(-55, NA)) +
   # Theme
   theme_bw() + base_theme +
-  theme(legend.position = c(0.10,0.37))
+  theme(legend.position = c(0.10,0.40))
 g3
 
 # Plot dairy
@@ -277,7 +278,7 @@ g4 <- ggplot(data_sf) +
   coord_sf(y=c(-55, NA)) +
   # Theme
   theme_bw() + base_theme +
-  theme(legend.position = c(0.10,0.37))
+  theme(legend.position = c(0.10,0.40))
 g4
 
 # Plot dairy
@@ -297,7 +298,7 @@ g5 <- ggplot(data_sf) +
   coord_sf(y=c(-55, NA)) +
   # Theme
   theme_bw() + base_theme +
-  theme(legend.position = c(0.10,0.37))
+  theme(legend.position = c(0.10,0.40))
 g5
 
 # Plot difference
@@ -314,8 +315,9 @@ g6 <- ggplot(data_sf) +
   coord_sf(y=c(-55, NA)) +
   # Theme
   theme_bw() + base_theme +
-  theme(legend.position = c(0.16,0.22), # 0.2 without title
-        legend.key.size = unit(0.2, units="cm"))
+  theme(legend.position = c(0.16,0.32), # 0.2 without title
+        legend.key.size = unit(0.2, units="cm"), 
+        legend.text=element_text(size=4.5))
 g6
 
 
@@ -328,7 +330,8 @@ g <- gridExtra::grid.arrange(g1, g2,
                              g5, g6, ncol=2)
 
 # Export
-figname <- paste0("Fig2_diet_changes_6panel", val, ".png")
+# figname <- paste0("Fig2_diet_changes_6panel", val, ".png")
+figname <- paste0("Fig2_diet_changes_6panel.png")
 ggsave(g, filename=file.path(plotdir, figname), 
        width=6.5, height=4.5, units="in", dpi=600)
 

@@ -81,7 +81,7 @@ chicken <- data_orig %>%
          poultry_pdiff=value_diff_perc)
 
 # Threshhold value
-val <- 0.25
+val <- 0.2
 
 # Build data
 data <- fish %>% 
