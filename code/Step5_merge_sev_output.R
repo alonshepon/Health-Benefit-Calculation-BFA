@@ -60,6 +60,17 @@ data <- bind_rows(sevs_mn, sevs_omega, sevs_meat) %>%
 saveRDS(data, file.path(outputdir, "2030_sevs_base_high_road_final.Rds"))
 write.csv(data, file.path(outputdir, "2030_sevs_base_high_road_final.csv"), row.names = F)
 
+# For Chris Golden
+sevs_c <- data %>% 
+  filter(nutrient!="Red meat") %>% 
+  group_by(iso3, country, nutrient) %>% 
+  summarize(sev_high=mean(sev_high, na.rm=T),
+            sev_base=mean(sev_base, na.rm=T)) %>% 
+  ungroup()
+
+write.csv(sevs_c, file.path(outputdir, "2030_sevs_base_high_road_country_average.csv"), row.names = F)
+
+
 # Plot data
 ################################################################################
 

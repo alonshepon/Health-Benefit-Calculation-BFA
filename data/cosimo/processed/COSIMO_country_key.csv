@@ -1,191 +1,195 @@
-"country_id","iso3","country","eu27"
-1,"ARM","Armenia",FALSE
-2,"AFG","Afghanistan",FALSE
-3,"ALB","Albania",FALSE
-4,"DZA","Algeria",FALSE
-7,"AGO","Angola",FALSE
-8,"ATG","Antigua & Barbuda",FALSE
-9,"ARG","Argentina",FALSE
-10,"AUS","Australia",FALSE
-11,"AUT","Austria",TRUE
-12,"BHS","Bahamas",FALSE
-14,"BRB","Barbados",FALSE
-15,"BLX","Belgium-Luxembourg",FALSE
-16,"BGD","Bangladesh",FALSE
-17,"BMU","Bermuda",FALSE
-19,"BOL","Bolivia",FALSE
-20,"BWA","Botswana",FALSE
-21,"BRA","Brazil",FALSE
-23,"BLZ","Belize",FALSE
-25,"SLB","Solomon Islands",FALSE
-26,"BRN","Brunei",FALSE
-27,"BGR","Bulgaria",TRUE
-28,"MMR","Myanmar (Burma)",FALSE
-29,"BDI","Burundi",FALSE
-32,"CMR","Cameroon",FALSE
-33,"CAN","Canada",FALSE
-35,"CPV","Cape Verde",FALSE
-37,"CAF","Central African Republic",FALSE
-38,"LKA","Sri Lanka",FALSE
-39,"TCD","Chad",FALSE
-40,"CHL","Chile",FALSE
-41,"CHN","China",FALSE
-44,"COL","Colombia",FALSE
-45,"COM","Comoros",FALSE
-46,"COG","Congo - Brazzaville",FALSE
-48,"CRI","Costa Rica",FALSE
-49,"CUB","Cuba",FALSE
-50,"CYP","Cyprus",TRUE
-51,"CZ2","Czechoslovakia",FALSE
-52,"AZE","Azerbaijan",FALSE
-53,"BEN","Benin",FALSE
-54,"DNK","Denmark",TRUE
-55,"DMA","Dominica",FALSE
-56,"DOM","Dominican Republic",FALSE
-57,"BLR","Belarus",FALSE
-58,"ECU","Ecuador",FALSE
-59,"EGY","Egypt",FALSE
-60,"SLV","El Salvador",FALSE
-62,"ET2","Ethiopia PDR",FALSE
-63,"EST","Estonia",TRUE
-66,"FJI","Fiji",FALSE
-67,"FIN","Finland",TRUE
-68,"FRA","France",TRUE
-70,"PYF","French Polynesia",FALSE
-72,"DJI","Djibouti",FALSE
-73,"GEO","Georgia",FALSE
-74,"GAB","Gabon",FALSE
-75,"GMB","Gambia",FALSE
-79,"DEU","Germany",TRUE
-80,"BIH","Bosnia & Herzegovina",FALSE
-81,"GHA","Ghana",FALSE
-83,"KIR","Kiribati",FALSE
-84,"GRC","Greece",TRUE
-86,"GRD","Grenada",FALSE
-89,"GTM","Guatemala",FALSE
-90,"GIN","Guinea",FALSE
-91,"GUY","Guyana",FALSE
-93,"HTI","Haiti",FALSE
-95,"HND","Honduras",FALSE
-96,"HKG","Hong Kong SAR China",FALSE
-97,"HUN","Hungary",TRUE
-98,"HRV","Croatia",TRUE
-99,"ISL","Iceland",FALSE
-100,"IND","India",FALSE
-101,"IDN","Indonesia",FALSE
-102,"IRN","Iran",FALSE
-103,"IRQ","Iraq",FALSE
-104,"IRL","Ireland",TRUE
-105,"ISR","Israel",FALSE
-106,"ITA","Italy",TRUE
-107,"CIV","Côte d’Ivoire",FALSE
-108,"KAZ","Kazakhstan",FALSE
-109,"JAM","Jamaica",FALSE
-110,"JPN","Japan",FALSE
-112,"JOR","Jordan",FALSE
-113,"KGZ","Kyrgyzstan",FALSE
-114,"KEN","Kenya",FALSE
-115,"KHM","Cambodia",FALSE
-116,"PRK","North Korea",FALSE
-117,"KOR","South Korea",FALSE
-118,"KWT","Kuwait",FALSE
-119,"LVA","Latvia",TRUE
-120,"LAO","Laos",FALSE
-121,"LBN","Lebanon",FALSE
-122,"LSO","Lesotho",FALSE
-123,"LBR","Liberia",FALSE
-124,"LBY","Libya",FALSE
-126,"LTU","Lithuania",TRUE
-128,"MAC","Macau SAR China",FALSE
-129,"MDG","Madagascar",FALSE
-130,"MWI","Malawi",FALSE
-131,"MYS","Malaysia",FALSE
-132,"MDV","Maldives",FALSE
-133,"MLI","Mali",FALSE
-134,"MLT","Malta",TRUE
-136,"MRT","Mauritania",FALSE
-137,"MUS","Mauritius",FALSE
-138,"MEX","Mexico",FALSE
-141,"MNG","Mongolia",FALSE
-143,"MAR","Morocco",FALSE
-144,"MOZ","Mozambique",FALSE
-146,"MDA","Moldova",FALSE
-147,"NAM","Namibia",FALSE
-149,"NPL","Nepal",FALSE
-150,"NLD","Netherlands",TRUE
-151,"ANT","Netherlands Antilles",FALSE
-153,"NCL","New Caledonia",FALSE
-154,"MKD","Macedonia",FALSE
-155,"VUT","Vanuatu",FALSE
-156,"NZL","New Zealand",FALSE
-157,"NIC","Nicaragua",FALSE
-158,"NER","Niger",FALSE
-159,"NGA","Nigeria",FALSE
-162,"NOR","Norway",FALSE
-165,"PAK","Pakistan",FALSE
-166,"PAN","Panama",FALSE
-167,"CZE","Czechia",TRUE
-168,"PNG","Papua New Guinea",FALSE
-169,"PRY","Paraguay",FALSE
-170,"PER","Peru",FALSE
-171,"PHL","Philippines",FALSE
-173,"POL","Poland",TRUE
-174,"PRT","Portugal",TRUE
-175,"GNB","Guinea-Bissau",FALSE
-176,"TLS","Timor-Leste",FALSE
-181,"ZWE","Zimbabwe",FALSE
-183,"ROU","Romania",TRUE
-184,"RWA","Rwanda",FALSE
-185,"RUS","Russia",FALSE
-186,"SRM","Serbia and Montenegro",FALSE
-188,"KNA","St. Kitts & Nevis",FALSE
-189,"LCA","St. Lucia",FALSE
-191,"VCT","St. Vincent & Grenadines",FALSE
-193,"STP","São Tomé & Príncipe",FALSE
-194,"SAU","Saudi Arabia",FALSE
-195,"SEN","Senegal",FALSE
-196,"SYC","Seychelles",FALSE
-197,"SLE","Sierra Leone",FALSE
-198,"SVN","Slovenia",TRUE
-199,"SVK","Slovakia",TRUE
-201,"SOM","Somalia",FALSE
-202,"ZAF","South Africa",FALSE
-203,"ESP","Spain",TRUE
-206,"SDN","Sudan",FALSE
-207,"SUR","Suriname",FALSE
-208,"TJK","Tajikistan",FALSE
-209,"SWZ","Swaziland",FALSE
-210,"SWE","Sweden",TRUE
-211,"CHE","Switzerland",FALSE
-212,"SYR","Syria",FALSE
-213,"TKM","Turkmenistan",FALSE
-214,"TWN","Taiwan",FALSE
-215,"TZA","Tanzania",FALSE
-216,"THA","Thailand",FALSE
-217,"TGO","Togo",FALSE
-220,"TTO","Trinidad & Tobago",FALSE
-221,"OMN","Oman",FALSE
-222,"TUN","Tunisia",FALSE
-223,"TUR","Turkey",FALSE
-225,"ARE","United Arab Emirates",FALSE
-226,"UGA","Uganda",FALSE
-228,"USR","USSR",FALSE
-229,"GBR","United Kingdom",FALSE
-230,"UKR","Ukraine",FALSE
-231,"USA","United States",FALSE
-233,"BFA","Burkina Faso",FALSE
-234,"URY","Uruguay",FALSE
-235,"UZB","Uzbekistan",FALSE
-236,"VEN","Venezuela",FALSE
-237,"VNM","Vietnam",FALSE
-238,"ETH","Ethiopia",FALSE
-244,"WSM","Samoa",FALSE
-248,"YUG","Yugoslav SFR",FALSE
-249,"YEM","Yemen",FALSE
-250,"COD","Congo - Kinshasa",FALSE
-251,"ZMB","Zambia",FALSE
-255,"BEL","Belgium",TRUE
-256,"LUX","Luxembourg",TRUE
-272,"SRB","Serbia",FALSE
-273,"MNE","Montenegro",FALSE
-299,"PSE","Palestinian Territories",FALSE
+"iso3","country","eu27"
+"AFG","Afghanistan",FALSE
+"AGO","Angola",FALSE
+"ALB","Albania",FALSE
+"ARE","United Arab Emirates",FALSE
+"ARG","Argentina",FALSE
+"ARM","Armenia",FALSE
+"ATG","Antigua & Barbuda",FALSE
+"AUS","Australia",FALSE
+"AUT","Austria",TRUE
+"AZE","Azerbaijan",FALSE
+"BDI","Burundi",FALSE
+"BEL","Belgium",TRUE
+"BEN","Benin",FALSE
+"BFA","Burkina Faso",FALSE
+"BGD","Bangladesh",FALSE
+"BGR","Bulgaria",TRUE
+"BHR","Bahrain",FALSE
+"BHS","Bahamas",FALSE
+"BIH","Bosnia & Herzegovina",FALSE
+"BLR","Belarus",FALSE
+"BLZ","Belize",FALSE
+"BOL","Bolivia",FALSE
+"BRA","Brazil",FALSE
+"BRB","Barbados",FALSE
+"BRN","Brunei",FALSE
+"BTN","Bhutan",FALSE
+"BWA","Botswana",FALSE
+"CAF","Central African Republic",FALSE
+"CAN","Canada",FALSE
+"CHE","Switzerland",FALSE
+"CHL","Chile",FALSE
+"CHN","China",FALSE
+"CIV","Côte d’Ivoire",FALSE
+"CMR","Cameroon",FALSE
+"COD","Congo - Kinshasa",FALSE
+"COG","Congo - Brazzaville",FALSE
+"COL","Colombia",FALSE
+"COM","Comoros",FALSE
+"CPV","Cape Verde",FALSE
+"CRI","Costa Rica",FALSE
+"CUB","Cuba",FALSE
+"CYP","Cyprus",TRUE
+"CZE","Czechia",TRUE
+"DEU","Germany",TRUE
+"DJI","Djibouti",FALSE
+"DMA","Dominica",FALSE
+"DNK","Denmark",TRUE
+"DOM","Dominican Republic",FALSE
+"DZA","Algeria",FALSE
+"ECU","Ecuador",FALSE
+"EGY","Egypt",FALSE
+"ERI","Eritrea",FALSE
+"ESH","Western Sahara",FALSE
+"ESP","Spain",TRUE
+"EST","Estonia",TRUE
+"ETH","Ethiopia",FALSE
+"FIN","Finland",TRUE
+"FJI","Fiji",FALSE
+"FRA","France",TRUE
+"FSM","Micronesia (Federated States of)",FALSE
+"GAB","Gabon",FALSE
+"GBR","United Kingdom",FALSE
+"GEO","Georgia",FALSE
+"GHA","Ghana",FALSE
+"GIN","Guinea",FALSE
+"GMB","Gambia",FALSE
+"GNB","Guinea-Bissau",FALSE
+"GNQ","Equatorial Guinea",FALSE
+"GRC","Greece",TRUE
+"GRD","Grenada",FALSE
+"GTM","Guatemala",FALSE
+"GUY","Guyana",FALSE
+"HKG","Hong Kong SAR China",FALSE
+"HND","Honduras",FALSE
+"HRV","Croatia",TRUE
+"HTI","Haiti",FALSE
+"HUN","Hungary",TRUE
+"IDN","Indonesia",FALSE
+"IND","India",FALSE
+"IRL","Ireland",TRUE
+"IRN","Iran",FALSE
+"IRQ","Iraq",FALSE
+"ISL","Iceland",FALSE
+"ISR","Israel",FALSE
+"ITA","Italy",TRUE
+"JAM","Jamaica",FALSE
+"JOR","Jordan",FALSE
+"JPN","Japan",FALSE
+"KAZ","Kazakhstan",FALSE
+"KEN","Kenya",FALSE
+"KGZ","Kyrgyzstan",FALSE
+"KHM","Cambodia",FALSE
+"KIR","Kiribati",FALSE
+"KNA","St. Kitts & Nevis",FALSE
+"KOR","South Korea",FALSE
+"KWT","Kuwait",FALSE
+"LAO","Laos",FALSE
+"LBN","Lebanon",FALSE
+"LBR","Liberia",FALSE
+"LBY","Libya",FALSE
+"LCA","St. Lucia",FALSE
+"LKA","Sri Lanka",FALSE
+"LSO","Lesotho",FALSE
+"LTU","Lithuania",TRUE
+"LUX","Luxembourg",TRUE
+"LVA","Latvia",TRUE
+"MAC","Macao SAR China",FALSE
+"MAR","Morocco",FALSE
+"MDA","Moldova",FALSE
+"MDG","Madagascar",FALSE
+"MDV","Maldives",FALSE
+"MEX","Mexico",FALSE
+"MHL","Marshall Islands",FALSE
+"MKD","North Macedonia",FALSE
+"MLI","Mali",FALSE
+"MLT","Malta",TRUE
+"MMR","Myanmar (Burma)",FALSE
+"MNE","Montenegro",FALSE
+"MNG","Mongolia",FALSE
+"MOZ","Mozambique",FALSE
+"MRT","Mauritania",FALSE
+"MUS","Mauritius",FALSE
+"MWI","Malawi",FALSE
+"MYS","Malaysia",FALSE
+"NAM","Namibia",FALSE
+"NER","Niger",FALSE
+"NGA","Nigeria",FALSE
+"NIC","Nicaragua",FALSE
+"NLD","Netherlands",TRUE
+"NOR","Norway",FALSE
+"NPL","Nepal",FALSE
+"NZL","New Zealand",FALSE
+"OMN","Oman",FALSE
+"PAK","Pakistan",FALSE
+"PAN","Panama",FALSE
+"PER","Peru",FALSE
+"PHL","Philippines",FALSE
+"PLW","Palau",FALSE
+"PNG","Papua New Guinea",FALSE
+"POL","Poland",TRUE
+"PRI","Puerto Rico",FALSE
+"PRK","North Korea",FALSE
+"PRT","Portugal",TRUE
+"PRY","Paraguay",FALSE
+"PSE","Palestinian Territories",FALSE
+"QAT","Qatar",FALSE
+"ROU","Romania",TRUE
+"RUS","Russia",FALSE
+"RWA","Rwanda",FALSE
+"SAU","Saudi Arabia",FALSE
+"SDN","Sudan",FALSE
+"SEN","Senegal",FALSE
+"SGP","Singapore",FALSE
+"SLB","Solomon Islands",FALSE
+"SLE","Sierra Leone",FALSE
+"SLV","El Salvador",FALSE
+"SMR","San Marino",FALSE
+"SOM","Somalia",FALSE
+"SRB","Serbia",FALSE
+"STP","São Tomé & Príncipe",FALSE
+"SUR","Suriname",FALSE
+"SVK","Slovakia",TRUE
+"SVN","Slovenia",TRUE
+"SWE","Sweden",TRUE
+"SWZ","Eswatini",FALSE
+"SYC","Seychelles",FALSE
+"SYR","Syria",FALSE
+"TCD","Chad",FALSE
+"TGO","Togo",FALSE
+"THA","Thailand",FALSE
+"TJK","Tajikistan",FALSE
+"TKM","Turkmenistan",FALSE
+"TLS","Timor-Leste",FALSE
+"TON","Tonga",FALSE
+"TTO","Trinidad & Tobago",FALSE
+"TUN","Tunisia",FALSE
+"TUR","Turkey",FALSE
+"TUV","Tuvalu",FALSE
+"TWN","Taiwan",FALSE
+"TZA","Tanzania",FALSE
+"UGA","Uganda",FALSE
+"UKR","Ukraine",FALSE
+"URY","Uruguay",FALSE
+"USA","United States",FALSE
+"UZB","Uzbekistan",FALSE
+"VCT","St. Vincent & Grenadines",FALSE
+"VEN","Venezuela",FALSE
+"VNM","Vietnam",FALSE
+"VUT","Vanuatu",FALSE
+"WSM","Samoa",FALSE
+"YEM","Yemen",FALSE
+"ZAF","South Africa",FALSE
+"ZMB","Zambia",FALSE
+"ZWE","Zimbabwe",FALSE

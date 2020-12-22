@@ -16,11 +16,14 @@ outputdir <- "data/cosimo/processed"
 plotdir <- "data/cosimo/figures"
 
 # Read data
-food_lo_orig <- read.csv(file.path(inputdir, "FoodConsumptionBase.csv"), as.is=T)
-food_hi_orig  <- read.csv(file.path(inputdir, "FoodConsumptionScenario.csv"), as.is=T)
+food_lo_orig <- readxl::read_excel(file.path(inputdir, "FoodConsNutriBaseScen.xlsx"), sheet=3)
+food_hi_orig <- readxl::read_excel(file.path(inputdir, "FoodConsNutriBaseScen.xlsx"), sheet=4)
 
 # Read country key
-cntry_key_cosimo <- read.csv(file.path(outputdir, "COSIMO_country_key.csv"), as.is=T)
+eu27_key <- read.csv(file.path(outputdir, "COSIMO_AGLINK_2020_country_key.csv"), as.is=T) %>% 
+  filter(group_code=="EUN") %>% 
+  select(iso3, country, iso3_use, country_use) %>% 
+  filter(country!="Czechoslovakia")
 
 # Note:
 # Units are reported to be kg/p/day but are actually kg/p/year
@@ -50,62 +53,81 @@ strsplit_extract <- function(x, split, which){
 
 # Format low road
 food_lo <- food_lo_orig %>% 
-  rename(code_long=X, country=countries, food=products, nutrient=elements, country_id=country_codes, iso3=X.1,
-         food_id=product_codes, food_code=X.2, nutrient_id=ele_codes, code_end=X.3) %>% 
+  rename(code_long="...1", country=countries, food=products, nutrient=elements, iso3="...5",
+         food_code="...6", code_end="...7") %>% 
   # Gather year
-  gather(key="year", value="value_lo", 11:ncol(.)) %>% 
+  gather(key="year", value="value_lo", 8:ncol(.)) %>% 
   # Format year
-  mutate(year=year %>% gsub("X_", "", .) %>% as.numeric()) %>% 
+  mutate(year=year %>% gsub("_", "", .) %>% as.numeric()) %>% 
   # Arrange
-  select(country_id, iso3, country, 
-         food_id, food_code, food, 
-         nutrient_id, nutrient,
+  select(iso3, country, 
+         food_code, food, 
          year, value_lo)
 
 # Format high road
 food_hi <- food_hi_orig %>% 
-  rename(code_long=X, country=countries, food=products, nutrient=elements, country_id=country_codes, iso3=X.1,
-         food_id=product_codes, food_code=X.2, nutrient_id=ele_codes, code_end=X.3) %>% 
+  rename(code_long="...1", country=countries, food=products, nutrient=elements, iso3="...5",
+         food_code="...6", code_end="...7") %>% 
   # Gather year
-  gather(key="year", value="value_hi", 11:ncol(.)) %>% 
+  gather(key="year", value="value_hi", 8:ncol(.)) %>% 
   # Format year
-  mutate(year=year %>% gsub("X_", "", .) %>% as.numeric()) %>% 
+  mutate(year=year %>% gsub("_", "", .) %>% as.numeric()) %>% 
   # Arrange
-  select(country_id, iso3, country, 
-         food_id, food_code, food, 
-         nutrient_id, nutrient,
+  select(iso3, country, 
+         food_code, food, 
          year, value_hi)
 
+# There is a super annoying bug where I have to split the data in half to join then merge after
+
+# Countries
+countries <- sort(unique(food_lo$country))
+countries_a <- countries[1:83]
+countries_b <- countries[1:83]
+
 # Merge high and low road
-food_merge <- left_join(food_lo, food_hi) %>% 
+food_merge_a <- food_lo %>% filter(country %in% countries_a) %>% 
+  left_join(food_hi %>% filter(country %in% countries_a)) %>% 
   # Add percentage
   mutate(value_diff=value_hi-value_lo,
          value_diff_perc=(value_hi-value_lo)/value_lo*100) %>% 
   # Arrange
-  arrange(country, food, nutrient, year) 
+  arrange(country, food, year)
 
+food_merge_b <- food_lo %>% filter(country %in% countries_b) %>% 
+  left_join(food_hi %>% filter(country %in% countries_b)) %>% 
+  # Add percentage
+  mutate(value_diff=value_hi-value_lo,
+         value_diff_perc=(value_hi-value_lo)/value_lo*100) %>% 
+  # Arrange
+  arrange(country, food, year)
+
+# Merge
+food_merge <- bind_rows(food_merge_a, food_merge_b)
+
+# Inspect
+freeR::complete(food_merge)
   
 # Build keys
 ################################################################################
 
 # Food key
 food_key <- food_merge %>% 
-  select(food_id, food_code, food) %>% 
+  select(food_code, food) %>% 
   unique() %>% 
-  arrange(food_id)
+  arrange(food_code)
 
 # Country key
 cntry_key <- food_merge %>% 
-  select(country_id, iso3, country) %>% 
+  select(iso3, country) %>% 
   unique() %>% 
-  arrange(country_id) %>% 
+  arrange(iso3) %>% 
   mutate(country_use=countrycode(iso3, "iso3c", "country.name"),
          country_use=ifelse(is.na(country_use), country, country_use),
          iso3_use=countrycode(country_use, "country.name", "iso3c"),
          iso3_use=ifelse(is.na(iso3_use), iso3, iso3_use),
          iso3_use=ifelse(country%in%c("USSR", "Ethiopia PDR"), iso3, iso3_use),
          country_use=ifelse(country%in%c("USSR", "Ethiopia PDR"), country, country_use)) %>% 
-  select(country_id, iso3, country, iso3_use, country_use) %>% 
+  select(iso3, country, iso3_use, country_use) %>% 
   # Mark countries in EU27
   mutate(eu27=iso3_use %in% cntry_key_cosimo$iso3[cntry_key_cosimo$eu_27==T])
 
@@ -122,7 +144,7 @@ freeR::which_duplicated(cntry_key$country_use)
 
 # Remove EU27 countries (including EUN)
 food_no_eu <- food_merge %>% 
-  filter(!iso3 %in% c(cntry_key_cosimo$iso3[cntry_key_cosimo$eu_27==T], "EUN"))
+  filter(!iso3 %in% c(eu27_key$iso3_use, "EUN"))
 
 # Extract EUN data
 food_eu <- food_merge %>% 
@@ -132,21 +154,14 @@ food_eu <- food_merge %>%
 # Duplicate EUN data for each E27 country
 ##############################################
 
-# EU27 countries
-e27_do <- cntry_key_cosimo %>%
-  filter(eu27) %>% 
-  select(country_id, iso3, country)
-
 # Duplicate EUN data for each E27 country
-food_eu_use <- purrr::map_df(1:nrow(e27_do), function(x) {
+food_eu_use <- purrr::map_df(1:nrow(eu27_key), function(x) {
   
-  id_do <- e27_do$country_id[x]
-  iso_do <- e27_do$iso3[x]
-  country_do <- e27_do$country[x]
+  iso_do <- eu27_key$iso3_use[x]
+  country_do <- eu27_key$country_use[x]
   
   cdata <- food_eu %>% 
-    mutate(country_id=id_do,
-           iso3=iso_do,
+    mutate(iso3=iso_do,
            country=country_do)
   
 })
@@ -159,9 +174,7 @@ food <- bind_rows(food_no_eu, food_eu_use) %>%
   #Convert values from kg/p/year to g/p/day
   mutate(value_lo=value_lo*1000/365,
          value_hi=value_hi*1000/365,
-         value_diff=value_diff*1000/365) %>% 
-  # Remove nutrient columns
-  select(-c(nutrient_id, nutrient))
+         value_diff=value_diff*1000/365)
 
 # Export
 ################################################################################
@@ -169,6 +182,26 @@ food <- bind_rows(food_no_eu, food_eu_use) %>%
 # Export data
 saveRDS(food, file=file.path(outputdir, "COSIMO_2010_2030_food_by_scenario_cntry.Rds"))
 
+
+# Visualize global trends
+################################################################################
+
+# Global stats
+gstats <- food %>% 
+  group_by(food, year) %>% 
+  summarize(value_lo=mean(value_lo, na.rm=T),
+            value_hi=mean(value_hi, na.rm=T)) %>% 
+  gather(key="scenario", value="intake", 3:ncol(.)) %>% 
+  mutate(scenario=recode(scenario, "value_lo"="Base", "value_hi"="High"))
+
+# Plot
+g <- ggplot(gstats, aes(x=year, y=intake, color=scenario)) +
+  geom_line() +
+  facet_wrap(~food, ncol=4, scales="free_y") +
+  labs(x="", y="Mean intake") +
+  theme_bw() +
+  theme(legend.position = "bottom")
+g
 
 
 

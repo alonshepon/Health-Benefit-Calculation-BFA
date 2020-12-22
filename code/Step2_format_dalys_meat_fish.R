@@ -43,8 +43,8 @@ data1 <- purrr::map_df(ihme_csvs, function(x){
 })
 
 # Prepare country codes for merge
-country_codes_2col <- country_codes_orig %>% 
-  select(location_id, location_name)
+country_codes_3col <- country_codes_orig %>% 
+  select(location_id, location_name, level)
 country_codes_level3  <- country_codes_orig %>%
   filter(level==3)
 
@@ -71,11 +71,15 @@ sdi <- sdi_orig %>%
 # Add SDI/HDI to data
 data2 <- data1 %>% 
   # Add location name
-  left_join(country_codes_2col, by=c("location"="location_id")) %>% 
+  left_join(country_codes_3col, by=c("location"="location_id")) %>% 
+  # Reduce to countries only
+  filter(level==3) %>% 
   # Add HDI
   left_join(hdi, by=c("location_name"="Entity")) %>% 
   # Add SDI
-  left_join(sdi, by=c("location_name"="location"))
+  left_join(sdi, by=c("location_name"="location")) %>% 
+  # Remove level column
+  select(-level)
 
 
 # Export data

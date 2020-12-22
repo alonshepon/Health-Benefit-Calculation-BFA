@@ -28,7 +28,9 @@ codedir <- "code"
 dalys_fishANDmeat_orig <- readRDS(file.path(outputdir, "my_data.rds"))
 
 # Read population data
-pop_orig <- readRDS(file.path(outputdir, "population_all.rds"))
+pop_orig <- readRDS(file.path(outputdir, "population_all.rds")) %>% 
+  # Remove Georgia the state
+  filter(location_id!=533)
 
 # Read other data (in repository)
 omega_N_raw_2019 <- read.xlsx('data/omega_RR_2019.xlsx')
