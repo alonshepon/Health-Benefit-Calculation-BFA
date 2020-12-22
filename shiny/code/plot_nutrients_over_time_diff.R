@@ -10,7 +10,8 @@ plot_nutrients_over_time_diff <- function(data, country, base_theme){
     # Country of interest
     filter(country==country_do) %>% 
     # Reduce to total diet
-    filter(food=="Total Diet") %>% 
+    # filter(food=="Total Diet") %>% 
+    filter(food=="Total food") %>% 
     # Format nutrient label
     mutate(nutrient_label=paste0(nutrient, "\n(", nutrient_units, ")"))
   

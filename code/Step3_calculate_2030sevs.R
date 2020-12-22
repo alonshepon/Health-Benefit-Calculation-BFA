@@ -20,13 +20,13 @@ red_meat_raw_2019 <- openxlsx::read.xlsx('data/meat_RR_2019.xlsx')
 EAR_requirements <- openxlsx::read.xlsx('data/EAR_requirements_GBDgroups.xlsx')
 
 # Read distributions (micronutrients)
-dists <- readRDS(file.path("data/cosimo/processed/COSIMO_2010_2030_country_nutrient_age_sex_means_and_distributions.Rds"))
+dists <- readRDS(file.path("data/cosimo/old/processed/COSIMO_2010_2030_country_nutrient_age_sex_means_and_distributions.Rds"))
 
 # Read distributions (red meat)
-dists_meat <- readRDS(file=file.path("data/cosimo/processed/COSIMO_2010_2030_country_red_meat_age_sex_means_and_distributions.Rds"))
+dists_meat <- readRDS(file=file.path("data/cosimo/old/processed/COSIMO_2010_2030_country_red_meat_age_sex_means_and_distributions.Rds"))
 
 # Read HDI/SDI key
-sdi_hdi_key <- readRDS("data/cosimo/processed/COSIMO_country_key_with_SDI_HDI_info.rds") %>% 
+sdi_hdi_key <- readRDS("data/cosimo/old/processed/COSIMO_country_key_with_SDI_HDI_info.rds") %>% 
   select(iso3, sdi, sdi_group, hdi)
 
 # Source helpher functions
@@ -172,7 +172,7 @@ dists2030_meat <- dists_meat %>%
 ##########################################################################################
 
 # Nutrients to calculate SEVS for
-nutr_sevs <- c("Zinc", "Iron", "Calcium", "Vitamin A, RAE")
+nutr_sevs <- c("Zinc", "Iron", "Calcium", "Vitamin A, RAE", "Vitamin B-12")
 
 # Build data required for micronutrient SEV calculations
 data_sev_mn <- dists2030 %>% 
@@ -184,7 +184,7 @@ data_sev_mn <- dists2030 %>%
   filter(age_id>=5)
 
 # Loop through micronutrients to calculate SEVs for
-x <- 1
+x <- 141
 # sevs_micronutrients <- purrr::map_df(1:nrow(data_sev_mn), function(x){
 for(x in 1:nrow(data_sev_mn)){
   
@@ -197,9 +197,6 @@ for(x in 1:nrow(data_sev_mn)){
   age_id_do <- data_sev_mn$age_id[x]
   sex_id_do <- data_sev_mn$sex_id[x]
   best_dist <- data_sev_mn$best_dist[x]
-  
-  # Rename nutrient
-  if(nutr_do=="Vitamin A, RAE"){nutr_do <- "VitA"}
   
   # If gamma distribution....
   if(best_dist=="gamma"){

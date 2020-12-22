@@ -10,7 +10,8 @@ plot_nutrients_over_time <- function(data, country, base_theme){
     # Country of interest
     filter(country==country_do) %>% 
     # Reduce to total diet
-    filter(food=="Total Diet") %>% 
+    # filter(food=="Total Diet") %>% 
+    filter(food=="Total food") %>% 
     # Reshape for plotting
     select(nutrient, nutrient_units, year, value_lo, value_hi) %>% 
     gather(key="scenario", value='value', 4:ncol(.)) %>% 

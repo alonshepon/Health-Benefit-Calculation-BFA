@@ -120,15 +120,17 @@ plot_boxplot <- function(nutrient, legend=F){
 map1 <- plot_map("Calcium")
 map2 <- plot_map("Iron")
 map3 <- plot_map("Vitamin A")
-map4 <- plot_map("Zinc")
-map5 <- plot_map("Omega-3 fatty acids")
+map4 <- plot_map("Vitamin B-12")
+map5 <- plot_map("Zinc")
+map6 <- plot_map("Omega-3 fatty acids")
 
 # Plot boxplots
 box1 <- plot_boxplot("Calcium", legend=T)
 box2 <- plot_boxplot("Iron")
 box3 <- plot_boxplot("Vitamin A")
-box4 <- plot_boxplot("Zinc")
-box5 <- plot_boxplot("Omega-3 fatty acids")
+box4 <- plot_boxplot("Vitamin B-12")
+box5 <- plot_boxplot("Zinc")
+box6 <- plot_boxplot("Omega-3 fatty acids")
 
 # Merge plots
 g <- gridExtra::grid.arrange(map1, box1,
@@ -136,10 +138,11 @@ g <- gridExtra::grid.arrange(map1, box1,
                              map3, box3, 
                              map4, box4,
                              map5, box5,
+                             map6, box6,
                              ncol=2, widths=c(0.6, 0.4))
 
 # Export
 ggsave(g, filename=file.path(plotdir, "Fig4_sevs.png"), 
-       width=6.5, height=8.75, units="in", dpi=600)
+       width=6.5, height=10.5, units="in", dpi=600)
 
 

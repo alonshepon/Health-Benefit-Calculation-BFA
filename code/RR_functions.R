@@ -144,6 +144,10 @@ micronutrient_RR <- function(val, age, sex, nutrient, country_SDIgroup, EAR_requ
   if (nutrient=="Zinc" & country_SDIgroup=="middle"){nutrient<-"Zinc.mod"}
   if (nutrient=="Zinc" & country_SDIgroup=="high"){nutrient<-"Zinc.high"}
   
+  # Rename nutrient
+  if(nutrient=="Vitamin A, RAE"){nutrient <- "VitA"}
+  if(nutrient=="Vitamin B-12"){nutrient <- "B12"}
+  
   # load EAR values based on input of nutrient and country SDI 
   EAR <- EAR_requirements %>% filter(age_groups==age & sex_groups==sex)
   EAR <- EAR[ , grepl( nutrient , names( EAR_requirements ) ) ]
@@ -152,7 +156,11 @@ micronutrient_RR <- function(val, age, sex, nutrient, country_SDIgroup, EAR_requ
   # Build Risk curve based on CMD of normal distribution centered at EAR
   # 10% CV for cdf justification can be found here: Risk–benefit analysis of micronutrients, Renwick, 2004, 
   # https://ec.europa.eu/food/sites/food/files/safety/docs/labelling_nutrition-supplements-responses-ilsi_annex1_en.pdf
-  calc_r <- function(x){1-pnorm(x,mean=EAR, sd=EAR*0.1)}   #RR (based on the probability method: 1-cmd(normal distribution with mean equal to EAR and 10% CV))
+  if(nutrient=="B12"){
+    calc_r <- function(x){1-pnorm(x,mean=EAR, sd=EAR*0.25)}   #RR (based on the probability method: 1-cmd(normal distribution with mean equal to EAR and 10% CV))
+  }else{
+    calc_r <- function(x){1-pnorm(x,mean=EAR, sd=EAR*0.1)}   #RR (based on the probability method: 1-cmd(normal distribution with mean equal to EAR and 10% CV))
+  }
   
   # Calculate thing
   r_val <- calc_r(val)

@@ -159,13 +159,13 @@ data <- cosimo_orig %>%
   # Remove comparison columns
   select(-c(value_diff, value_pdiff)) %>% 
   # Gather columns
-  gather(key="scenario", value="value", 11:ncol(.)) %>% 
+  gather(key="scenario", value="value", 9:ncol(.)) %>% 
   mutate(scenario=recode(scenario, 
                          "value_lo"="Base",
                          "value_hi"="High road")) %>% 
   # Reduce to total diet
-  filter(food=="Total Diet") %>% 
-  select(-c(food_id, food_code, food)) %>% 
+  filter(food=="Total food") %>% 
+  select(-c(food_code, food)) %>% 
   # Add GENUS nutrient name for scalar matching
   mutate(nutrient_genus=recode(nutrient, 
                                "Energy"="Calories",
@@ -190,10 +190,10 @@ data <- cosimo_orig %>%
   rename(mean_cntry=value) %>% 
   mutate(mean_group=mean_cntry * scalar) %>% 
   # Arrange output
-  select(scenario, year, country_id:country,
-         nutrient_code:nutrient_units, sex, age_group,
+  select(scenario, year, iso3, country,
+         nutrient_code, nutrient, nutrient_units, sex, age_group,
          nutrient_genus, iso3_genus, scalar_genus, scalar_spade, scalar, 
-         scenario, mean_cntry, mean_group, everything())
+         mean_cntry, mean_group, everything())
 
 # Inspect data
 # The only rows missing values are 2018-2030 values for countries that don't exist anymore
