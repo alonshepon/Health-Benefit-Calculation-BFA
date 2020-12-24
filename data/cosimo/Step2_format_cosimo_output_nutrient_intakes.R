@@ -11,13 +11,13 @@ library(tidyverse)
 library(countrycode)
 
 # Directories
-inputdir <- "data/cosimo/raw"
+inputdir <- "data/cosimo/raw/v4"
 outputdir <- "data/cosimo/processed"
 plotdir <- "data/cosimo/figures"
 
 # Read data
-data_lo_orig <- readxl::read_excel(file.path(inputdir, "ResultsUpdate2.xlsx"), sheet=1)
-data_hi_orig <- readxl::read_excel(file.path(inputdir, "ResultsUpdate2.xlsx"), sheet=2)
+data_lo_orig <- read.csv(file.path(inputdir, "NutrientsBaseRev2.csv"), as.is=T)
+data_hi_orig <- read.csv(file.path(inputdir, "NutrientsScenRev2.csv"), as.is=T, skip=1)
 
 # Read country key
 eu27_key <- read.csv(file.path(outputdir, "COSIMO_AGLINK_2020_country_key.csv"), as.is=T) %>% 
@@ -50,28 +50,28 @@ strsplit_extract <- function(x, split, which){
 # Format nutrient
 data_lo <- data_lo_orig %>%
   # Rename columns
-  rename(long_code="OUTPUT,0", country=countries, iso3="...2", food=products, food_code="...3", nutrient=elements, nutrient_code="...4") %>% 
+  rename(long_code=OUTPUT.0, country=countries, iso3="X", food=products, food_code="X.1", nutrient=elements, nutrient_code="X.2") %>% 
   # Rearrange columns
   select(iso3, country, food_code, food, nutrient_code, nutrient, everything()) %>% 
   select(-long_code) %>% 
   # Gather
   gather(key="year", value="value_lo", 7:ncol(.)) %>% 
   # Format year
-  mutate(year=gsub("_", "", year) %>% as.numeric(),
+  mutate(year=gsub("X|A", "", year) %>% as.numeric(),
          value_lo=value_lo %>% as.numeric()) 
 
 # Format nutrient
 data_hi <- data_hi_orig %>%
   # Rename columns
-  rename(long_code="OUTPUT,0", country=countries, iso3="...2", food=products, food_code="...3", nutrient=elements, nutrient_code="...4") %>% 
+  rename(long_code=OUTPUT.0, country=countries, iso3="X", food=products, food_code="X.1", nutrient=elements, nutrient_code="X.2") %>% 
   # Rearrange columns
   select(iso3, country, food_code, food, nutrient_code, nutrient, everything()) %>% 
   select(-long_code) %>% 
   # Gather
   gather(key="year", value="value_hi", 7:ncol(.)) %>% 
   # Format year
-  mutate(year=gsub("_", "", year) %>% as.numeric(),
-         value_hi=value_hi %>% as.numeric())
+  mutate(year=gsub("X|A", "", year) %>% as.numeric(),
+         value_hi=value_hi %>% as.numeric()) 
 
 # Merge data
 data_orig <- data_lo %>% 
@@ -168,6 +168,7 @@ freeR::which_duplicated(cntry_key$country_use)
 
 # Add corrected country to data
 data1 <- data_orig %>% 
+  # Add country names
   left_join(cntry_key %>% select(iso3, iso3_use, country_use), by="iso3") %>% 
   select(-c(iso3, country)) %>% 
   rename(country=country_use, iso3=iso3_use) %>% 
@@ -176,6 +177,47 @@ data1 <- data_orig %>%
 # Inspect data
 str(data1)
 freeR::complete(data1)
+
+
+# Check time series
+################################################################################
+
+# Global stats
+gstats <- data1 %>% 
+  drop_na() %>% 
+  filter(iso3!="World") %>% 
+  filter(food_code!="Total food") %>% 
+  group_by(iso3, country, nutrient, year) %>% 
+  summarize(value_lo=sum(value_lo, na.rm=T),
+            value_hi=sum(value_hi, na.rm=T)) %>% 
+  ungroup() %>% 
+  group_by(nutrient, year) %>% 
+  summarize(value_lo=mean(value_lo, na.rm=T),
+            value_hi=mean(value_hi, na.rm=T)) %>% 
+  gather(key="scenario", value="intake", 3:ncol(.)) %>% 
+  mutate(scenario=recode(scenario, "value_lo"="Base", "value_hi"="High"))
+
+# Plot
+g <- ggplot(gstats, aes(x=year, y=intake, color=scenario)) +
+  geom_line() +
+  facet_wrap(~nutrient, ncol=4, scales="free_y") +
+  labs(x="", y="Mean intake") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
+        axis.text=element_text(size=6),
+        axis.title=element_text(size=8),
+        legend.text=element_text(size=6),
+        legend.title=element_text(size=8),
+        strip.text=element_text(size=8),
+        plot.title=element_text(size=10),
+        # Gridlines
+        panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(), 
+        axis.line = element_line(colour = "black"),
+        # Legend
+        legend.position="bottom")
+g
 
 
 # Fix E27 countries
@@ -187,7 +229,7 @@ data1_eu <- data1 %>%
 
 # Remove EU27 countries (including EUN)
 data1_no_eu <- data1 %>% 
-  filter(!iso3 %in% c(eu27_key$iso3_use, "EUN"))
+  filter(!iso3 %in% c(eu27_key$iso3_use, "EUN", "WLD"))
 
 # Extract EUN data
 data1_eun <- data1 %>% 
@@ -237,6 +279,7 @@ saveRDS(data2, file=file.path(outputdir, "COSIMO_2010_2030_nutr_by_scenario_cntr
 
 # Global stats
 gstats <- data2 %>% 
+  drop_na() %>% 
   filter(food=="Total food") %>% 
   group_by(nutrient, nutrient_units, year) %>% 
   summarize(value_lo=mean(value_lo, na.rm=T),
