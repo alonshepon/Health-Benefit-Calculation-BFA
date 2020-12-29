@@ -1,0 +1,1165 @@
+"iso3","country","nutrient","sev_high","sev_base"
+"AFG","Afghanistan","Calcium",82.2584999697905,82.3369582151644
+"AFG","Afghanistan","Iron",4.55398987960291,4.58015352860237
+"AFG","Afghanistan","Omega-3 fatty acids",38.8121673719217,39.1455725395466
+"AFG","Afghanistan","Vitamin A, RAE",69.7613012931145,69.8198418315333
+"AFG","Afghanistan","Vitamin B-12",11.2371223386538,11.3920379862509
+"AFG","Afghanistan","Zinc",58.0959362786973,58.2437761979098
+"AGO","Angola","Calcium",32.5976269208915,35.698980577234
+"AGO","Angola","Iron",0.551316200479347,0.573512287749306
+"AGO","Angola","Omega-3 fatty acids",0,0
+"AGO","Angola","Vitamin A, RAE",1.4398071576718,1.45925489946433
+"AGO","Angola","Vitamin B-12",0.179859193614249,0.231856239134564
+"AGO","Angola","Zinc",2.3100052705579e-15,3.94708876538395e-14
+"ALB","Albania","Calcium",0,0
+"ALB","Albania","Iron",0,0
+"ALB","Albania","Omega-3 fatty acids",0,0
+"ALB","Albania","Vitamin A, RAE",0,0
+"ALB","Albania","Vitamin B-12",0,0
+"ALB","Albania","Zinc",0,0
+"ARE","United Arab Emirates","Calcium",0,0
+"ARE","United Arab Emirates","Iron",0,0
+"ARE","United Arab Emirates","Omega-3 fatty acids",0,0
+"ARE","United Arab Emirates","Vitamin A, RAE",0,0
+"ARE","United Arab Emirates","Vitamin B-12",0,0
+"ARE","United Arab Emirates","Zinc",0,0
+"ARG","Argentina","Calcium",6.20617653481363,7.16361560280079
+"ARG","Argentina","Iron",5.8224760623784e-07,6.39039291881702e-07
+"ARG","Argentina","Omega-3 fatty acids",0,0
+"ARG","Argentina","Vitamin A, RAE",0,0
+"ARG","Argentina","Vitamin B-12",0,0
+"ARG","Argentina","Zinc",0,0
+"ARM","Armenia","Calcium",2.72126144171197e-10,2.31508765682251e-10
+"ARM","Armenia","Iron",0,0
+"ARM","Armenia","Omega-3 fatty acids",0,0
+"ARM","Armenia","Vitamin A, RAE",0,0
+"ARM","Armenia","Vitamin B-12",0,0
+"ARM","Armenia","Zinc",0,0
+"ATG","Antigua & Barbuda","Calcium",0.0291836128428103,0.0619047766148054
+"ATG","Antigua & Barbuda","Iron",1.72064113278912e-08,4.4452772585929e-08
+"ATG","Antigua & Barbuda","Omega-3 fatty acids",0,0
+"ATG","Antigua & Barbuda","Vitamin A, RAE",0,0
+"ATG","Antigua & Barbuda","Vitamin B-12",0,0
+"ATG","Antigua & Barbuda","Zinc",0,0
+"AUS","Australia","Calcium",1.12683809869014e-11,1.91647108982607e-11
+"AUS","Australia","Iron",5.13451766089265e-20,4.30260073678268e-20
+"AUS","Australia","Omega-3 fatty acids",0,0
+"AUS","Australia","Vitamin A, RAE",0,0
+"AUS","Australia","Vitamin B-12",0,0
+"AUS","Australia","Zinc",0,0
+"AUT","Austria","Calcium",0,0
+"AUT","Austria","Iron",5.6516787393426e-11,8.13404280393575e-11
+"AUT","Austria","Omega-3 fatty acids",0,0
+"AUT","Austria","Vitamin A, RAE",4.19574675207601e-06,4.86848300456371e-06
+"AUT","Austria","Vitamin B-12",0,0
+"AUT","Austria","Zinc",0,0
+"AZE","Azerbaijan","Calcium",11.7134352365214,11.422407300277
+"AZE","Azerbaijan","Iron",0,0
+"AZE","Azerbaijan","Omega-3 fatty acids",0,0
+"AZE","Azerbaijan","Vitamin A, RAE",1.34965247611164e-15,6.70096350609701e-16
+"AZE","Azerbaijan","Vitamin B-12",0,0
+"AZE","Azerbaijan","Zinc",1.02080397304547e-10,6.36274104240013e-11
+"BDI","Burundi","Calcium",98.9948967600622,99.0052143162331
+"BDI","Burundi","Iron",98.9982206079496,99.0058685543439
+"BDI","Burundi","Omega-3 fatty acids",40.2549210297217,42.4210721814118
+"BDI","Burundi","Vitamin A, RAE",90.6763211378725,90.6801992719826
+"BDI","Burundi","Vitamin B-12",84.7106827129972,84.9425179915259
+"BDI","Burundi","Zinc",99.2653213375598,99.2773740347658
+"BEL","Belgium","Calcium",0,0
+"BEL","Belgium","Iron",5.08056048500875e-11,7.32185179583975e-11
+"BEL","Belgium","Omega-3 fatty acids",0,0
+"BEL","Belgium","Vitamin A, RAE",7.83089001679455e-07,9.36604210026844e-07
+"BEL","Belgium","Vitamin B-12",0,0
+"BEL","Belgium","Zinc",0,0
+"BEN","Benin","Calcium",0,3.4735462195594e-20
+"BEN","Benin","Iron",4.52003311833719,4.63192101629358
+"BEN","Benin","Omega-3 fatty acids",0,0
+"BEN","Benin","Vitamin A, RAE",7.10833736853397e-15,1.12254366202671e-14
+"BEN","Benin","Vitamin B-12",0,0
+"BEN","Benin","Zinc",7.64769301066883e-11,4.18330661627048e-10
+"BFA","Burkina Faso","Calcium",77.5299680119705,77.9588870051423
+"BFA","Burkina Faso","Iron",0.275523365292749,0.286828625716703
+"BFA","Burkina Faso","Omega-3 fatty acids",0,0
+"BFA","Burkina Faso","Vitamin A, RAE",45.767615132142,46.0062317702431
+"BFA","Burkina Faso","Vitamin B-12",0,0
+"BFA","Burkina Faso","Zinc",7.9008756784402e-13,1.70646939293408e-12
+"BGD","Bangladesh","Calcium",59.9326630952272,62.1326953648959
+"BGD","Bangladesh","Iron",0.689929572321856,0.745231866702631
+"BGD","Bangladesh","Omega-3 fatty acids",0,0
+"BGD","Bangladesh","Vitamin A, RAE",46.9875989238712,47.8979254883263
+"BGD","Bangladesh","Vitamin B-12",0,0
+"BGD","Bangladesh","Zinc",0,0
+"BGR","Bulgaria","Calcium",0,0
+"BGR","Bulgaria","Iron",6.79473802584547e-11,9.75656736795503e-11
+"BGR","Bulgaria","Omega-3 fatty acids",0,0
+"BGR","Bulgaria","Vitamin A, RAE",1.46698546576868e-07,1.79096461813747e-07
+"BGR","Bulgaria","Vitamin B-12",0,0
+"BGR","Bulgaria","Zinc",0,0
+"BHR","Bahrain","Calcium",0.00756807594113259,0.0345872834434802
+"BHR","Bahrain","Iron",91.5556036581414,91.9965652497332
+"BHR","Bahrain","Omega-3 fatty acids",0,0
+"BHR","Bahrain","Vitamin A, RAE",92.8255469682993,92.8597206334926
+"BHR","Bahrain","Vitamin B-12",22.5098977336116,25.4850896778618
+"BHR","Bahrain","Zinc",74.7993768095615,76.1368969701397
+"BHS","Bahamas","Calcium",36.099280453327,38.8159274492738
+"BHS","Bahamas","Iron",0.0877315089620241,0.0965834857668146
+"BHS","Bahamas","Omega-3 fatty acids",0,0
+"BHS","Bahamas","Vitamin A, RAE",3.09879428064133e-11,2.21526736779063e-11
+"BHS","Bahamas","Vitamin B-12",0,0
+"BHS","Bahamas","Zinc",0,0
+"BIH","Bosnia & Herzegovina","Calcium",5.13073527153483e-06,6.08233603204505e-06
+"BIH","Bosnia & Herzegovina","Iron",0,0
+"BIH","Bosnia & Herzegovina","Omega-3 fatty acids",0,0
+"BIH","Bosnia & Herzegovina","Vitamin A, RAE",0,0
+"BIH","Bosnia & Herzegovina","Vitamin B-12",0,0
+"BIH","Bosnia & Herzegovina","Zinc",0,0
+"BLR","Belarus","Calcium",0,0
+"BLR","Belarus","Iron",5.06344894098273e-10,8.29465490699077e-10
+"BLR","Belarus","Omega-3 fatty acids",0,0
+"BLR","Belarus","Vitamin A, RAE",0,0
+"BLR","Belarus","Vitamin B-12",0,0
+"BLR","Belarus","Zinc",0,0
+"BLZ","Belize","Calcium",0,0
+"BLZ","Belize","Iron",0,0
+"BLZ","Belize","Omega-3 fatty acids",0,0
+"BLZ","Belize","Vitamin A, RAE",0,0
+"BLZ","Belize","Vitamin B-12",0,0
+"BLZ","Belize","Zinc",0,0
+"BOL","Bolivia","Calcium",69.0868235816228,69.2051814386484
+"BOL","Bolivia","Iron",0.0742202930349428,0.0733025867851451
+"BOL","Bolivia","Omega-3 fatty acids",0,0
+"BOL","Bolivia","Vitamin A, RAE",11.2207755466197,10.8762103917908
+"BOL","Bolivia","Vitamin B-12",0.231770053214336,0.226745375872438
+"BOL","Bolivia","Zinc",0,0
+"BRA","Brazil","Calcium",0.295867219177397,0.29057985526103
+"BRA","Brazil","Iron",0.0483985050216935,0.0532156173981008
+"BRA","Brazil","Omega-3 fatty acids",0,0
+"BRA","Brazil","Vitamin A, RAE",8.69463646357279e-16,7.49305269340365e-16
+"BRA","Brazil","Vitamin B-12",0,0
+"BRA","Brazil","Zinc",0,0
+"BRB","Barbados","Calcium",1.08795107954017,1.7249715094823
+"BRB","Barbados","Iron",1.61305851748812e-14,4.39565030102667e-14
+"BRB","Barbados","Omega-3 fatty acids",0,0
+"BRB","Barbados","Vitamin A, RAE",0,0
+"BRB","Barbados","Vitamin B-12",0,0
+"BRB","Barbados","Zinc",0,0
+"BRN","Brunei","Calcium",0.000186892092535791,0.000436918510044404
+"BRN","Brunei","Iron",0,0
+"BRN","Brunei","Omega-3 fatty acids",0,0
+"BRN","Brunei","Vitamin A, RAE",0,0
+"BRN","Brunei","Vitamin B-12",0,0
+"BRN","Brunei","Zinc",0,0
+"BTN","Bhutan","Calcium",99.2304118314246,99.2386134377156
+"BTN","Bhutan","Iron",84.3872893150878,84.460581796087
+"BTN","Bhutan","Omega-3 fatty acids",1.02766046169614,1.07687535554394
+"BTN","Bhutan","Vitamin A, RAE",92.271480134881,92.2893435516175
+"BTN","Bhutan","Vitamin B-12",73.488110219435,74.0707172868106
+"BTN","Bhutan","Zinc",83.1885817687278,83.6143666017629
+"BWA","Botswana","Calcium",13.2896481225499,13.4817574354317
+"BWA","Botswana","Iron",1.01127311044281e-06,1.14858307084262e-06
+"BWA","Botswana","Omega-3 fatty acids",6.5150945646688,8.19307876731284
+"BWA","Botswana","Vitamin A, RAE",1.25494248705953,1.26456560698034
+"BWA","Botswana","Vitamin B-12",0,0
+"BWA","Botswana","Zinc",0,0
+"CAF","Central African Republic","Calcium",89.5580187906852,89.6963862708098
+"CAF","Central African Republic","Iron",53.0005706055781,53.5443642092138
+"CAF","Central African Republic","Omega-3 fatty acids",0,0
+"CAF","Central African Republic","Vitamin A, RAE",5.13722747389063,5.17278270301913
+"CAF","Central African Republic","Vitamin B-12",0,0
+"CAF","Central African Republic","Zinc",9.31543391229229,10.1607951313849
+"CAN","Canada","Calcium",0,0
+"CAN","Canada","Iron",0,0
+"CAN","Canada","Omega-3 fatty acids",0,0
+"CAN","Canada","Vitamin A, RAE",0,0
+"CAN","Canada","Vitamin B-12",0,0
+"CAN","Canada","Zinc",0,0
+"CHE","Switzerland","Calcium",0.450935960762768,0.450827081460431
+"CHE","Switzerland","Iron",1.78273461924549e-09,1.79185400365414e-09
+"CHE","Switzerland","Omega-3 fatty acids",0.301670394890633,0.296901231856661
+"CHE","Switzerland","Vitamin A, RAE",0,0
+"CHE","Switzerland","Vitamin B-12",0,0
+"CHE","Switzerland","Zinc",0,0
+"CHL","Chile","Calcium",18.6964283691606,19.7911889873654
+"CHL","Chile","Iron",4.92576291440595e-12,5.61762448716497e-12
+"CHL","Chile","Omega-3 fatty acids",0,0
+"CHL","Chile","Vitamin A, RAE",1.15121782364299e-09,1.1796528735985e-09
+"CHL","Chile","Vitamin B-12",0,0
+"CHL","Chile","Zinc",0,0
+"CHN","China","Calcium",0.00330779716459059,0.00620881331783959
+"CHN","China","Iron",2.00377982952478e-16,4.39056893853608e-16
+"CHN","China","Omega-3 fatty acids",0,0
+"CHN","China","Vitamin A, RAE",0,0
+"CHN","China","Vitamin B-12",0,0
+"CHN","China","Zinc",0,0
+"CIV","Côte d’Ivoire","Calcium",56.2439927182423,58.590247131062
+"CIV","Côte d’Ivoire","Iron",1.92774344425992,2.01652171842591
+"CIV","Côte d’Ivoire","Omega-3 fatty acids",0,0
+"CIV","Côte d’Ivoire","Vitamin A, RAE",0.0383654883657336,0.0450867829218229
+"CIV","Côte d’Ivoire","Vitamin B-12",0,0
+"CIV","Côte d’Ivoire","Zinc",4.1856916377917e-12,7.57956366534116e-11
+"CMR","Cameroon","Calcium",50.7376954024675,52.9329520750857
+"CMR","Cameroon","Iron",1.35341070217083e-12,4.38323757395393e-12
+"CMR","Cameroon","Omega-3 fatty acids",0,0
+"CMR","Cameroon","Vitamin A, RAE",5.581639496734,5.69558515991471
+"CMR","Cameroon","Vitamin B-12",4.46371526894735e-08,7.09016576170246e-07
+"CMR","Cameroon","Zinc",0,0
+"COD","Congo - Kinshasa","Calcium",98.9573036134385,98.9698838583696
+"COD","Congo - Kinshasa","Iron",99.1028314836774,99.1080065356708
+"COD","Congo - Kinshasa","Omega-3 fatty acids",0,0
+"COD","Congo - Kinshasa","Vitamin A, RAE",90.6702790176467,90.675362615042
+"COD","Congo - Kinshasa","Vitamin B-12",4.13902964502127,5.3954054847336
+"COD","Congo - Kinshasa","Zinc",99.3226382128863,99.3378839382263
+"COG","Congo - Brazzaville","Calcium",74.9001356927834,77.0633851388748
+"COG","Congo - Brazzaville","Iron",8.93688724107681,9.65242018536121
+"COG","Congo - Brazzaville","Omega-3 fatty acids",0,0
+"COG","Congo - Brazzaville","Vitamin A, RAE",27.938032949416,28.7235485989983
+"COG","Congo - Brazzaville","Vitamin B-12",0,0
+"COG","Congo - Brazzaville","Zinc",0.123934966207436,0.335620144994112
+"COL","Colombia","Calcium",8.39402176790998,8.42953062795118
+"COL","Colombia","Iron",0.0644290178317698,0.0670777316116832
+"COL","Colombia","Omega-3 fatty acids",0,0
+"COL","Colombia","Vitamin A, RAE",0,0
+"COL","Colombia","Vitamin B-12",0,0
+"COL","Colombia","Zinc",0,0
+"COM","Comoros","Calcium",98.9115520697919,98.9291914499052
+"COM","Comoros","Iron",91.9335529965651,92.184754850185
+"COM","Comoros","Omega-3 fatty acids",0,0
+"COM","Comoros","Vitamin A, RAE",89.418041473349,89.4737287569489
+"COM","Comoros","Vitamin B-12",0.000116143458216068,0.000422949869217559
+"COM","Comoros","Zinc",62.4966048429484,66.2710559245989
+"CPV","Cape Verde","Calcium",8.33180319894655,9.21348163246866
+"CPV","Cape Verde","Iron",1.36822284580797e-05,2.28246578739965e-05
+"CPV","Cape Verde","Omega-3 fatty acids",0,0
+"CPV","Cape Verde","Vitamin A, RAE",5.28679033984635e-17,1.6951111043823e-16
+"CPV","Cape Verde","Vitamin B-12",0,0
+"CPV","Cape Verde","Zinc",0,0
+"CRI","Costa Rica","Calcium",0.00756595071455319,0.0103443463816819
+"CRI","Costa Rica","Iron",0.00561542162471771,0.00611785074671627
+"CRI","Costa Rica","Omega-3 fatty acids",0,0
+"CRI","Costa Rica","Vitamin A, RAE",1.00975423167675e-10,7.36028777091182e-11
+"CRI","Costa Rica","Vitamin B-12",0,0
+"CRI","Costa Rica","Zinc",0,0
+"CUB","Cuba","Calcium",4.82102346498992,5.02589712465896
+"CUB","Cuba","Iron",0,0
+"CUB","Cuba","Omega-3 fatty acids",0,0
+"CUB","Cuba","Vitamin A, RAE",0,0
+"CUB","Cuba","Vitamin B-12",0,0
+"CUB","Cuba","Zinc",0,0
+"CYP","Cyprus","Calcium",0,0
+"CYP","Cyprus","Iron",1.6490140974037e-10,2.34149000444274e-10
+"CYP","Cyprus","Omega-3 fatty acids",0,0
+"CYP","Cyprus","Vitamin A, RAE",1.10712563521708e-06,1.3025768102948e-06
+"CYP","Cyprus","Vitamin B-12",0,0
+"CYP","Cyprus","Zinc",0,0
+"CZE","Czechia","Calcium",0,0
+"CZE","Czechia","Iron",5.87371599753255e-11,8.44951328552885e-11
+"CZE","Czechia","Omega-3 fatty acids",0,0
+"CZE","Czechia","Vitamin A, RAE",1.90422940140219e-07,2.28750831201276e-07
+"CZE","Czechia","Vitamin B-12",0,0
+"CZE","Czechia","Zinc",0,0
+"DEU","Germany","Calcium",0,0
+"DEU","Germany","Iron",3.18533444801825e-11,4.61744005530752e-11
+"DEU","Germany","Omega-3 fatty acids",0,0
+"DEU","Germany","Vitamin A, RAE",5.31902919963628e-06,6.14413853593846e-06
+"DEU","Germany","Vitamin B-12",0,0
+"DEU","Germany","Zinc",0,0
+"DJI","Djibouti","Calcium",68.4628113959258,68.8296091602582
+"DJI","Djibouti","Iron",1.42739294484758e-05,1.62982664921483e-05
+"DJI","Djibouti","Omega-3 fatty acids",0,0
+"DJI","Djibouti","Vitamin A, RAE",28.3335795131305,28.5014465560984
+"DJI","Djibouti","Vitamin B-12",1.94939978823567e-08,4.52139288433506e-08
+"DJI","Djibouti","Zinc",1.05282966371781e-18,5.77302794229754e-18
+"DMA","Dominica","Calcium",0.0752190010926588,0.102584538258186
+"DMA","Dominica","Iron",0.000303274948921715,0.000368739387386501
+"DMA","Dominica","Omega-3 fatty acids",0,0
+"DMA","Dominica","Vitamin A, RAE",0,0
+"DMA","Dominica","Vitamin B-12",0,0
+"DMA","Dominica","Zinc",0,0
+"DNK","Denmark","Calcium",0,0
+"DNK","Denmark","Iron",7.75384019457555e-11,1.11152769093183e-10
+"DNK","Denmark","Omega-3 fatty acids",0,0
+"DNK","Denmark","Vitamin A, RAE",3.0231384814092e-06,3.51908044626865e-06
+"DNK","Denmark","Vitamin B-12",0,0
+"DNK","Denmark","Zinc",0,0
+"DOM","Dominican Republic","Calcium",0.0202623443642172,0.0253827355883056
+"DOM","Dominican Republic","Iron",0.00162410669355817,0.00163905636616022
+"DOM","Dominican Republic","Omega-3 fatty acids",0,0
+"DOM","Dominican Republic","Vitamin A, RAE",0,0
+"DOM","Dominican Republic","Vitamin B-12",0,0
+"DOM","Dominican Republic","Zinc",0,0
+"DZA","Algeria","Calcium",3.34218850408126e-06,7.33806194826026e-06
+"DZA","Algeria","Iron",0,0
+"DZA","Algeria","Omega-3 fatty acids",0,0
+"DZA","Algeria","Vitamin A, RAE",4.93569632830211e-07,3.29814647458429e-07
+"DZA","Algeria","Vitamin B-12",2.63093594641237e-12,8.84140187514951e-11
+"DZA","Algeria","Zinc",0,0
+"ECU","Ecuador","Calcium",55.3726683777218,55.8010428195873
+"ECU","Ecuador","Iron",0.308447575969165,0.309851503522923
+"ECU","Ecuador","Omega-3 fatty acids",0,0
+"ECU","Ecuador","Vitamin A, RAE",0.00455353266433648,0.00402616886149145
+"ECU","Ecuador","Vitamin B-12",0,0
+"ECU","Ecuador","Zinc",1.13936956370982e-15,1.5734881101014e-15
+"EGY","Egypt","Calcium",20.3266456579758,21.6883427327329
+"EGY","Egypt","Iron",0,0
+"EGY","Egypt","Omega-3 fatty acids",0,0
+"EGY","Egypt","Vitamin A, RAE",0,0
+"EGY","Egypt","Vitamin B-12",0,0
+"EGY","Egypt","Zinc",0,0
+"ERI","Eritrea","Calcium",99.233600258928,99.2345491669312
+"ERI","Eritrea","Iron",95.6346197154134,95.6420939963292
+"ERI","Eritrea","Omega-3 fatty acids",68.6839087970414,70.0638377767439
+"ERI","Eritrea","Vitamin A, RAE",90.6060210499999,90.6117836842207
+"ERI","Eritrea","Vitamin B-12",75.5867451340571,76.2437584564325
+"ERI","Eritrea","Zinc",94.6535075928332,94.6886821665331
+"ESH","Western Sahara","Calcium",99.2806129937275,99.2806130494259
+"ESH","Western Sahara","Iron",99.4842071051256,99.4842072637483
+"ESH","Western Sahara","Omega-3 fatty acids",97.8357089894441,97.8357968927551
+"ESH","Western Sahara","Vitamin A, RAE",93.5107118837173,93.5107120621724
+"ESH","Western Sahara","Vitamin B-12",85.5265856687792,85.5265991067561
+"ESH","Western Sahara","Zinc",98.8933626303398,98.893363142344
+"ESP","Spain","Calcium",0,0
+"ESP","Spain","Iron",8.98622841316108e-11,1.28580385318195e-10
+"ESP","Spain","Omega-3 fatty acids",0,0
+"ESP","Spain","Vitamin A, RAE",4.59436823920131e-07,5.53065246772558e-07
+"ESP","Spain","Vitamin B-12",0,0
+"ESP","Spain","Zinc",0,0
+"EST","Estonia","Calcium",0,0
+"EST","Estonia","Iron",6.14356756188085e-11,8.83272272154645e-11
+"EST","Estonia","Omega-3 fatty acids",0,0
+"EST","Estonia","Vitamin A, RAE",5.61122830127664e-07,6.73562523426167e-07
+"EST","Estonia","Vitamin B-12",0,0
+"EST","Estonia","Zinc",0,0
+"ETH","Ethiopia","Calcium",87.680879610731,87.6853058600583
+"ETH","Ethiopia","Iron",0.915639203968858,0.918232958670394
+"ETH","Ethiopia","Omega-3 fatty acids",34.5292341388687,34.5057055142901
+"ETH","Ethiopia","Vitamin A, RAE",5.90568216929099,5.91102629888628
+"ETH","Ethiopia","Vitamin B-12",17.3493138064694,17.3642678900239
+"ETH","Ethiopia","Zinc",0,0
+"FIN","Finland","Calcium",0,0
+"FIN","Finland","Iron",4.67277896911658e-11,6.74123968420932e-11
+"FIN","Finland","Omega-3 fatty acids",0,0
+"FIN","Finland","Vitamin A, RAE",3.95971382386504e-06,4.59229046498434e-06
+"FIN","Finland","Vitamin B-12",0,0
+"FIN","Finland","Zinc",0,0
+"FJI","Fiji","Calcium",31.884570313589,33.9021586266574
+"FJI","Fiji","Iron",0,0
+"FJI","Fiji","Omega-3 fatty acids",0,0
+"FJI","Fiji","Vitamin A, RAE",0,0
+"FJI","Fiji","Vitamin B-12",0,0
+"FJI","Fiji","Zinc",0,0
+"FRA","France","Calcium",0,0
+"FRA","France","Iron",9.9313218325851e-11,1.41924350127602e-10
+"FRA","France","Omega-3 fatty acids",0,0
+"FRA","France","Vitamin A, RAE",2.9434372816848e-06,3.42661598672621e-06
+"FRA","France","Vitamin B-12",0,0
+"FRA","France","Zinc",0,0
+"FSM","Micronesia (Federated States of)","Calcium",13.019265174331,21.7786795004346
+"FSM","Micronesia (Federated States of)","Iron",0,0
+"FSM","Micronesia (Federated States of)","Omega-3 fatty acids",0,0
+"FSM","Micronesia (Federated States of)","Vitamin A, RAE",94.4275251175229,94.6032050235471
+"FSM","Micronesia (Federated States of)","Vitamin B-12",0,0
+"FSM","Micronesia (Federated States of)","Zinc",0,0
+"GAB","Gabon","Calcium",45.1301612289208,48.5652432850529
+"GAB","Gabon","Iron",6.26969849657207e-13,4.26636558945293e-12
+"GAB","Gabon","Omega-3 fatty acids",0,0
+"GAB","Gabon","Vitamin A, RAE",8.82308985500266e-10,2.33785362145573e-09
+"GAB","Gabon","Vitamin B-12",0,0
+"GAB","Gabon","Zinc",0,0
+"GBR","United Kingdom","Calcium",0,0
+"GBR","United Kingdom","Iron",0,0
+"GBR","United Kingdom","Omega-3 fatty acids",0,0
+"GBR","United Kingdom","Vitamin A, RAE",0,0
+"GBR","United Kingdom","Vitamin B-12",0,0
+"GBR","United Kingdom","Zinc",0,0
+"GEO","Georgia","Calcium",5.72003942513867e-07,1.48807353489235e-06
+"GEO","Georgia","Iron",7.7587717482213e-18,8.15199083139245e-18
+"GEO","Georgia","Omega-3 fatty acids",0,0
+"GEO","Georgia","Vitamin A, RAE",3.57534174427902e-06,2.54045921361132e-06
+"GEO","Georgia","Vitamin B-12",0,0
+"GEO","Georgia","Zinc",0,0
+"GHA","Ghana","Calcium",0.001134765722959,0.00800306544970282
+"GHA","Ghana","Iron",0,0
+"GHA","Ghana","Omega-3 fatty acids",0,0
+"GHA","Ghana","Vitamin A, RAE",0,0
+"GHA","Ghana","Vitamin B-12",0,0
+"GHA","Ghana","Zinc",0,0
+"GIN","Guinea","Calcium",17.388260122893,19.348826126235
+"GIN","Guinea","Iron",5.46882025173933,5.60226855566485
+"GIN","Guinea","Omega-3 fatty acids",0,0
+"GIN","Guinea","Vitamin A, RAE",0.659248832792165,0.678236649140137
+"GIN","Guinea","Vitamin B-12",0,0
+"GIN","Guinea","Zinc",4.36489525406664e-11,1.60887247509902e-10
+"GMB","Gambia","Calcium",34.9695461583474,36.5231067347942
+"GMB","Gambia","Iron",0,0
+"GMB","Gambia","Omega-3 fatty acids",0,0
+"GMB","Gambia","Vitamin A, RAE",78.6677006439559,78.8210599206927
+"GMB","Gambia","Vitamin B-12",4.2410697480411e-08,2.01770910881883e-07
+"GMB","Gambia","Zinc",0,0
+"GNB","Guinea-Bissau","Calcium",98.3561439149505,98.3655166224151
+"GNB","Guinea-Bissau","Iron",0.477117031633663,0.481483119871428
+"GNB","Guinea-Bissau","Omega-3 fatty acids",0,0
+"GNB","Guinea-Bissau","Vitamin A, RAE",69.1144343511351,69.1692799685551
+"GNB","Guinea-Bissau","Vitamin B-12",1.18271273711929,1.23383535290383
+"GNB","Guinea-Bissau","Zinc",1.00609714229737e-06,1.12509886587878e-06
+"GNQ","Equatorial Guinea","Calcium",98.9713913820724,98.9951268950488
+"GNQ","Equatorial Guinea","Iron",92.0779190290419,92.4392651917525
+"GNQ","Equatorial Guinea","Omega-3 fatty acids",0,0
+"GNQ","Equatorial Guinea","Vitamin A, RAE",90.0159615595947,90.0741026474572
+"GNQ","Equatorial Guinea","Vitamin B-12",46.0151846930254,49.9331231524659
+"GNQ","Equatorial Guinea","Zinc",86.2787806373429,87.4070422151876
+"GRC","Greece","Calcium",0,0
+"GRC","Greece","Iron",3.5330842858523e-11,5.1149087565623e-11
+"GRC","Greece","Omega-3 fatty acids",0,0
+"GRC","Greece","Vitamin A, RAE",1.78241786882525e-06,2.09081452340708e-06
+"GRC","Greece","Vitamin B-12",0,0
+"GRC","Greece","Zinc",0,0
+"GRD","Grenada","Calcium",0.0843781319995752,0.141658372748692
+"GRD","Grenada","Iron",0.0217116414647409,0.0246136810245903
+"GRD","Grenada","Omega-3 fatty acids",0,0
+"GRD","Grenada","Vitamin A, RAE",0.0933656771622822,0.0888773282317056
+"GRD","Grenada","Vitamin B-12",1.03801375733006e-12,7.03893707636577e-12
+"GRD","Grenada","Zinc",0,0
+"GTM","Guatemala","Calcium",57.1473763591577,57.3906259193202
+"GTM","Guatemala","Iron",0.000477220016498793,0.000473270767323571
+"GTM","Guatemala","Omega-3 fatty acids",0,0
+"GTM","Guatemala","Vitamin A, RAE",3.4109625244821,3.27971401587381
+"GTM","Guatemala","Vitamin B-12",5.54178572195193e-06,5.51437343434899e-06
+"GTM","Guatemala","Zinc",0,0
+"GUY","Guyana","Calcium",0,0
+"GUY","Guyana","Iron",0,0
+"GUY","Guyana","Omega-3 fatty acids",0,0
+"GUY","Guyana","Vitamin A, RAE",0,0
+"GUY","Guyana","Vitamin B-12",0,0
+"GUY","Guyana","Zinc",0,0
+"HKG","Hong Kong SAR China","Calcium",0,0
+"HKG","Hong Kong SAR China","Iron",0,0
+"HKG","Hong Kong SAR China","Omega-3 fatty acids",0,0
+"HKG","Hong Kong SAR China","Vitamin A, RAE",0,0
+"HKG","Hong Kong SAR China","Vitamin B-12",0,0
+"HKG","Hong Kong SAR China","Zinc",0,0
+"HND","Honduras","Calcium",53.2081313041831,53.5619020027004
+"HND","Honduras","Iron",0.221791415725016,0.221645745784989
+"HND","Honduras","Omega-3 fatty acids",0.846522473963637,0.905682094253827
+"HND","Honduras","Vitamin A, RAE",2.6548727985055,2.54322581923401
+"HND","Honduras","Vitamin B-12",0.00100023155359531,0.00102315980355761
+"HND","Honduras","Zinc",2.72428829193008e-19,3.43994187048582e-19
+"HRV","Croatia","Calcium",0,0
+"HRV","Croatia","Iron",3.34720405269883e-11,4.84908049595805e-11
+"HRV","Croatia","Omega-3 fatty acids",0,0
+"HRV","Croatia","Vitamin A, RAE",1.70165897810876e-07,2.07261451074329e-07
+"HRV","Croatia","Vitamin B-12",0,0
+"HRV","Croatia","Zinc",0,0
+"HTI","Haiti","Calcium",77.4723048994773,77.8333199356501
+"HTI","Haiti","Iron",0.276385911233339,0.279610356546804
+"HTI","Haiti","Omega-3 fatty acids",0,0
+"HTI","Haiti","Vitamin A, RAE",0,0
+"HTI","Haiti","Vitamin B-12",10.771808124699,11.3831146398175
+"HTI","Haiti","Zinc",0.000178346194619171,0.000219563543494384
+"HUN","Hungary","Calcium",0,0
+"HUN","Hungary","Iron",6.22068337015892e-11,8.94219828809077e-11
+"HUN","Hungary","Omega-3 fatty acids",0,0
+"HUN","Hungary","Vitamin A, RAE",3.37570341364545e-07,4.03105753219898e-07
+"HUN","Hungary","Vitamin B-12",0,0
+"HUN","Hungary","Zinc",0,0
+"IDN","Indonesia","Calcium",55.4456451333202,60.7661717681656
+"IDN","Indonesia","Iron",2.97993422672976e-05,5.70806613012564e-05
+"IDN","Indonesia","Omega-3 fatty acids",0,0
+"IDN","Indonesia","Vitamin A, RAE",4.72267226294492e-12,6.63993183453589e-12
+"IDN","Indonesia","Vitamin B-12",0,0
+"IDN","Indonesia","Zinc",0,0
+"IND","India","Calcium",21.7903959173672,22.2106133381765
+"IND","India","Iron",0.106059922311107,0.105368766230919
+"IND","India","Omega-3 fatty acids",0,0
+"IND","India","Vitamin A, RAE",2.82699553717235,2.771647787485
+"IND","India","Vitamin B-12",1.86457199393913,2.45962418418397
+"IND","India","Zinc",0.0100682929133103,0.0107955732440948
+"IRL","Ireland","Calcium",0,0
+"IRL","Ireland","Iron",3.1481138041964e-10,4.43356740030617e-10
+"IRL","Ireland","Omega-3 fatty acids",0,0
+"IRL","Ireland","Vitamin A, RAE",4.15089498070469e-06,4.81582459022109e-06
+"IRL","Ireland","Vitamin B-12",0,0
+"IRL","Ireland","Zinc",0,0
+"IRN","Iran","Calcium",39.7902736231246,40.481515285378
+"IRN","Iran","Iron",2.17322418165349e-08,2.19248847337824e-08
+"IRN","Iran","Omega-3 fatty acids",0,0
+"IRN","Iran","Vitamin A, RAE",2.11319432520232e-08,1.05618853456512e-08
+"IRN","Iran","Vitamin B-12",9.46723433676605e-18,1.24072636064887e-17
+"IRN","Iran","Zinc",0.0115535364496608,0.0125011837960227
+"IRQ","Iraq","Calcium",90.8713780104229,90.9385575994186
+"IRQ","Iraq","Iron",2.57579376651275e-06,2.7048601592646e-06
+"IRQ","Iraq","Omega-3 fatty acids",0,0
+"IRQ","Iraq","Vitamin A, RAE",61.4503136464203,61.4594026453494
+"IRQ","Iraq","Vitamin B-12",9.21213881940779,9.79529237667698
+"IRQ","Iraq","Zinc",1.60661947164,1.6477611338121
+"ISL","Iceland","Calcium",0,0
+"ISL","Iceland","Iron",0,0
+"ISL","Iceland","Omega-3 fatty acids",0,0
+"ISL","Iceland","Vitamin A, RAE",0,0
+"ISL","Iceland","Vitamin B-12",0,0
+"ISL","Iceland","Zinc",0,0
+"ISR","Israel","Calcium",3.10966666103371e-10,2.12801436907545e-11
+"ISR","Israel","Iron",0,0
+"ISR","Israel","Omega-3 fatty acids",0,0
+"ISR","Israel","Vitamin A, RAE",0,0
+"ISR","Israel","Vitamin B-12",0,0
+"ISR","Israel","Zinc",0,0
+"ITA","Italy","Calcium",0,0
+"ITA","Italy","Iron",7.01855629906275e-11,1.0073849607882e-10
+"ITA","Italy","Omega-3 fatty acids",0,0
+"ITA","Italy","Vitamin A, RAE",1.04604841404625e-06,1.23919118477827e-06
+"ITA","Italy","Vitamin B-12",0,0
+"ITA","Italy","Zinc",0,0
+"JAM","Jamaica","Calcium",6.73054415039321,7.87863308132963
+"JAM","Jamaica","Iron",2.24840513711684e-14,3.6884238633764e-14
+"JAM","Jamaica","Omega-3 fatty acids",0,0
+"JAM","Jamaica","Vitamin A, RAE",0,0
+"JAM","Jamaica","Vitamin B-12",0,0
+"JAM","Jamaica","Zinc",0,0
+"JOR","Jordan","Calcium",54.2692625719475,54.5807047216452
+"JOR","Jordan","Iron",4.67414435388241e-06,5.20575166920223e-06
+"JOR","Jordan","Omega-3 fatty acids",0,0
+"JOR","Jordan","Vitamin A, RAE",0.809842880539506,0.809643293655817
+"JOR","Jordan","Vitamin B-12",1.86562634030448e-05,3.09867446784269e-05
+"JOR","Jordan","Zinc",0.0218570632305311,0.0240442434316466
+"JPN","Japan","Calcium",0,0
+"JPN","Japan","Iron",8.52766239851946e-06,1.19437318717526e-05
+"JPN","Japan","Omega-3 fatty acids",0,0
+"JPN","Japan","Vitamin A, RAE",2.21122976667522e-13,1.40635051860494e-13
+"JPN","Japan","Vitamin B-12",0,0
+"JPN","Japan","Zinc",0,0
+"KAZ","Kazakhstan","Calcium",2.11511665717536e-07,2.09027250519764e-07
+"KAZ","Kazakhstan","Iron",0.000289693318950194,0.000292715984900118
+"KAZ","Kazakhstan","Omega-3 fatty acids",0,0
+"KAZ","Kazakhstan","Vitamin A, RAE",0,0
+"KAZ","Kazakhstan","Vitamin B-12",0,0
+"KAZ","Kazakhstan","Zinc",0,0
+"KEN","Kenya","Calcium",19.2454563459714,20.3145405293513
+"KEN","Kenya","Iron",0.0475269110141033,0.0486937110482562
+"KEN","Kenya","Omega-3 fatty acids",2.42979496303519,3.77210430370859
+"KEN","Kenya","Vitamin A, RAE",3.92135032071992,3.92545441801709
+"KEN","Kenya","Vitamin B-12",6.43261646415633e-06,7.1907200949712e-06
+"KEN","Kenya","Zinc",0,0
+"KGZ","Kyrgyzstan","Calcium",2.09622445135364e-06,1.57710096964132e-06
+"KGZ","Kyrgyzstan","Iron",0.000612200527044105,0.000572098740009195
+"KGZ","Kyrgyzstan","Omega-3 fatty acids",2.7183289867229,2.86061014826083
+"KGZ","Kyrgyzstan","Vitamin A, RAE",0,0
+"KGZ","Kyrgyzstan","Vitamin B-12",0,0
+"KGZ","Kyrgyzstan","Zinc",0.000681614477794875,0.0006011297096341
+"KHM","Cambodia","Calcium",0.34054445452612,0.524044000601015
+"KHM","Cambodia","Iron",0.000497422022022521,0.000844285729006894
+"KHM","Cambodia","Omega-3 fatty acids",0,0
+"KHM","Cambodia","Vitamin A, RAE",10.8034455255833,12.2738046459788
+"KHM","Cambodia","Vitamin B-12",0,0
+"KHM","Cambodia","Zinc",0,0
+"KIR","Kiribati","Calcium",78.5893129832693,78.6638606040852
+"KIR","Kiribati","Iron",4.70987643459969e-20,2.04947984832905e-16
+"KIR","Kiribati","Omega-3 fatty acids",0,0
+"KIR","Kiribati","Vitamin A, RAE",77.0233523811507,77.0435883990737
+"KIR","Kiribati","Vitamin B-12",0,0
+"KIR","Kiribati","Zinc",24.2977313362747,26.1876248856518
+"KNA","St. Kitts & Nevis","Calcium",7.13808114012134,9.72797556061284
+"KNA","St. Kitts & Nevis","Iron",0.000161314111679539,0.000238682881787387
+"KNA","St. Kitts & Nevis","Omega-3 fatty acids",0,0
+"KNA","St. Kitts & Nevis","Vitamin A, RAE",0,0
+"KNA","St. Kitts & Nevis","Vitamin B-12",0,0
+"KNA","St. Kitts & Nevis","Zinc",0,0
+"KOR","South Korea","Calcium",1.2296281774591e-14,1.56478346638339e-14
+"KOR","South Korea","Iron",2.06222489448712e-11,3.39296484799213e-11
+"KOR","South Korea","Omega-3 fatty acids",0,0
+"KOR","South Korea","Vitamin A, RAE",0,0
+"KOR","South Korea","Vitamin B-12",0,0
+"KOR","South Korea","Zinc",0,0
+"KWT","Kuwait","Calcium",5.554727593509e-07,1.25357264050049e-06
+"KWT","Kuwait","Iron",0,0
+"KWT","Kuwait","Omega-3 fatty acids",0,0
+"KWT","Kuwait","Vitamin A, RAE",4.3083654636967e-20,4.3083654636967e-20
+"KWT","Kuwait","Vitamin B-12",0,0
+"KWT","Kuwait","Zinc",0,0
+"LAO","Laos","Calcium",29.4270972036217,31.5708034824551
+"LAO","Laos","Iron",2.24457835850158e-07,3.74238187628987e-07
+"LAO","Laos","Omega-3 fatty acids",0,0
+"LAO","Laos","Vitamin A, RAE",0,0
+"LAO","Laos","Vitamin B-12",0,0
+"LAO","Laos","Zinc",0,0
+"LBN","Lebanon","Calcium",0,0
+"LBN","Lebanon","Iron",2.73831422872058e-17,3.3483356617697e-17
+"LBN","Lebanon","Omega-3 fatty acids",0,0
+"LBN","Lebanon","Vitamin A, RAE",1.19784819719457,1.20175644696535
+"LBN","Lebanon","Vitamin B-12",7.03364596968794e-14,4.62045361011544e-13
+"LBN","Lebanon","Zinc",1.10557721461859e-15,6.77732374823165e-15
+"LBR","Liberia","Calcium",99.5324869596895,99.5425867110763
+"LBR","Liberia","Iron",0.832426683967809,0.849168256115629
+"LBR","Liberia","Omega-3 fatty acids",0,0
+"LBR","Liberia","Vitamin A, RAE",39.4362630076091,39.6395133286031
+"LBR","Liberia","Vitamin B-12",0.000702865452799456,0.000959881032637836
+"LBR","Liberia","Zinc",6.84170224138825e-11,1.44348627205709e-10
+"LBY","Libya","Calcium",98.0784776173192,98.3800942683316
+"LBY","Libya","Iron",86.8732501865796,90.0516170450018
+"LBY","Libya","Omega-3 fatty acids",0,0
+"LBY","Libya","Vitamin A, RAE",91.0467465145792,91.5442105477631
+"LBY","Libya","Vitamin B-12",0.0204929294358325,0.602294008957395
+"LBY","Libya","Zinc",77.5481645708265,81.0769363452813
+"LCA","St. Lucia","Calcium",16.069272764755,18.6548913339773
+"LCA","St. Lucia","Iron",1.93961256762205e-06,2.90982073835239e-06
+"LCA","St. Lucia","Omega-3 fatty acids",0,0
+"LCA","St. Lucia","Vitamin A, RAE",0,0
+"LCA","St. Lucia","Vitamin B-12",0,0
+"LCA","St. Lucia","Zinc",0,0
+"LKA","Sri Lanka","Calcium",0,0
+"LKA","Sri Lanka","Iron",0.00111105223964146,0.00146765264630777
+"LKA","Sri Lanka","Omega-3 fatty acids",0,0
+"LKA","Sri Lanka","Vitamin A, RAE",0.0303798257629491,0.0341279002506233
+"LKA","Sri Lanka","Vitamin B-12",0,0
+"LKA","Sri Lanka","Zinc",0,0
+"LSO","Lesotho","Calcium",50.2347568408151,53.2906802972659
+"LSO","Lesotho","Iron",0.000746051737514493,0.000778864559241313
+"LSO","Lesotho","Omega-3 fatty acids",0,0
+"LSO","Lesotho","Vitamin A, RAE",15.4226373043483,15.5068805703189
+"LSO","Lesotho","Vitamin B-12",8.85553140307665e-11,2.37181253256063e-10
+"LSO","Lesotho","Zinc",0,0
+"LTU","Lithuania","Calcium",0,0
+"LTU","Lithuania","Iron",1.06609620422221e-10,1.5221520044913e-10
+"LTU","Lithuania","Omega-3 fatty acids",0,0
+"LTU","Lithuania","Vitamin A, RAE",1.24127688949625e-07,1.50113264216851e-07
+"LTU","Lithuania","Vitamin B-12",0,0
+"LTU","Lithuania","Zinc",0,0
+"LUX","Luxembourg","Calcium",0,0
+"LUX","Luxembourg","Iron",1.18039634026665e-10,1.68318306601978e-10
+"LUX","Luxembourg","Omega-3 fatty acids",0,0
+"LUX","Luxembourg","Vitamin A, RAE",5.45348032780816e-07,6.5273899903337e-07
+"LUX","Luxembourg","Vitamin B-12",0,0
+"LUX","Luxembourg","Zinc",0,0
+"LVA","Latvia","Calcium",0,0
+"LVA","Latvia","Iron",4.68305259858733e-11,6.75587846433225e-11
+"LVA","Latvia","Omega-3 fatty acids",0,0
+"LVA","Latvia","Vitamin A, RAE",2.67430517441545e-07,3.23973431177378e-07
+"LVA","Latvia","Vitamin B-12",0,0
+"LVA","Latvia","Zinc",0,0
+"MAC","Macao SAR China","Calcium",0.0111295001590279,0.0247663511000412
+"MAC","Macao SAR China","Iron",0,2.11620902240367e-19
+"MAC","Macao SAR China","Omega-3 fatty acids",0,0
+"MAC","Macao SAR China","Vitamin A, RAE",0,0
+"MAC","Macao SAR China","Vitamin B-12",0,0
+"MAC","Macao SAR China","Zinc",0,0
+"MAR","Morocco","Calcium",7.47386319451843e-06,0.00128741238421109
+"MAR","Morocco","Iron",0,0
+"MAR","Morocco","Omega-3 fatty acids",0,0
+"MAR","Morocco","Vitamin A, RAE",0,0
+"MAR","Morocco","Vitamin B-12",0,0
+"MAR","Morocco","Zinc",0,0
+"MDA","Moldova","Calcium",8.79498402661953,9.87595417791075
+"MDA","Moldova","Iron",0.0061331417057557,0.0101011842087091
+"MDA","Moldova","Omega-3 fatty acids",0,0
+"MDA","Moldova","Vitamin A, RAE",0.000195579144808721,0.000265756832258324
+"MDA","Moldova","Vitamin B-12",0,0
+"MDA","Moldova","Zinc",0,0
+"MDG","Madagascar","Calcium",94.0937905788314,94.1280691427887
+"MDG","Madagascar","Iron",2.49788719601672,2.53065361609704
+"MDG","Madagascar","Omega-3 fatty acids",0,0
+"MDG","Madagascar","Vitamin A, RAE",9.38603548300713,9.43061935887355
+"MDG","Madagascar","Vitamin B-12",0.972839471553322,1.04209451460935
+"MDG","Madagascar","Zinc",0,0
+"MDV","Maldives","Calcium",0,0
+"MDV","Maldives","Iron",0,0
+"MDV","Maldives","Omega-3 fatty acids",0,0
+"MDV","Maldives","Vitamin A, RAE",0,0
+"MDV","Maldives","Vitamin B-12",0,0
+"MDV","Maldives","Zinc",0,0
+"MEX","Mexico","Calcium",1.16585632080146,1.46699390020688
+"MEX","Mexico","Iron",7.09355645309356e-05,7.66783636408975e-05
+"MEX","Mexico","Omega-3 fatty acids",0,0
+"MEX","Mexico","Vitamin A, RAE",0,0
+"MEX","Mexico","Vitamin B-12",0,0
+"MEX","Mexico","Zinc",0,0
+"MHL","Marshall Islands","Calcium",88.4087887280881,90.5936256093764
+"MHL","Marshall Islands","Iron",0,0
+"MHL","Marshall Islands","Omega-3 fatty acids",0,0
+"MHL","Marshall Islands","Vitamin A, RAE",93.8804215748214,94.1104080062502
+"MHL","Marshall Islands","Vitamin B-12",0,0
+"MHL","Marshall Islands","Zinc",4.60499484623129,7.02538305513885
+"MKD","North Macedonia","Calcium",0.000307629677706793,0.000364592121193522
+"MKD","North Macedonia","Iron",0,0
+"MKD","North Macedonia","Omega-3 fatty acids",0,0
+"MKD","North Macedonia","Vitamin A, RAE",0,0
+"MKD","North Macedonia","Vitamin B-12",0,0
+"MKD","North Macedonia","Zinc",0,0
+"MLI","Mali","Calcium",1.26667302021695,1.3163431858735
+"MLI","Mali","Iron",0.0712642600029765,0.0741603796318093
+"MLI","Mali","Omega-3 fatty acids",0,0
+"MLI","Mali","Vitamin A, RAE",1.42606888255933e-07,1.6933567143922e-07
+"MLI","Mali","Vitamin B-12",0,0
+"MLI","Mali","Zinc",0,0
+"MLT","Malta","Calcium",0,0
+"MLT","Malta","Iron",8.97850641015283e-11,1.28471257117279e-10
+"MLT","Malta","Omega-3 fatty acids",0,0
+"MLT","Malta","Vitamin A, RAE",1.32940562087337e-05,1.52993517182771e-05
+"MLT","Malta","Vitamin B-12",0,0
+"MLT","Malta","Zinc",0,0
+"MMR","Myanmar (Burma)","Calcium",0.282029973600656,0.425383642115315
+"MMR","Myanmar (Burma)","Iron",5.40216139156933e-06,1.04032343263471e-05
+"MMR","Myanmar (Burma)","Omega-3 fatty acids",0,0
+"MMR","Myanmar (Burma)","Vitamin A, RAE",0,0
+"MMR","Myanmar (Burma)","Vitamin B-12",0,0
+"MMR","Myanmar (Burma)","Zinc",0,0
+"MNE","Montenegro","Calcium",0,0
+"MNE","Montenegro","Iron",0,0
+"MNE","Montenegro","Omega-3 fatty acids",0,0
+"MNE","Montenegro","Vitamin A, RAE",0,0
+"MNE","Montenegro","Vitamin B-12",0,0
+"MNE","Montenegro","Zinc",0,0
+"MNG","Mongolia","Calcium",0.00618826268511881,0.00588338891674457
+"MNG","Mongolia","Iron",0.0013922713946644,0.00134551000430455
+"MNG","Mongolia","Omega-3 fatty acids",3.86953140352804,3.95435489339409
+"MNG","Mongolia","Vitamin A, RAE",0,0
+"MNG","Mongolia","Vitamin B-12",0,0
+"MNG","Mongolia","Zinc",0,0
+"MOZ","Mozambique","Calcium",81.6300328317741,82.1780799016761
+"MOZ","Mozambique","Iron",13.5675981999381,13.7067460308863
+"MOZ","Mozambique","Omega-3 fatty acids",0,0
+"MOZ","Mozambique","Vitamin A, RAE",13.8755170850392,13.95663582424
+"MOZ","Mozambique","Vitamin B-12",27.755520498218,29.2021467492617
+"MOZ","Mozambique","Zinc",0.0680297143158162,0.0930390549780059
+"MRT","Mauritania","Calcium",4.8465889293969,5.58263593169561
+"MRT","Mauritania","Iron",0,0
+"MRT","Mauritania","Omega-3 fatty acids",0,0
+"MRT","Mauritania","Vitamin A, RAE",0.63359887578437,0.713939824571077
+"MRT","Mauritania","Vitamin B-12",0,0
+"MRT","Mauritania","Zinc",0,0
+"MUS","Mauritius","Calcium",0.0726507659148554,0.115454998577504
+"MUS","Mauritius","Iron",0,0
+"MUS","Mauritius","Omega-3 fatty acids",0,0
+"MUS","Mauritius","Vitamin A, RAE",2.00784791012109,2.03469025955605
+"MUS","Mauritius","Vitamin B-12",0,0
+"MUS","Mauritius","Zinc",0,0
+"MWI","Malawi","Calcium",56.6351769849044,57.8071580712757
+"MWI","Malawi","Iron",2.25714234733598e-08,3.56477800091423e-08
+"MWI","Malawi","Omega-3 fatty acids",0,0
+"MWI","Malawi","Vitamin A, RAE",0,0
+"MWI","Malawi","Vitamin B-12",0.605854617394811,0.802501071454839
+"MWI","Malawi","Zinc",0,0
+"MYS","Malaysia","Calcium",3.31726030014845,5.26813773191341
+"MYS","Malaysia","Iron",3.81081345271655e-11,1.24433789801083e-10
+"MYS","Malaysia","Omega-3 fatty acids",0,0
+"MYS","Malaysia","Vitamin A, RAE",2.19774446859026e-16,1.96364230038181e-16
+"MYS","Malaysia","Vitamin B-12",0,0
+"MYS","Malaysia","Zinc",0,0
+"NAM","Namibia","Calcium",45.1934422844514,48.2980491862259
+"NAM","Namibia","Iron",3.97128633490657e-13,7.71756158325358e-13
+"NAM","Namibia","Omega-3 fatty acids",0,0
+"NAM","Namibia","Vitamin A, RAE",17.9102159560647,18.0993834536861
+"NAM","Namibia","Vitamin B-12",3.65583013084066e-14,4.0127351677986e-13
+"NAM","Namibia","Zinc",0,0
+"NER","Niger","Calcium",24.3448178566869,24.648869859349
+"NER","Niger","Iron",0.0310444448145986,0.0319882502358666
+"NER","Niger","Omega-3 fatty acids",0.0433255974101281,0.18854366637
+"NER","Niger","Vitamin A, RAE",0.00892937516460533,0.00904668157939671
+"NER","Niger","Vitamin B-12",4.7359054533402e-11,6.26865708956181e-11
+"NER","Niger","Zinc",8.23071411720246e-06,9.48994293211426e-06
+"NGA","Nigeria","Calcium",83.2908675886829,83.5032088149067
+"NGA","Nigeria","Iron",0.000335621629027808,0.000327555315130398
+"NGA","Nigeria","Omega-3 fatty acids",0,0
+"NGA","Nigeria","Vitamin A, RAE",10.3866034275309,10.5430883949258
+"NGA","Nigeria","Vitamin B-12",0.432072765855832,0.657194252785011
+"NGA","Nigeria","Zinc",0,0
+"NIC","Nicaragua","Calcium",53.3731407330752,54.0354113315391
+"NIC","Nicaragua","Iron",0.239280798156781,0.242722153920562
+"NIC","Nicaragua","Omega-3 fatty acids",0,0
+"NIC","Nicaragua","Vitamin A, RAE",0.00602950606097806,0.00545387767495676
+"NIC","Nicaragua","Vitamin B-12",0,0
+"NIC","Nicaragua","Zinc",0,0
+"NLD","Netherlands","Calcium",0,0
+"NLD","Netherlands","Iron",7.96628441472392e-11,1.14159388894578e-10
+"NLD","Netherlands","Omega-3 fatty acids",0,0
+"NLD","Netherlands","Vitamin A, RAE",3.48592841375623e-06,4.06181944705672e-06
+"NLD","Netherlands","Vitamin B-12",0,0
+"NLD","Netherlands","Zinc",0,0
+"NOR","Norway","Calcium",0,0
+"NOR","Norway","Iron",0,0
+"NOR","Norway","Omega-3 fatty acids",0,0
+"NOR","Norway","Vitamin A, RAE",2.63795031205113e-12,2.65929531922964e-12
+"NOR","Norway","Vitamin B-12",0,0
+"NOR","Norway","Zinc",0,0
+"NPL","Nepal","Calcium",40.7220449094887,41.1510210000958
+"NPL","Nepal","Iron",5.7482372321106e-05,6.26082341304023e-05
+"NPL","Nepal","Omega-3 fatty acids",0,0
+"NPL","Nepal","Vitamin A, RAE",1.37391058981128,1.42359896624091
+"NPL","Nepal","Vitamin B-12",4.04830507657739e-11,6.4697132110335e-11
+"NPL","Nepal","Zinc",0,0
+"NZL","New Zealand","Calcium",0.00616438537698477,0.00844384846183162
+"NZL","New Zealand","Iron",5.24970207902747e-15,5.97103384843503e-15
+"NZL","New Zealand","Omega-3 fatty acids",0,0
+"NZL","New Zealand","Vitamin A, RAE",0,0
+"NZL","New Zealand","Vitamin B-12",0,0
+"NZL","New Zealand","Zinc",0,0
+"OMN","Oman","Calcium",0.000458582683459163,0.000685101499869842
+"OMN","Oman","Iron",0,5.73272085113205e-20
+"OMN","Oman","Omega-3 fatty acids",0,0
+"OMN","Oman","Vitamin A, RAE",1.19923725292743e-08,1.90101856299409e-08
+"OMN","Oman","Vitamin B-12",0,0
+"OMN","Oman","Zinc",0,0
+"PAK","Pakistan","Calcium",7.61600161832191,7.60530562799462
+"PAK","Pakistan","Iron",0.202919122268567,0.203443201063001
+"PAK","Pakistan","Omega-3 fatty acids",5.23819564522454,5.30629219148894
+"PAK","Pakistan","Vitamin A, RAE",0.254923157763983,0.253046496912093
+"PAK","Pakistan","Vitamin B-12",4.98409579457708e-07,5.05428935966203e-07
+"PAK","Pakistan","Zinc",0.586451441846554,0.595819779462541
+"PAN","Panama","Calcium",0.0125112406811954,0.0183588895744996
+"PAN","Panama","Iron",0.0185094993268358,0.0196518411825714
+"PAN","Panama","Omega-3 fatty acids",0,0
+"PAN","Panama","Vitamin A, RAE",0,0
+"PAN","Panama","Vitamin B-12",0,0
+"PAN","Panama","Zinc",0,0
+"PER","Peru","Calcium",0.159211232793818,0.254033987949277
+"PER","Peru","Iron",0.000163840227310539,0.000203732103869802
+"PER","Peru","Omega-3 fatty acids",0,0
+"PER","Peru","Vitamin A, RAE",0,0
+"PER","Peru","Vitamin B-12",0,0
+"PER","Peru","Zinc",0,0
+"PHL","Philippines","Calcium",75.3672321690493,77.1345725384825
+"PHL","Philippines","Iron",0.139571779028542,0.155847077809506
+"PHL","Philippines","Omega-3 fatty acids",0,0
+"PHL","Philippines","Vitamin A, RAE",2.63031592054074,2.672082327706
+"PHL","Philippines","Vitamin B-12",0,0
+"PHL","Philippines","Zinc",0,0
+"PLW","Palau","Calcium",62.2387680452476,69.2915019005839
+"PLW","Palau","Iron",1.23356773779263,1.85817683030737
+"PLW","Palau","Omega-3 fatty acids",0,0
+"PLW","Palau","Vitamin A, RAE",82.0039462329751,83.9525396598184
+"PLW","Palau","Vitamin B-12",0,0
+"PLW","Palau","Zinc",0.0423119814531922,0.116521892971719
+"PNG","Papua New Guinea","Calcium",98.3216567208548,98.4318730046581
+"PNG","Papua New Guinea","Iron",48.2867523804444,54.192046724713
+"PNG","Papua New Guinea","Omega-3 fatty acids",0,0
+"PNG","Papua New Guinea","Vitamin A, RAE",96.192275488006,96.221219897774
+"PNG","Papua New Guinea","Vitamin B-12",0,0
+"PNG","Papua New Guinea","Zinc",74.9132356340027,76.3588702423076
+"POL","Poland","Calcium",0,0
+"POL","Poland","Iron",2.32787933288372e-10,3.29101518432375e-10
+"POL","Poland","Omega-3 fatty acids",0,0
+"POL","Poland","Vitamin A, RAE",1.9460304906228e-07,2.35998018689305e-07
+"POL","Poland","Vitamin B-12",0,0
+"POL","Poland","Zinc",0,0
+"PRI","Puerto Rico","Calcium",96.8605649860745,96.8646543529111
+"PRI","Puerto Rico","Iron",89.0895617896806,89.0972961108051
+"PRI","Puerto Rico","Omega-3 fatty acids",88.4869457718378,88.6597393176288
+"PRI","Puerto Rico","Vitamin A, RAE",92.3940398199782,92.3944617337994
+"PRI","Puerto Rico","Vitamin B-12",79.6399553785322,79.6577305088526
+"PRI","Puerto Rico","Zinc",81.6950325699494,81.715623087495
+"PRK","North Korea","Calcium",95.3555339770677,95.6815599813705
+"PRK","North Korea","Iron",82.5714425687171,82.8094527395062
+"PRK","North Korea","Omega-3 fatty acids",0,0
+"PRK","North Korea","Vitamin A, RAE",91.0461377349362,91.132233532008
+"PRK","North Korea","Vitamin B-12",0.192039605567341,0.636916784553536
+"PRK","North Korea","Zinc",78.6048963765938,79.6880142278566
+"PRT","Portugal","Calcium",0,0
+"PRT","Portugal","Iron",7.95936044806247e-06,9.78771484128144e-06
+"PRT","Portugal","Omega-3 fatty acids",0,0
+"PRT","Portugal","Vitamin A, RAE",6.94279535904421e-06,8.05890138398735e-06
+"PRT","Portugal","Vitamin B-12",0,0
+"PRT","Portugal","Zinc",0,0
+"PRY","Paraguay","Calcium",48.1451222441049,48.1905351062177
+"PRY","Paraguay","Iron",0.26798085406451,0.269205451843194
+"PRY","Paraguay","Omega-3 fatty acids",0,0
+"PRY","Paraguay","Vitamin A, RAE",0,0
+"PRY","Paraguay","Vitamin B-12",0,0
+"PRY","Paraguay","Zinc",0,0
+"PSE","Palestinian Territories","Calcium",99.1448277543309,99.1515803202132
+"PSE","Palestinian Territories","Iron",96.4697262297409,96.5152219627083
+"PSE","Palestinian Territories","Omega-3 fatty acids",2.06032671093349,2.54514327276394
+"PSE","Palestinian Territories","Vitamin A, RAE",93.1147533273539,93.1328837663821
+"PSE","Palestinian Territories","Vitamin B-12",66.3908915114189,67.4925180012942
+"PSE","Palestinian Territories","Zinc",89.9518016561108,90.0734173502355
+"QAT","Qatar","Calcium",97.2537940690303,97.4207240345051
+"QAT","Qatar","Iron",67.0997581347855,69.6303643712789
+"QAT","Qatar","Omega-3 fatty acids",0,0
+"QAT","Qatar","Vitamin A, RAE",89.8947964348164,90.0903950561086
+"QAT","Qatar","Vitamin B-12",1.4782588679216e-09,3.84009320786869e-08
+"QAT","Qatar","Zinc",35.2764692448394,38.2539046011134
+"ROU","Romania","Calcium",0,0
+"ROU","Romania","Iron",1.14594986398633e-10,1.63467519998907e-10
+"ROU","Romania","Omega-3 fatty acids",0,0
+"ROU","Romania","Vitamin A, RAE",3.29075567112368e-07,3.97286129126593e-07
+"ROU","Romania","Vitamin B-12",0,0
+"ROU","Romania","Zinc",0,0
+"RUS","Russia","Calcium",0,0
+"RUS","Russia","Iron",0,0
+"RUS","Russia","Omega-3 fatty acids",0,0
+"RUS","Russia","Vitamin A, RAE",0,0
+"RUS","Russia","Vitamin B-12",0,0
+"RUS","Russia","Zinc",0,0
+"RWA","Rwanda","Calcium",12.5751467057165,13.6506626624988
+"RWA","Rwanda","Iron",7.18974445513662e-07,9.3933562414292e-07
+"RWA","Rwanda","Omega-3 fatty acids",0,0
+"RWA","Rwanda","Vitamin A, RAE",0,0
+"RWA","Rwanda","Vitamin B-12",0.0987080852690099,0.129183775399051
+"RWA","Rwanda","Zinc",0,0
+"SAU","Saudi Arabia","Calcium",0.252542519204472,0.281637919167588
+"SAU","Saudi Arabia","Iron",0,0
+"SAU","Saudi Arabia","Omega-3 fatty acids",0,0
+"SAU","Saudi Arabia","Vitamin A, RAE",0.505124024409925,0.497692874438871
+"SAU","Saudi Arabia","Vitamin B-12",1.20929928466663e-08,1.32987830744063e-08
+"SAU","Saudi Arabia","Zinc",0,0
+"SDN","Sudan","Calcium",99.2579271120996,99.2580362480239
+"SDN","Sudan","Iron",95.7599279606773,95.7645846886617
+"SDN","Sudan","Omega-3 fatty acids",88.6269796252367,88.7335743482082
+"SDN","Sudan","Vitamin A, RAE",90.773040505983,90.7733170529327
+"SDN","Sudan","Vitamin B-12",89.8577523249842,89.8648935983175
+"SDN","Sudan","Zinc",95.1968170607993,95.2012771090733
+"SEN","Senegal","Calcium",74.7211204466227,75.3501930890464
+"SEN","Senegal","Iron",0,0
+"SEN","Senegal","Omega-3 fatty acids",0,0
+"SEN","Senegal","Vitamin A, RAE",11.4482496272875,11.6113589068711
+"SEN","Senegal","Vitamin B-12",1.6726121375525e-12,6.79570542989079e-12
+"SEN","Senegal","Zinc",0,0
+"SGP","Singapore","Calcium",14.0265884706043,19.3321975089522
+"SGP","Singapore","Iron",84.3955042817403,86.0849563423129
+"SGP","Singapore","Omega-3 fatty acids",0,0
+"SGP","Singapore","Vitamin A, RAE",95.754517527213,95.8528245352548
+"SGP","Singapore","Vitamin B-12",0,0
+"SGP","Singapore","Zinc",6.78533439753095,10.2378789190361
+"SLB","Solomon Islands","Calcium",77.1988977247788,77.2991307193595
+"SLB","Solomon Islands","Iron",15.6841492196974,16.8856716961378
+"SLB","Solomon Islands","Omega-3 fatty acids",0,0
+"SLB","Solomon Islands","Vitamin A, RAE",0,0
+"SLB","Solomon Islands","Vitamin B-12",0,0
+"SLB","Solomon Islands","Zinc",43.774463979161,44.5535909953946
+"SLE","Sierra Leone","Calcium",25.0845475744157,27.5094015046202
+"SLE","Sierra Leone","Iron",2.01587734976772,2.04767423319077
+"SLE","Sierra Leone","Omega-3 fatty acids",0,0
+"SLE","Sierra Leone","Vitamin A, RAE",2.06619833519714,2.11996026775081
+"SLE","Sierra Leone","Vitamin B-12",4.70778747951451e-10,2.70294985020877e-09
+"SLE","Sierra Leone","Zinc",1.73105715328292e-08,6.50369836699992e-08
+"SLV","El Salvador","Calcium",24.8333514935886,25.3844636787392
+"SLV","El Salvador","Iron",0.000128188370470026,0.000129836505490219
+"SLV","El Salvador","Omega-3 fatty acids",0,0
+"SLV","El Salvador","Vitamin A, RAE",0.0164698697457727,0.0152539513302663
+"SLV","El Salvador","Vitamin B-12",0.00349118737108397,0.0039241131211201
+"SLV","El Salvador","Zinc",0,0
+"SMR","San Marino","Calcium",99.2806137263725,99.2806137332415
+"SMR","San Marino","Iron",96.0422818479508,96.0422845198897
+"SMR","San Marino","Omega-3 fatty acids",97.8377822984609,97.8379559244755
+"SMR","San Marino","Vitamin A, RAE",93.5107144118567,93.5107144616199
+"SMR","San Marino","Vitamin B-12",85.526861872026,85.5268804063092
+"SMR","San Marino","Zinc",83.0299955473815,83.0300067246924
+"SOM","Somalia","Calcium",99.1690230941592,99.1724723412619
+"SOM","Somalia","Iron",99.1114494562596,99.1151353965034
+"SOM","Somalia","Omega-3 fatty acids",23.5393900776507,25.7301380847669
+"SOM","Somalia","Vitamin A, RAE",90.7442452010399,90.7460692547223
+"SOM","Somalia","Vitamin B-12",88.7968323948264,88.8637177152197
+"SOM","Somalia","Zinc",99.3860069414598,99.3932988117177
+"SRB","Serbia","Calcium",6.70404439830907e-18,2.8790064537804e-14
+"SRB","Serbia","Iron",0,0
+"SRB","Serbia","Omega-3 fatty acids",0,0
+"SRB","Serbia","Vitamin A, RAE",0.000415069651275181,0.000406312135850671
+"SRB","Serbia","Vitamin B-12",0,0
+"SRB","Serbia","Zinc",0,0
+"STP","São Tomé & Príncipe","Calcium",62.8139361301625,64.8902931081964
+"STP","São Tomé & Príncipe","Iron",2.3903567808081,2.50334066643763
+"STP","São Tomé & Príncipe","Omega-3 fatty acids",0,0
+"STP","São Tomé & Príncipe","Vitamin A, RAE",36.4049036299634,37.0874550254025
+"STP","São Tomé & Príncipe","Vitamin B-12",0,0
+"STP","São Tomé & Príncipe","Zinc",5.56250351464794e-15,4.95785369402596e-13
+"SUR","Suriname","Calcium",53.5798808074683,55.8000212147187
+"SUR","Suriname","Iron",0.147041339520492,0.156008354488491
+"SUR","Suriname","Omega-3 fatty acids",0,0
+"SUR","Suriname","Vitamin A, RAE",15.4610775304441,15.2498577336201
+"SUR","Suriname","Vitamin B-12",0.149220139419397,0.198774700586301
+"SUR","Suriname","Zinc",9.90548718708141e-14,7.20927541658453e-13
+"SVK","Slovakia","Calcium",0,0
+"SVK","Slovakia","Iron",1.15177687442476e-10,1.64288224628522e-10
+"SVK","Slovakia","Omega-3 fatty acids",0,0
+"SVK","Slovakia","Vitamin A, RAE",4.45621677012308e-07,5.37074989855739e-07
+"SVK","Slovakia","Vitamin B-12",0,0
+"SVK","Slovakia","Zinc",0,0
+"SVN","Slovenia","Calcium",0,0
+"SVN","Slovenia","Iron",9.57585416608762e-11,1.36907400524183e-10
+"SVN","Slovenia","Omega-3 fatty acids",0,0
+"SVN","Slovenia","Vitamin A, RAE",3.13415889902914e-07,3.74148611879871e-07
+"SVN","Slovenia","Vitamin B-12",0,0
+"SVN","Slovenia","Zinc",0,0
+"SWE","Sweden","Calcium",0,0
+"SWE","Sweden","Iron",4.23574726702937e-11,6.11827528302755e-11
+"SWE","Sweden","Omega-3 fatty acids",0,0
+"SWE","Sweden","Vitamin A, RAE",4.12308286231632e-06,4.78193122170297e-06
+"SWE","Sweden","Vitamin B-12",0,0
+"SWE","Sweden","Zinc",0,0
+"SWZ","Eswatini","Calcium",90.2250858106273,90.3295197468313
+"SWZ","Eswatini","Iron",2.6800980905351,2.70152632159382
+"SWZ","Eswatini","Omega-3 fatty acids",0,0
+"SWZ","Eswatini","Vitamin A, RAE",3.14305883615749,3.16054815138939
+"SWZ","Eswatini","Vitamin B-12",1.65854684435768e-13,2.7247007177478e-13
+"SWZ","Eswatini","Zinc",0.110657488243649,0.122907444448845
+"SYC","Seychelles","Calcium",84.4963875653948,87.9485191150823
+"SYC","Seychelles","Iron",1.56414072662565,2.69850577565619
+"SYC","Seychelles","Omega-3 fatty acids",0,0
+"SYC","Seychelles","Vitamin A, RAE",87.0631780234454,87.40389718651
+"SYC","Seychelles","Vitamin B-12",0,0
+"SYC","Seychelles","Zinc",0,2.00527501633829e-20
+"SYR","Syria","Calcium",99.2160833640806,99.2191650813987
+"SYR","Syria","Iron",96.9283739750248,96.9484918222714
+"SYR","Syria","Omega-3 fatty acids",28.0504422233254,30.0184071982324
+"SYR","Syria","Vitamin A, RAE",93.3184690318161,93.327169679243
+"SYR","Syria","Vitamin B-12",78.5224900147736,78.8801729620686
+"SYR","Syria","Zinc",91.1557349382319,91.2072779724846
+"TCD","Chad","Calcium",72.4433438600403,72.7226098020663
+"TCD","Chad","Iron",6.96160251153119,7.04512504470231
+"TCD","Chad","Omega-3 fatty acids",0,0
+"TCD","Chad","Vitamin A, RAE",0.0277944306203499,0.0288411823714495
+"TCD","Chad","Vitamin B-12",0,0
+"TCD","Chad","Zinc",1.225381242993e-09,2.03966021421137e-09
+"TGO","Togo","Calcium",0.00138508172367332,0.00418971089965231
+"TGO","Togo","Iron",0.000138391765468235,0.000157650167042087
+"TGO","Togo","Omega-3 fatty acids",0,0
+"TGO","Togo","Vitamin A, RAE",79.5297035926045,79.6656644879264
+"TGO","Togo","Vitamin B-12",0,0
+"TGO","Togo","Zinc",0,0
+"THA","Thailand","Calcium",37.7768252265505,42.0853962513357
+"THA","Thailand","Iron",0.0829198102775861,0.0990733343390954
+"THA","Thailand","Omega-3 fatty acids",0,0
+"THA","Thailand","Vitamin A, RAE",0,0
+"THA","Thailand","Vitamin B-12",0,0
+"THA","Thailand","Zinc",0,0
+"TJK","Tajikistan","Calcium",60.8947739147016,60.4902947101259
+"TJK","Tajikistan","Iron",0.253181783194891,0.248930286241929
+"TJK","Tajikistan","Omega-3 fatty acids",30.9370466220894,31.2987376012687
+"TJK","Tajikistan","Vitamin A, RAE",0,0
+"TJK","Tajikistan","Vitamin B-12",1.07975149186093e-06,8.81104583909412e-07
+"TJK","Tajikistan","Zinc",2.42913229754859,2.36053683569724
+"TKM","Turkmenistan","Calcium",0.0418497599782896,0.0381505141266731
+"TKM","Turkmenistan","Iron",7.91379143234485e-07,6.7779437147119e-07
+"TKM","Turkmenistan","Omega-3 fatty acids",0,0
+"TKM","Turkmenistan","Vitamin A, RAE",3.97648198056735e-17,2.03764532376897e-17
+"TKM","Turkmenistan","Vitamin B-12",0,0
+"TKM","Turkmenistan","Zinc",8.32586381968288e-05,5.23405632460345e-05
+"TLS","Timor-Leste","Calcium",95.9093397252875,95.9752333042437
+"TLS","Timor-Leste","Iron",0.040447748635601,0.0430931974344206
+"TLS","Timor-Leste","Omega-3 fatty acids",0,0
+"TLS","Timor-Leste","Vitamin A, RAE",70.7364242465697,71.0240166402966
+"TLS","Timor-Leste","Vitamin B-12",3.42816343740071,3.8846740774724
+"TLS","Timor-Leste","Zinc",2.28947151145472e-05,3.82947681446085e-05
+"TON","Tonga","Calcium",97.6440221309792,97.8514555838367
+"TON","Tonga","Iron",65.5615178342206,69.9451433682192
+"TON","Tonga","Omega-3 fatty acids",0,0
+"TON","Tonga","Vitamin A, RAE",94.1036460247622,94.3110376978647
+"TON","Tonga","Vitamin B-12",0,0
+"TON","Tonga","Zinc",58.5761835990212,61.8035649259306
+"TTO","Trinidad & Tobago","Calcium",4.44111129042839,5.26541074462365
+"TTO","Trinidad & Tobago","Iron",0,0
+"TTO","Trinidad & Tobago","Omega-3 fatty acids",0,0
+"TTO","Trinidad & Tobago","Vitamin A, RAE",1.65486598666954e-07,1.29242652651322e-07
+"TTO","Trinidad & Tobago","Vitamin B-12",0,0
+"TTO","Trinidad & Tobago","Zinc",0,0
+"TUN","Tunisia","Calcium",0.00110855462747304,0.00166530633038459
+"TUN","Tunisia","Iron",0,0
+"TUN","Tunisia","Omega-3 fatty acids",0,0
+"TUN","Tunisia","Vitamin A, RAE",0,0
+"TUN","Tunisia","Vitamin B-12",0,0
+"TUN","Tunisia","Zinc",0,0
+"TUR","Turkey","Calcium",0.000401849731740409,0.000396538914663181
+"TUR","Turkey","Iron",0,0
+"TUR","Turkey","Omega-3 fatty acids",0,0
+"TUR","Turkey","Vitamin A, RAE",0,0
+"TUR","Turkey","Vitamin B-12",0,0
+"TUR","Turkey","Zinc",0,0
+"TUV","Tuvalu","Calcium",98.899445510479,98.9418734690664
+"TUV","Tuvalu","Iron",10.4286584072697,12.4598663643867
+"TUV","Tuvalu","Omega-3 fatty acids",0,0
+"TUV","Tuvalu","Vitamin A, RAE",93.3471526598983,93.6334067560035
+"TUV","Tuvalu","Vitamin B-12",0,0
+"TUV","Tuvalu","Zinc",43.9300601950926,48.4269904677938
+"TWN","Taiwan","Calcium",2.64010046186789e-16,4.13345135326279e-15
+"TWN","Taiwan","Iron",1.8955241854713e-12,5.7398061912353e-12
+"TWN","Taiwan","Omega-3 fatty acids",0,0
+"TWN","Taiwan","Vitamin A, RAE",0,0
+"TWN","Taiwan","Vitamin B-12",0,0
+"TWN","Taiwan","Zinc",0,0
+"TZA","Tanzania","Calcium",74.0771501290534,74.3411991392403
+"TZA","Tanzania","Iron",0.037042258704046,0.0389634623251203
+"TZA","Tanzania","Omega-3 fatty acids",0,0.0335189294573546
+"TZA","Tanzania","Vitamin A, RAE",3.9120833910065e-10,4.80179315138165e-10
+"TZA","Tanzania","Vitamin B-12",52.0069430792587,52.7316815988221
+"TZA","Tanzania","Zinc",0,0
+"UGA","Uganda","Calcium",61.8337351075783,62.5768268408141
+"UGA","Uganda","Iron",0.169305295223564,0.178414764072424
+"UGA","Uganda","Omega-3 fatty acids",0,0
+"UGA","Uganda","Vitamin A, RAE",0.0297712704390933,0.0310370022746812
+"UGA","Uganda","Vitamin B-12",0.604164919272089,0.762985196155346
+"UGA","Uganda","Zinc",0,0
+"UKR","Ukraine","Calcium",0.00269861146112224,0.00752488444871861
+"UKR","Ukraine","Iron",3.66862928845055e-15,5.18865300223315e-15
+"UKR","Ukraine","Omega-3 fatty acids",0,0
+"UKR","Ukraine","Vitamin A, RAE",0,0
+"UKR","Ukraine","Vitamin B-12",0,0
+"UKR","Ukraine","Zinc",0,0
+"URY","Uruguay","Calcium",0.746266556542213,0.795144880903966
+"URY","Uruguay","Iron",2.40904740137895e-06,2.57034859327943e-06
+"URY","Uruguay","Omega-3 fatty acids",0,0
+"URY","Uruguay","Vitamin A, RAE",0,0
+"URY","Uruguay","Vitamin B-12",0,0
+"URY","Uruguay","Zinc",0,0
+"USA","United States","Calcium",0,0
+"USA","United States","Iron",1.06381405426801e-11,1.18281107481058e-11
+"USA","United States","Omega-3 fatty acids",0,0
+"USA","United States","Vitamin A, RAE",0,0
+"USA","United States","Vitamin B-12",0,0
+"USA","United States","Zinc",0,0
+"UZB","Uzbekistan","Calcium",1.22623625656153e-16,7.07920178568837e-17
+"UZB","Uzbekistan","Iron",1.0698530813445e-08,9.37981334300887e-09
+"UZB","Uzbekistan","Omega-3 fatty acids",0,0
+"UZB","Uzbekistan","Vitamin A, RAE",0,0
+"UZB","Uzbekistan","Vitamin B-12",0,0
+"UZB","Uzbekistan","Zinc",0,0
+"VCT","St. Vincent & Grenadines","Calcium",19.2450574084486,20.6861410045986
+"VCT","St. Vincent & Grenadines","Iron",1.72189082260121e-10,2.05218811569792e-10
+"VCT","St. Vincent & Grenadines","Omega-3 fatty acids",0,0
+"VCT","St. Vincent & Grenadines","Vitamin A, RAE",0,0
+"VCT","St. Vincent & Grenadines","Vitamin B-12",0,0
+"VCT","St. Vincent & Grenadines","Zinc",0,0
+"VEN","Venezuela","Calcium",69.7179543449271,70.246957137224
+"VEN","Venezuela","Iron",2.6931587309124,2.72647812527183
+"VEN","Venezuela","Omega-3 fatty acids",0,0
+"VEN","Venezuela","Vitamin A, RAE",0.0218488197566339,0.0207448522803881
+"VEN","Venezuela","Vitamin B-12",0,0
+"VEN","Venezuela","Zinc",0.00021567205211287,0.00027155125293486
+"VNM","Vietnam","Calcium",0.00246396259101787,0.014055345743318
+"VNM","Vietnam","Iron",2.6254161914355e-07,7.24768734667068e-07
+"VNM","Vietnam","Omega-3 fatty acids",0,0
+"VNM","Vietnam","Vitamin A, RAE",0,0
+"VNM","Vietnam","Vitamin B-12",0,0
+"VNM","Vietnam","Zinc",0,0
+"VUT","Vanuatu","Calcium",10.8327302124846,15.4416461689945
+"VUT","Vanuatu","Iron",0,0
+"VUT","Vanuatu","Omega-3 fatty acids",0,0
+"VUT","Vanuatu","Vitamin A, RAE",0.0985081045194969,0.155590582706003
+"VUT","Vanuatu","Vitamin B-12",0,0
+"VUT","Vanuatu","Zinc",0,0
+"WSM","Samoa","Calcium",1.25066034578502e-08,1.50167127621117e-07
+"WSM","Samoa","Iron",0,0
+"WSM","Samoa","Omega-3 fatty acids",0,0
+"WSM","Samoa","Vitamin A, RAE",0,0
+"WSM","Samoa","Vitamin B-12",0,0
+"WSM","Samoa","Zinc",0,0
+"YEM","Yemen","Calcium",63.0049708517168,65.5308103774622
+"YEM","Yemen","Iron",0.000599833514817003,0.000632128821249916
+"YEM","Yemen","Omega-3 fatty acids",0,0
+"YEM","Yemen","Vitamin A, RAE",57.3160668557894,57.3866315264122
+"YEM","Yemen","Vitamin B-12",0.336784352454541,0.379179848846821
+"YEM","Yemen","Zinc",1.28007583344685,1.33935161880627
+"ZAF","South Africa","Calcium",60.7326291480974,62.1309311605732
+"ZAF","South Africa","Iron",0.00101494944892431,0.00103581614200361
+"ZAF","South Africa","Omega-3 fatty acids",0,0
+"ZAF","South Africa","Vitamin A, RAE",0.369952634264555,0.368267997758607
+"ZAF","South Africa","Vitamin B-12",0,0
+"ZAF","South Africa","Zinc",0,0
+"ZMB","Zambia","Calcium",88.5427133205174,89.1581484421762
+"ZMB","Zambia","Iron",0.0951688717040728,0.102365078402212
+"ZMB","Zambia","Omega-3 fatty acids",0,0
+"ZMB","Zambia","Vitamin A, RAE",16.7025429385016,16.8152138484188
+"ZMB","Zambia","Vitamin B-12",3.07800988288798e-10,7.40351660681385e-10
+"ZMB","Zambia","Zinc",0,0
+"ZWE","Zimbabwe","Calcium",96.3953514077777,96.438812141802
+"ZWE","Zimbabwe","Iron",0.00595933343177922,0.00626796363702492
+"ZWE","Zimbabwe","Omega-3 fatty acids",0,0
+"ZWE","Zimbabwe","Vitamin A, RAE",72.7632815315284,72.8521588541345
+"ZWE","Zimbabwe","Vitamin B-12",4.97776030462698,5.56087956640138
+"ZWE","Zimbabwe","Zinc",0,0

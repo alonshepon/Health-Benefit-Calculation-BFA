@@ -86,14 +86,20 @@ data_eun_use <- purrr::map_df(1:nrow(eu27_key), function(x) {
 
 # Merge EU-expanded and non-EU data
 data_out <- bind_rows(data_non_eu, data_eun_use) %>% 
-  arrange(country,nutrient, scenario, year)
+  arrange(country,nutrient, scenario, year) %>% 
+  # Final formatting
+  rename(nutrient_units=units) %>% 
+  mutate(nutrient=recode(nutrient, 
+                         "Vitamin A"="Vitamin A, RAE",
+                         "Vitamin B12"="Vitamin B-12"),
+         scenario=recode(scenario, "High"="High road"))
 
 
 # Read data
 ################################################################################
 
 # Export data
-saveRDS(data, file=file.path(outputdir, "COSIMO_nutrient_by_scenario_cntry_with_dissagg.Rds"))
+saveRDS(data_out, file=file.path(outputdir, "COSIMO_nutrient_by_scenario_cntry_with_dissagg.Rds"))
 
 
 
