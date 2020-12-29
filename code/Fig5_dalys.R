@@ -3,6 +3,9 @@
 # Read data
 ################################################################################
 
+# Turn off scientific notation
+options(scipen=999)
+
 # Clear workspace
 rm(list = ls())
 
