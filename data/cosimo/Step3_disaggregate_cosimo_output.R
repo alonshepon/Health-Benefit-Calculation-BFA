@@ -30,8 +30,11 @@ cosimo_genus_iso_key <- readxl::read_excel("tables/TableS2_cosimo_genus_countrie
 
 # Read SPADE-derived scalars (for omega-3s and Vitamin B-12)
 spade_scalars <- readRDS(file.path("data/intakes/output/intake_distribution_age_sex_scalars.Rds")) %>% 
+  rename(iso3=country_iso3) %>% 
   mutate(sex=recode(sex, "men"="Males", "women"="Females"),
-         age_group=as.character(age_group)) 
+         age_group=as.character(age_group), 
+         nutrient=recode(nutrient, "Vitamin A"="Vitamin A, RAE"))
+
 
 # Map GENUS coverage
 ################################################################################
@@ -44,6 +47,10 @@ if(F){
     group_by(iso3_use, country_use) %>% 
     summarize(data_yn=sum(!is.na(value_med))>0) %>% 
     ungroup()
+  
+  # COSIMO not in GENUS
+  cosimo_isos <- sort(unique(cosimo_orig$iso3))
+  cosimo_isos[!cosimo_isos%in%genus_isos$iso3_use]
   
   # Get world
   world <- rnaturalearth::ne_countries(scale="large", returnclass = "sf")
@@ -156,6 +163,8 @@ cntry_sex_age_key <- expand.grid(iso3=sort(unique(cosimo_orig$iso3)),
 
 # Build key
 data <- cosimo_orig %>% 
+  # Reduce to total diet
+  filter(food=="Total food") %>% 
   # Remove comparison columns
   select(-c(value_diff, value_pdiff)) %>% 
   # Gather columns
@@ -163,16 +172,14 @@ data <- cosimo_orig %>%
   mutate(scenario=recode(scenario, 
                          "value_lo"="Base",
                          "value_hi"="High road")) %>% 
-  # Reduce to total diet
-  filter(food=="Total food") %>% 
   select(-c(food_code, food)) %>% 
+  # Remove missing values
+  filter(!is.na(value)) %>% 
   # Add GENUS nutrient name for scalar matching
   mutate(nutrient_genus=recode(nutrient, 
                                "Energy"="Calories",
                                "Total lipids"="Fat",
-                               "Vitamin A, RAE"="Vitamin A",
-                               "Vitamin B-12"="Vitamin B-12",
-                               "Omega-3 fatty acids"="Polyunsaturated fatty acids")) %>% 
+                               "Vitamin A, RAE"="Vitamin A")) %>% 
   # Add GENUS ISO3s for scalar matching
   left_join(cosimo_genus_iso_key, by=c("iso3"="iso3_cosimo")) %>% 
   mutate(iso3_genus=ifelse(is.na(iso3_genus), iso3, iso3_genus)) %>% 
@@ -182,7 +189,7 @@ data <- cosimo_orig %>%
   left_join(intake_scalars_exp, by=c("iso3_genus"="iso3", "nutrient_genus"="nutrient", "sex", "age_group")) %>% 
   rename(scalar_genus=scalar) %>% 
   # Add SPADE-derived scalars
-  left_join(spade_scalars %>% select(country_id,  nutrient, sex, age_group, scalar)) %>%
+  left_join(spade_scalars %>% select(iso3, nutrient, sex, age_group, scalar)) %>%
   rename(scalar_spade=scalar) %>% 
   # Select scalar
   mutate(scalar=ifelse(nutrient %in% c("Omega-3 fatty acids", "Vitamin B-12") | is.na(scalar_genus), scalar_spade, scalar_genus)) %>% 
@@ -201,8 +208,9 @@ freeR::complete(data)
 
 # Inspect missing
 check <- data %>% 
-  filter(is.na(mean_cntry))
+  filter(is.na(scalar))
 range(check$year)
+sort(unique(check$nutrient))
 sort(unique(check$country))
 
 
@@ -219,13 +227,15 @@ data1 <- data %>%
   # Recode sex for merge
   mutate(sex=recode(sex, "Females"="women", "Males"="men")) %>% 
   # Add distribution fits
-  left_join(dists %>% select(-c(country_id)), by=c("iso3"="country_iso3", "nutrient", "sex", "age_group")) %>% 
+  left_join(dists, by=c("iso3"="country_iso3", "nutrient", "sex", "age_group")) %>% 
   # Add means and differences
   mutate(g_mean=g_shape/g_rate,
          g_mean_diff=mean_group-g_mean) %>% 
   mutate(ln_mean=exp(ln_meanlog + ln_sdlog^2/2),
          ln_mean_diff=mean_group-ln_mean)
 
+# Inspect
+freeR::complete(data1)
 
 # Export
 ################################################################################

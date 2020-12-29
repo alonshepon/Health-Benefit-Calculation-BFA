@@ -29,9 +29,9 @@ dists <- dists_orig %>%
          mean_ln=exp(ln_meanlog+ln_sdlog^2/2),
          mean_best=ifelse(best_dist=="gamma", mean_gamma, mean_ln)) %>% 
   # Calculate scalars based on means
-  select(country_id, country_iso3, country_name, nutrient, sex, age_group, mean_best) %>% 
+  select(country_iso3, country_name, nutrient, sex, age_group, mean_best) %>% 
   rename(intake=mean_best) %>% 
-  group_by(country_id, country_iso3, country_name, nutrient) %>% 
+  group_by(country_iso3, country_name, nutrient) %>% 
   mutate(scalar=intake/mean(intake)) %>% 
   ungroup()
 

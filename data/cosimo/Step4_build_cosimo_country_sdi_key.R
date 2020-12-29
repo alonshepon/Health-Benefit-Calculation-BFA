@@ -50,10 +50,10 @@ sdi <- sdi_orig %>%
   filter(!(location=="Georgia" & sdi==0.838))
 
 # Countries to fill
-low_sdi_missing <- c("Congo - Brazzaville", "Swaziland", "Congo - Kinshasa", "Côte d’Ivoire", "Ethiopia PDR", "São Tomé & Príncipe", "São Tomé & Príncipe")
-mid_sdi_missing <- c("Netherlands Antilles", "St. Kitts & Nevis", "New Caledonia", "French Polynesia")
-hi_sdi_missing <- c("United States", "United Kingdom", "Taiwan", "Belgium-Luxembourg", "Hong Kong SAR China", "Czechoslovakia",
-                    "Macau SAR China", "Serbia and Montenegro", "Russia", "USSR", "Yugoslav SFR", "Macedonia")
+low_sdi_missing <- c("Congo - Brazzaville", "Swaziland", "Congo - Kinshasa", "Côte d’Ivoire", "Ethiopia PDR", "São Tomé & Príncipe", "São Tomé & Príncipe", "Western Sahara", "Eswatini")
+mid_sdi_missing <- c("Netherlands Antilles", "St. Kitts & Nevis", "New Caledonia", "French Polynesia", "Tuvalu")
+hi_sdi_missing <- c("United States", "United Kingdom", "Taiwan", "Belgium-Luxembourg", "Hong Kong SAR China", "Czechoslovakia", "North Macedonia",
+                    "Macau SAR China", "Serbia and Montenegro", "Russia", "USSR", "Yugoslav SFR", "Macedonia", "Macao SAR China", "San Marino", "Palau")
 
 # Add SDI to COSIMO countries
 cntry_key <- cntry_key_orig %>% 

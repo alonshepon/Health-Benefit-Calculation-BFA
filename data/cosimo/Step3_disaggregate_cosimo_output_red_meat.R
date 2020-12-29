@@ -53,12 +53,12 @@ data <- data_orig %>%
   # Reduce to red meats
   filter(food %in% red_meat_foods) %>% 
   # Sum red meat intake by country
-  group_by(country_id, country, iso3, year) %>% 
+  group_by(country, iso3, year) %>% 
   summarize(value_lo=sum(value_lo, na.rm=T),
             value_hi=sum(value_hi, na.rm=T)) %>% 
   ungroup() %>% 
   # Gather
-  gather(key="scenario", value="mean_cntry", 5:ncol(.)) %>% 
+  gather(key="scenario", value="mean_cntry", 4:ncol(.)) %>% 
   mutate(scenario=recode(scenario, 
                          "value_lo"="Base", 
                          "value_hi"="High road")) %>% 
@@ -70,7 +70,7 @@ data <- data_orig %>%
   mutate(mean_group=mean_cntry*scalar) %>% 
   # Arrange
   select(scenario, year,
-         country_id:iso3, sex, age_group, scalar, mean_cntry, mean_group, everything()) %>% 
+         country, iso3, sex, age_group, scalar, mean_cntry, mean_group, everything()) %>% 
   # Remove countries without scalars
   filter(!is.na(mean_group))
 
@@ -97,12 +97,14 @@ data1 <- data %>%
   # Recode sex for merge
   mutate(sex=recode(sex, "Females"="women", "Males"="men")) %>% 
   # Add distribution fits
-  left_join(dists %>% select(-c(country_id)), by=c("iso3"="country_iso3", "sex", "age_group")) %>% 
+  left_join(dists, by=c("iso3"="country_iso3", "sex", "age_group")) %>% 
   # Add means and differences
   mutate(g_mean=g_shape/g_rate,
          g_mean_diff=mean_group-g_mean) %>% 
   mutate(ln_mean=exp(ln_meanlog + ln_sdlog^2/2),
          ln_mean_diff=mean_group-ln_mean)
+
+freeR::complete(data1)
 
 
 # Export

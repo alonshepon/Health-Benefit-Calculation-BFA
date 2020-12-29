@@ -46,7 +46,8 @@ cntry_key <- cntry_key_orig %>%
                               "USSR"="Eastern Europe",
                               "Yugoslav SFR"="Southern Europe",
                               "Palestinian Territories"="Western Asia",
-                              "EU 27"="Western Europe")) %>% 
+                              "EU 27"="Western Europe",
+                              "Western Sahara"="Northern Africa")) %>% 
   # Classify intake group based on UN subregion
   mutate(intake_group=recode(subregion_un,
                              "Antarctica"="N/A", 
@@ -84,7 +85,6 @@ cntry_key <- cntry_key_orig %>%
 dist_key_exp <- purrr::map_df(1:nrow(cntry_key), function(x){
   
   # Country do
-  id_do <- cntry_key$country_id[x]
   iso3_do <- cntry_key$iso3[x]
   name_do <- cntry_key$country[x]
   group_do <- cntry_key$intake_group[x]
@@ -95,11 +95,10 @@ dist_key_exp <- purrr::map_df(1:nrow(cntry_key), function(x){
     filter(country_final==group_do) %>% 
     rename(intake_group=country_final) %>% 
     # Add meta-data
-    mutate(country_id=id_do,
-           country_iso3=iso3_do,
+    mutate(country_iso3=iso3_do,
            country_name=name_do) %>% 
     # Arrange columns
-    select(country_id:country_name, intake_group, everything())
+    select(country_iso3, country_name, intake_group, everything())
   
 })
 

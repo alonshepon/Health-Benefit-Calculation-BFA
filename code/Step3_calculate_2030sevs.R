@@ -20,13 +20,13 @@ red_meat_raw_2019 <- openxlsx::read.xlsx('data/meat_RR_2019.xlsx')
 EAR_requirements <- openxlsx::read.xlsx('data/EAR_requirements_GBDgroups.xlsx')
 
 # Read distributions (micronutrients)
-dists <- readRDS(file.path("data/cosimo/old/processed/COSIMO_2010_2030_country_nutrient_age_sex_means_and_distributions.Rds"))
+dists <- readRDS(file.path("data/cosimo/processed/COSIMO_2010_2030_country_nutrient_age_sex_means_and_distributions.Rds"))
 
 # Read distributions (red meat)
-dists_meat <- readRDS(file=file.path("data/cosimo/old/processed/COSIMO_2010_2030_country_red_meat_age_sex_means_and_distributions.Rds"))
+# dists_meat <- readRDS(file=file.path("data/cosimo/processed/COSIMO_2010_2030_country_red_meat_age_sex_means_and_distributions.Rds"))
 
 # Read HDI/SDI key
-sdi_hdi_key <- readRDS("data/cosimo/old/processed/COSIMO_country_key_with_SDI_HDI_info.rds") %>% 
+sdi_hdi_key <- readRDS("data/cosimo/processed/COSIMO_country_key_with_SDI_HDI_info.rds") %>% 
   select(iso3, sdi, sdi_group, hdi)
 
 # Source helpher functions
@@ -345,95 +345,95 @@ write.csv(sev_omega_final, file=file.path(outputdir, "2030_sevs_base_high_road_o
 # Calculate changes in summary exposure values (SEVs) -- red meat
 ##########################################################################################
 
-
-# Build data required for micronutrient SEV calculations
-data_sev_meat_1cause <- dists2030_meat %>% 
-  # Reduce to age groups with required data
-  filter(age_id>=10)
-
-# Expand for each each
-data_sev_meat <- purrr::map_df(cause_meat, function(x){
-  
-  df <- data_sev_meat_1cause %>% 
-    mutate(cause=x)
-  
-})
-
-data_sev_meat <- data_sev_meat %>% 
-  arrange(country, scenario, sex_id, age_id)
-
-# Loop through
-for(x in 1:nrow(data_sev_meat)){
-  
-  # Parameters
-  if(x %in% seq(100,80000,100)){print(x)}
-  scenario_do <- data_sev_meat$scenario[x]
-  iso3_do <- data_sev_meat$iso3[x]
-  nutr_do <- data_sev_meat$nutrient[x]
-  age_id_do <- data_sev_meat$age_id[x]
-  sex_id_do <- data_sev_meat$sex_id[x]
-  cause_do <- data_sev_meat$cause[x]
-  best_dist <- data_sev_meat$best_dist[x]
-  
-  # If gamma distribution....
-  if(best_dist=="gamma"){
-    shape <- data_sev_meat$g_shape[x]
-    rate <- data_sev_meat$g_rate[x]
-    x_shift <- data_sev_meat$g_mean_diff[x]
-    intake_function <- function(x){y <- dgamma(x-x_shift, shape=shape, rate=rate)}
-    val_hi <- qgamma(p=0.9999, shape = shape, rate=rate) + x_shift
-    val_lo <- qgamma(p=0.0001, shape = shape, rate=rate) + x_shift
-  }
-  
-  # If lognormal distribution...
-  if(best_dist=="log-normal"){
-    mu <- data_sev_meat$ln_meanlog[x]
-    sigma <- data_sev_meat$ln_sdlog[x]
-    x_shift <- data_sev_meat$ln_mean_diff[x]
-    intake_function <- function(x){y <- dlnorm(x-x_shift, meanlog=mu, sdlog=sigma)}
-    val_hi <- qlnorm(p=0.9999, meanlog=mu, sdlog=sigma) + x_shift
-    val_lo <- qlnorm(p=0.0001, meanlog=mu, sdlog=sigma) + x_shift
-  }
-  
-  # Plot dists 
-  if(F){
-    x_vals <- seq(-100,500,by=1)
-    y <- intake_function(x=x_vals)
-    plot(x_vals, y, type="l")
-    abline(v=c(val_lo, val_hi), lty=1)
-  }
-  
-  # Calculate SEV 
-  sev <- try(red_meat_SEV(Intake=intake_function,
-                          age=age_id_do,
-                          val_hi=val_hi,
-                          val_lo=val_lo,
-                          meat_outcome=cause_do,
-                          red_meat_2019=red_meat_raw_2019,
-                          red_meat_RR))
-  
-  # Record based on try()
-  if(inherits(sev, "try-error")){
-    sev_out <- NA
-  }else{
-    sev_out <- sev
-  }
-  
-  # Record
-  data_sev_meat$sev[x] <- sev_out
-  
-}
-
-# Format SEVs
-sev_meat_final <- data_sev_meat %>% 
-  mutate(nutrient="Red meat") %>% 
-  select(scenario, nutrient, country, iso3, sex_id, age_id, cause, sev) %>% 
-  spread(key="scenario", value="sev") %>% 
-  rename(sev_high="High road", sev_base="Base") %>% 
-  mutate(sev_delta=sev_high-sev_base)
-
-# Export
-write.csv(sev_meat_final, file=file.path(outputdir, "2030_sevs_base_high_road_meat.csv"), row.names=F)
+# 
+# # Build data required for micronutrient SEV calculations
+# data_sev_meat_1cause <- dists2030_meat %>% 
+#   # Reduce to age groups with required data
+#   filter(age_id>=10)
+# 
+# # Expand for each each
+# data_sev_meat <- purrr::map_df(cause_meat, function(x){
+#   
+#   df <- data_sev_meat_1cause %>% 
+#     mutate(cause=x)
+#   
+# })
+# 
+# data_sev_meat <- data_sev_meat %>% 
+#   arrange(country, scenario, sex_id, age_id)
+# 
+# # Loop through
+# for(x in 1:nrow(data_sev_meat)){
+#   
+#   # Parameters
+#   if(x %in% seq(100,80000,100)){print(x)}
+#   scenario_do <- data_sev_meat$scenario[x]
+#   iso3_do <- data_sev_meat$iso3[x]
+#   nutr_do <- data_sev_meat$nutrient[x]
+#   age_id_do <- data_sev_meat$age_id[x]
+#   sex_id_do <- data_sev_meat$sex_id[x]
+#   cause_do <- data_sev_meat$cause[x]
+#   best_dist <- data_sev_meat$best_dist[x]
+#   
+#   # If gamma distribution....
+#   if(best_dist=="gamma"){
+#     shape <- data_sev_meat$g_shape[x]
+#     rate <- data_sev_meat$g_rate[x]
+#     x_shift <- data_sev_meat$g_mean_diff[x]
+#     intake_function <- function(x){y <- dgamma(x-x_shift, shape=shape, rate=rate)}
+#     val_hi <- qgamma(p=0.9999, shape = shape, rate=rate) + x_shift
+#     val_lo <- qgamma(p=0.0001, shape = shape, rate=rate) + x_shift
+#   }
+#   
+#   # If lognormal distribution...
+#   if(best_dist=="log-normal"){
+#     mu <- data_sev_meat$ln_meanlog[x]
+#     sigma <- data_sev_meat$ln_sdlog[x]
+#     x_shift <- data_sev_meat$ln_mean_diff[x]
+#     intake_function <- function(x){y <- dlnorm(x-x_shift, meanlog=mu, sdlog=sigma)}
+#     val_hi <- qlnorm(p=0.9999, meanlog=mu, sdlog=sigma) + x_shift
+#     val_lo <- qlnorm(p=0.0001, meanlog=mu, sdlog=sigma) + x_shift
+#   }
+#   
+#   # Plot dists 
+#   if(F){
+#     x_vals <- seq(-100,500,by=1)
+#     y <- intake_function(x=x_vals)
+#     plot(x_vals, y, type="l")
+#     abline(v=c(val_lo, val_hi), lty=1)
+#   }
+#   
+#   # Calculate SEV 
+#   sev <- try(red_meat_SEV(Intake=intake_function,
+#                           age=age_id_do,
+#                           val_hi=val_hi,
+#                           val_lo=val_lo,
+#                           meat_outcome=cause_do,
+#                           red_meat_2019=red_meat_raw_2019,
+#                           red_meat_RR))
+#   
+#   # Record based on try()
+#   if(inherits(sev, "try-error")){
+#     sev_out <- NA
+#   }else{
+#     sev_out <- sev
+#   }
+#   
+#   # Record
+#   data_sev_meat$sev[x] <- sev_out
+#   
+# }
+# 
+# # Format SEVs
+# sev_meat_final <- data_sev_meat %>% 
+#   mutate(nutrient="Red meat") %>% 
+#   select(scenario, nutrient, country, iso3, sex_id, age_id, cause, sev) %>% 
+#   spread(key="scenario", value="sev") %>% 
+#   rename(sev_high="High road", sev_base="Base") %>% 
+#   mutate(sev_delta=sev_high-sev_base)
+# 
+# # Export
+# write.csv(sev_meat_final, file=file.path(outputdir, "2030_sevs_base_high_road_meat.csv"), row.names=F)
 
 
 

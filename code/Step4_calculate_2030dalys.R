@@ -118,7 +118,7 @@ r30 <- function(val, year){
 # Format dataset fish AND meat
 dalys_fishANDmeat <- dalys_fishANDmeat_orig %>% 
   # Reduce to data of interest 
-  select(-c("upper","lower","measure")) %>%
+  dplyr::select(-c("upper","lower","measure")) %>%
   filter(age %in% age_id) %>% 
   # Add population information
   left_join(pop_orig, by=c("location_name", "year"="year_id", "age"="age_group_id", "sex"="sex_id")) %>%  

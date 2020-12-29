@@ -75,7 +75,7 @@ data_hi <- data_hi_orig %>%
 
 # Merge data
 data_orig <- data_lo %>% 
-  left_join(data_hi) %>% 
+  left_join(data_hi %>% select(-country)) %>% 
   # Compute differences
   mutate(value_diff=value_hi-value_lo,
          value_pdiff=(value_hi-value_lo)/value_lo*100) %>% 

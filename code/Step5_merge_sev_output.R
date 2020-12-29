@@ -17,14 +17,14 @@ outputdir <- "output"
 # Read data
 sevs_mn <- read.csv(file.path(outputdir, "2030_sevs_base_high_road_micronutrients.csv"), as.is=T)
 sevs_omega <- read.csv(file.path(outputdir, "2030_sevs_base_high_road_omega3s.csv"), as.is=T)
-sevs_meat <- read.csv(file.path(outputdir, "2030_sevs_base_high_road_meat.csv"), as.is=T)
+# sevs_meat <- read.csv(file.path(outputdir, "2030_sevs_base_high_road_meat.csv"), as.is=T)
 
 
 # Build data
 ################################################################################
 
 # Build data
-data <- bind_rows(sevs_mn, sevs_omega, sevs_meat) %>% 
+data <- bind_rows(sevs_mn, sevs_omega) %>% # sevs_meat
   # Format sex
   mutate(sex=ifelse(sex_id==1, "Males", "Females")) %>% 
   # Format age group
