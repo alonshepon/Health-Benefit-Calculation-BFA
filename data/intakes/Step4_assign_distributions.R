@@ -106,6 +106,12 @@ ggsave(g, filename=file.path(plotdir,"intake_age_sex_key_map.png"),
        width=8.5, height=8.5, units="in", dpi=600)
 
 
+# Stats for manuscript
+################################################################################
+
+table(dist_key$type)
+sum(dist_key$type=="borrowed") / nrow(dist_key) *100
+
 # Add distributions
 ################################################################################
 
