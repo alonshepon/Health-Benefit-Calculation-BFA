@@ -12,7 +12,7 @@ library(countrycode)
 
 # Directories
 inputdir <- "data/cosimo/raw"
-outputdir <- "data/cosimo/old/processed"
+outputdir <- "data/cosimo/processed"
 plotdir <- "figures"
 
 # Read data

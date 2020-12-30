@@ -25,6 +25,7 @@ food <- readRDS(file.path(datadir, "COSIMO_2010_2030_food_by_scenario_cntry.Rds"
 nutrients <- readRDS(file.path(datadir, "COSIMO_2010_2030_nutr_by_scenario_cntry_food.rds"))
 sevs <- readRDS(file.path(datadir, "2030_sevs_base_high_road_final.Rds"))
 nutr_dists <- readRDS(file.path(datadir, "COSIMO2030_country_nutrient_age_sex_means_and_distributions.Rds"))
+ndeficient <- readRDS(file.path(datadir, "2030_ndeficient_base_high.Rds"))
 
 # Read EARS and reduce to nutrients in COSIMO output
 ears <- readRDS(file.path(datadir, "ears.Rds")) %>% 
@@ -125,6 +126,12 @@ ui <- fluidPage(
   plotOutput(outputId = "plot_sevs_diff", width=800, height=800),
   br(),
   
+  # Micronutrient deficiencies
+  h4("Micronutrient deficiencies"), 
+  p("The figure below illustrates the change in micronutrient deficiencies for a population under the high road scenario relative to the baseline. A difference less than zero indidates that diets under the high road scenario reduced micronutrient deficiencies. A difference greater than zero indicates that diets under the high road scenario increased micronutrient deficiencies."),
+  plotOutput(outputId = "plot_ndeficient_diff", width=800, height=800),
+  br(),
+  
   # DALYs
   h4("Disability-Adjusted Life Years (DALYs)"), 
   
@@ -195,6 +202,12 @@ server <- function(input, output){
   # Plot SEV differences
   output$plot_sevs_diff <- renderPlot({
     g <- plot_sevs_diff(data=sevs, country=input$country, base_theme=base_theme)
+    g
+  })
+  
+  # Plot micronutrient deficiency differences
+  output$plot_ndeficient_diff <- renderPlot({
+    g <- plot_ndeficient_diff(data=ndeficient, country=input$country, base_theme=base_theme)
     g
   })
   

@@ -31,10 +31,12 @@ saveRDS(food, file=file.path(shinydir, "COSIMO_2010_2030_food_by_scenario_cntry.
 # Read output
 sevs <- readRDS(file.path(outputdir, "2030_sevs_base_high_road_final.Rds"))
 dalys <- readRDS(file.path(outputdir, "2030_dalys_base_high_road_summarized.Rds"))
+ndeficient <- readRDS(file.path(outputdir, "2030_ndeficient_base_high.Rds"))
 
 # Export output
 saveRDS(sevs, file=file.path(shinydir, "2030_sevs_base_high_road_final.Rds"))
 saveRDS(dalys, file=file.path(shinydir, "2030_dalys_base_high_road_summarized.Rds"))
+saveRDS(ndeficient, file=file.path(shinydir, "2030_ndeficient_base_high.Rds"))
 
 
 # Subnational distributions
@@ -74,7 +76,8 @@ ears <- ears_orig %>%
   # Format nutrient
   separate(col="nutrient_long", sep=" ", into=c("nutrient", "sdi_group")) %>%
   mutate(nutrient=recode(nutrient, 
-                         "VitA"="Vitamin A, RAE"),
+                         "VitA"="Vitamin A, RAE",
+                         "B12"="Vitamin B-12"),
          sdi_group=ifelse(is.na(sdi_group), "All", sdi_group),
          sdi_group=stringr::str_to_title(sdi_group),
          sdi_group=recode(sdi_group,
