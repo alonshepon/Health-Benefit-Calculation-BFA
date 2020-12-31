@@ -12,6 +12,7 @@ library(tidyverse)
 # Directories
 shinydir <- "shiny/data"
 cosimodir <- "data/cosimo/processed"
+cosimodir2 <- "data/cosimo_nutr_disagg/processed"
 outputdir <- "output"
 
 # Read age group key
@@ -37,6 +38,16 @@ ndeficient <- readRDS(file.path(outputdir, "2030_ndeficient_base_high.Rds"))
 saveRDS(sevs, file=file.path(shinydir, "2030_sevs_base_high_road_final.Rds"))
 saveRDS(dalys, file=file.path(shinydir, "2030_dalys_base_high_road_summarized.Rds"))
 saveRDS(ndeficient, file=file.path(shinydir, "2030_ndeficient_base_high.Rds"))
+
+
+# COSIMO disaggregated data
+################################################################################
+
+# Read data
+nutrients_disagg <- readRDS(file.path(cosimodir2, "COSIMO_nutrient_by_scenario_cntry_with_dissagg.Rds"))
+
+# Export data
+saveRDS(nutrients_disagg, file=file.path(shinydir, "COSIMO_nutrient_by_scenario_cntry_with_dissagg.Rds"))
 
 
 # Subnational distributions

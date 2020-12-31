@@ -21,6 +21,17 @@ data_orig <- readRDS(file.path(outputdir, "COSIMO_nutrient_by_scenario_cntry_wit
 world <- rnaturalearth::ne_countries(scale="small", returnclass = "sf")
 
 
+
+val2030 <- data_orig %>% 
+  filter(year==2030)
+
+g <- ggplot(val2030, aes(y=intake_orig)) +
+  facet_wrap(~nutrient, scale="free_y") +
+  geom_boxplot()
+g
+
+summary(val2030$intake_orig[val2030$nutrient=="Omega-3 fatty acids"])
+
 # Manuscript stats
 ################################################################################
 

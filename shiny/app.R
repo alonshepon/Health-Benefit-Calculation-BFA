@@ -23,6 +23,7 @@ sapply(list.files(codedir), function(x) source(file.path(codedir, x)))
 # Read data
 food <- readRDS(file.path(datadir, "COSIMO_2010_2030_food_by_scenario_cntry.Rds"))
 nutrients <- readRDS(file.path(datadir, "COSIMO_2010_2030_nutr_by_scenario_cntry_food.rds"))
+nutrients_disagg <- readRDS(file.path(datadir, "COSIMO_nutrient_by_scenario_cntry_with_dissagg.Rds"))
 sevs <- readRDS(file.path(datadir, "2030_sevs_base_high_road_final.Rds"))
 nutr_dists <- readRDS(file.path(datadir, "COSIMO2030_country_nutrient_age_sex_means_and_distributions.Rds"))
 ndeficient <- readRDS(file.path(datadir, "2030_ndeficient_base_high.Rds"))
@@ -83,7 +84,7 @@ ui <- fluidPage(
   plotOutput(outputId = "plot_food_over_time_diff", width=1000, height=800),
   br(),
   
-  # Diets
+  # Nutrient intakes
   h4("Change in nutrient intake under base and high road scenarios"),
   
   # Nutrient intake by country
@@ -95,6 +96,20 @@ ui <- fluidPage(
   p("The figure below illustrates the difference in mean daily nutrient intakes under the high road and baseline scenario over time. A difference greater than zero indicates increased intake of a nutrient under the high road scenario relative to the baseline scenario. A difference less than zero indicates reduced intake of a nutrient under the high road scenario relative to the baseline scenario."),
   plotOutput(outputId = "plot_nutrients_over_time_diff", width=1000, height=800),
   br(),
+  
+  # Impacts of diversity disaggregation
+  h4("Impact of diversity disaggregation"),
+  p("The figure below illustrates the change in mean daily per capita nutrient intake under the base and high road scenarios with and without the diversity disaggregation."),
+  plotOutput(outputId = "plot_nutrients_over_time_disagg", width=1000, height=500),
+  br(),
+  
+  p("The figure below illustrates the difference in mean daily nutrient intakes under the high road and baseline scenario over time, with and without the diversity disaggregation. A difference greater than zero indicates increased intake of a nutrient under the high road scenario relative to the baseline scenario. A difference less than zero indicates reduced intake of a nutrient under the high road scenario relative to the baseline scenario."),
+  plotOutput(outputId = "plot_nutrients_over_time_diff_disagg", width=1000, height=500),
+  br(),
+  
+  # Select species
+  selectizeInput(inputId = "nutr_calc", label = "Select nutrient intake results to explore:", 
+                 choices = c("Original", "Diversity disaggregation"),  multiple = F, options = NULL),
   
   # Subnational intake distributions
   h4("Subnational intake distributions"), 
@@ -163,21 +178,33 @@ server <- function(input, output){
     g
   })
   
-  # Plot food over time
-  output$plot_nutrients_over_time <- renderPlot({
-    g <- plot_nutrients_over_time(data=nutrients, country=input$country, base_theme=base_theme)
-    g
-  })
-  
   # Plot food over time (relative difference)
   output$plot_food_over_time_diff <- renderPlot({
     g <- plot_food_over_time_diff(data=food, country=input$country, base_theme=base_theme)
     g
   })
   
-  # Plot food over time (relative difference)
+  # Plot nutrients over time
+  output$plot_nutrients_over_time <- renderPlot({
+    g <- plot_nutrients_over_time(data=nutrients, country=input$country, base_theme=base_theme)
+    g
+  })
+  
+  # Plot nutrients over time (relative difference)
   output$plot_nutrients_over_time_diff <- renderPlot({
     g <- plot_nutrients_over_time_diff(data=nutrients, country=input$country, base_theme=base_theme)
+    g
+  })
+  
+  # Plot nutrients over time with disagg
+  output$plot_nutrients_over_time_disagg <- renderPlot({
+    g <- plot_nutrients_over_time_disagg(data=nutrients_disagg, country=input$country, base_theme=base_theme)
+    g
+  })
+  
+  # Plot nutrients over time (relative difference) with disagg
+  output$plot_nutrients_over_time_diff_disagg <- renderPlot({
+    g <- plot_nutrients_over_time_diff_disagg(data=nutrients_disagg, country=input$country, base_theme=base_theme)
     g
   })
   
