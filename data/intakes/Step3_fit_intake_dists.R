@@ -21,6 +21,9 @@ data <- readRDS(file.path(inputdir, "habitual_nutrient_intakes_by_age_sex_9count
 # Combine countries
 data <- data %>% 
   mutate(country_final=recode(country,
+                              "Italy"="Italy, Romania, Bulgaria",
+                              "Romania"="Italy, Romania, Bulgaria",
+                              "Bulgaria"="Italy, Romania, Bulgaria",
                               "Laos"="Laos & Philippines",
                               "Philippines"="Laos & Philippines",
                               "Uganda"="Uganda & Zambia",
@@ -107,7 +110,7 @@ dist_fits_out <- dist_fits %>%
 freeR::complete(dist_fits_out)
 
 # Export best distributions
-write.csv(dist_fits_out, file=file.path(outputdir, "habitual_nutrient_intakes_by_age_sex_9countries_distribution_fits.csv"), row.names=F)
+write.csv(dist_fits_out, file=file.path(outputdir, "habitual_nutrient_intakes_by_age_sex_13countries_distribution_fits.csv"), row.names=F)
 
 
 

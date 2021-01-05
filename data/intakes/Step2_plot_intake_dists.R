@@ -16,7 +16,7 @@ outputdir <- "data/intakes/output"
 plotdir <- "data/intakes/figures"
 
 # Read data
-data <- readRDS(file.path(inputdir, "habitual_nutrient_intakes_by_age_sex_9countries.Rds"))
+data <- readRDS(file.path(inputdir, "habitual_nutrient_intakes_by_age_sex_13countries.Rds"))
 
 
 # Calculate nutrient mins/maxs
@@ -58,7 +58,7 @@ g <- ggplot(coverage, aes(x=age_yr, y=nutrient, fill=data_yn)) +
         axis.title=element_text(size=8),
         legend.text=element_text(size=6),
         legend.title=element_text(size=8),
-        strip.text=element_text(size=8),
+        strip.text=element_text(size=6),
         plot.title=element_blank(),
         # Gridlines
         panel.grid.major = element_blank(), 
@@ -70,7 +70,7 @@ g <- ggplot(coverage, aes(x=age_yr, y=nutrient, fill=data_yn)) +
 g
 
 # Export plot
-ggsave(g, filename=file.path(plotdir,"intake_data_coverage.png"), 
+ggsave(g, filename=file.path(plotdir,"FigSX_intake_data_coverage.png"), 
        width=6.5, height=8.5, units="in", dpi=600)
 
 

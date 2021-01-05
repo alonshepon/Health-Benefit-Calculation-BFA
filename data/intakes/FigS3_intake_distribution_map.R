@@ -21,7 +21,7 @@ key_orig <- read.csv(file.path(inputdir, "COSIMO_country_key.csv"), as.is=T)
 world <- rnaturalearth::ne_countries("small", returnclass="sf")
 
 # Intake data
-intake_cntrys <- c("China", "Laos", "Mexico", "Philippines", "Uganda", "United States of America", "Zambia", "Italy", "Burkina Faso")
+intake_cntrys <- c("China", "Laos", "Mexico", "Philippines", "Uganda", "United States of America", "Zambia", "Italy", "Burkina Faso", "Bulgaria", "Bolivia", "Romania", "Bangladesh")
 world_intake <- world %>% 
   filter(geounit %in% intake_cntrys) 
 world_intake_centroid <- world_intake %>% 
@@ -94,13 +94,45 @@ g <- ggplot(sf1) +
 g
 
 # Export plot
-# ggsave(g, filename=file.path(plotdir, "FigureSX_intake_data_un_subregion.png"), 
+# ggsave(g, filename=file.path(plotdir, "FigSX_intake_data_un_subregion.png"),
 #        width=6.5, height=4, units="in", dpi=600)
 
 
 
 # Build intake map
 ################################################################################
+
+# # World key
+# intake_key_df <- world %>% 
+#   sf::st_drop_geometry() %>% 
+#   select(geounit, gu_a3, subregion) %>% 
+#   rename(country=geounit, iso3=gu_a3) %>% 
+#   # Classify based on UN subregion
+#   mutate(intake_group=recode(subregion,
+#                              "Antarctica"="N/A", 
+#                              "Australia and New Zealand"="United States", 
+#                              "Caribbean"="Mexico", 
+#                              "Central America"="Mexico",  
+#                              "Central Asia"="China",  
+#                              "Eastern Africa"="Uganda & Zambia", 
+#                              "Eastern Asia"="China", 
+#                              "Eastern Europe"="Italy", 
+#                              "Melanesia"="Laos & Philippines",  
+#                              "Middle Africa"="Uganda & Zambia", 
+#                              "Northern Africa"="Italy",  
+#                              "Northern America"="United States", 
+#                              "Northern Europe"="Italy",  
+#                              "Seven seas (open ocean)"="N/A",  
+#                              "South America"="Mexico", 
+#                              "South-Eastern Asia"="Laos & Philippines", 
+#                              "Southern Africa"="Uganda & Zambia",  
+#                              "Southern Asia"="China",  
+#                              "Southern Europe"="Italy",  
+#                              "Western Africa"="Burkina Faso",  
+#                              "Western Asia"="Italy", 
+#                              "Western Europe"="Italy")) %>% 
+#   # Make a few manual corrections
+#   mutate(intake_group=ifelse(country=="Sudan", "Uganda & Zambia", intake_group))
 
 # World key
 intake_key_df <- world %>% 
@@ -116,21 +148,21 @@ intake_key_df <- world %>%
                              "Central Asia"="China",  
                              "Eastern Africa"="Uganda & Zambia", 
                              "Eastern Asia"="China", 
-                             "Eastern Europe"="Italy", 
+                             "Eastern Europe"="Italy, Romania, Bulgaria", 
                              "Melanesia"="Laos & Philippines",  
                              "Middle Africa"="Uganda & Zambia", 
-                             "Northern Africa"="Italy",  
+                             "Northern Africa"="Italy, Romania, Bulgaria",  
                              "Northern America"="United States", 
-                             "Northern Europe"="Italy",  
+                             "Northern Europe"="Italy, Romania, Bulgaria",  
                              "Seven seas (open ocean)"="N/A",  
-                             "South America"="Mexico", 
+                             "South America"="Bolivia", 
                              "South-Eastern Asia"="Laos & Philippines", 
                              "Southern Africa"="Uganda & Zambia",  
-                             "Southern Asia"="China",  
-                             "Southern Europe"="Italy",  
+                             "Southern Asia"="Bangladesh",  
+                             "Southern Europe"="Italy, Romania, Bulgaria",  
                              "Western Africa"="Burkina Faso",  
-                             "Western Asia"="Italy", 
-                             "Western Europe"="Italy")) %>% 
+                             "Western Asia"="Italy, Romania, Bulgaria", 
+                             "Western Europe"="Italy, Romania, Bulgaria")) %>% 
   # Make a few manual corrections
   mutate(intake_group=ifelse(country=="Sudan", "Uganda & Zambia", intake_group))
 
@@ -164,7 +196,7 @@ g <- ggplot(intake_key_sf) +
         axis.line = element_line(colour = "black"))
 g
 
-ggsave(g, filename=file.path(plotdir, "FigureS3_intake_data_map_assignment.png"), 
+ggsave(g, filename=file.path(plotdir, "FigSX_intake_data_map_assignment.png"), 
        width=6.5, height=3, units="in", dpi=600)
 
 

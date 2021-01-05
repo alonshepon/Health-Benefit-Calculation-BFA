@@ -38,9 +38,13 @@ file_key <- tibble(filename=intake_files) %>%
          country=ifelse(grepl("lao", filename), "Laos", country),
          country=ifelse(grepl("phil", filename), "Philippines", country),
          country=ifelse(grepl("burkina", filename), "Burkina Faso", country),
-         country=ifelse(grepl("italy", filename), "Italy", country)) %>% 
+         country=ifelse(grepl("italy", filename), "Italy", country),
+         country=ifelse(grepl("bulg", filename), "Bulgaria", country),
+         country=ifelse(grepl("bang", filename), "Bangladesh", country),
+         country=ifelse(grepl("rom", filename), "Romania", country),
+         country=ifelse(grepl("bolivia", filename), "Bolivia", country)) %>% 
   # Add nutrient
-  mutate(nutrient=gsub(".csv|_m_||_w_|_h_w_|_c_|_w_ad_|mexico|usa|zambia|uganda|phil|lao|china|italy|burkina", "", filename)) %>% 
+  mutate(nutrient=gsub(".csv|_m_||_w_|_h_w_|_c_|_w_ad_|mexico|usa|zambia|uganda|phil|lao|china|italy|burkina|bulg|bang|rom|bolivia", "", filename)) %>% 
   mutate(nutrient=recode(nutrient,
                          "b12"="Vitamin B-12",
                          "calc"="Calcium",
@@ -151,5 +155,5 @@ freeR::complete(data)
 ################################################################################
 
 # Export
-saveRDS(data, file=file.path(outputdir, "habitual_nutrient_intakes_by_age_sex_9countries.Rds"))
+saveRDS(data, file=file.path(outputdir, "habitual_nutrient_intakes_by_age_sex_13countries.Rds"))
 
