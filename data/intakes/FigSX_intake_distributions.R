@@ -20,6 +20,9 @@ plotdir <- "data/intakes/figures"
 dists <- read.csv(file.path(outputdir, "habitual_nutrient_intakes_by_age_sex_13countries_distribution_fits.csv"), as.is=T) %>% 
   filter(!is.na(best_dist) & sex!="children")
 
+# Read nutrient key
+nutr_key <- readxl::read_excel(file.path(inputdir, "SPADE_nutrient_units_key.xlsx"))
+
 # Read range key
 range_key <- read.csv(file=file.path(inputdir, "habitual_nutrient_intake_ranges.csv"), as.is=T)
 
@@ -107,8 +110,19 @@ age_groups <- c("0-4", "5-9", "10-14", "15-19", "20-24", "25-29", "30-34", "35-3
                 "50-54", "55-59", "60-64", "65-69", "70-74", "75-79", "80-84", "85-89", "90-94", "95-99")
 
 # Factor age groups
-data <- data %>% 
-  mutate(age_group1=factor(age_group, levels=age_groups))
+data1 <- data %>% 
+  mutate(age_group1=factor(age_group, levels=age_groups)) %>% 
+  # Recode sex
+  mutate(sex=recode(sex, 
+                    "men"="Males",
+                    "women"="Females")) %>% 
+  # Recode country name
+  mutate(country=recode(country, 
+                        "Burkina Faso"="Burkina\nFaso",
+                        "United States"="United\nStates",
+                        "Italy, Romania, Bulgaria"="Italy,\nRomania,\nBulgaria",
+                        "Laos & Philippines"="Laos &\nPhilippines",
+                        "Uganda & Zambia"="Uganda &\nZambia"))
 
 
 # Plot distributions
@@ -119,7 +133,7 @@ my_theme <-  theme(axis.text=element_text(size=6),
                    axis.title=element_text(size=8),
                    legend.text=element_text(size=6),
                    legend.title=element_text(size=8),
-                   strip.text=element_text(size=8),
+                   strip.text=element_text(size=7),
                    plot.title=element_text(size=10),
                    # Gridlines
                    panel.grid.major = element_blank(), 
@@ -136,19 +150,21 @@ for(i in 1:length(nutrients)){
   
   # Subset data
   nutrient_do <- nutrients[i]
-  sdata <- data %>% 
+  units <- nutr_key$units[nutr_key$nutrient==nutrient_do]
+  sdata <- data1 %>% 
     filter(nutrient==nutrient_do)
   
   # X-axis cutoff
   # cutoff <- cutoff_key
 
   # Plot distributions
+  xlabel <- paste0("Habitual intake (", units, ")")
   g <- ggplot(sdata, aes(x=intake, y=density, color=age_group1)) +
     facet_grid(country ~ sex, scales="free_y") +
     geom_line() +
     # xlim(0, cutoff) +
     # Labels
-    labs(x="Habitual intake", y="Density", title=nutrient_do) +
+    labs(x=xlabel, y="Density", title=nutrient_do) +
     # Legend
     scale_color_discrete(name="Age group") +
     # Theme
@@ -156,9 +172,9 @@ for(i in 1:length(nutrients)){
   g
   
   # Export plot
-  outfile <- paste0("FigS2", letters[i], "_", tolower(nutrient_do) %>% gsub(" ", "_", .), ".png")
+  outfile <- paste0("FigSX_intake_dist_", tolower(nutrient_do) %>% gsub(" ", "_", .), ".png")
   ggsave(g, filename=file.path(plotdir, outfile), 
-         width=6.5, height=6.5, units="in", dpi=600)
+         width=6.5, height=7, units="in", dpi=600)
   
 }
 

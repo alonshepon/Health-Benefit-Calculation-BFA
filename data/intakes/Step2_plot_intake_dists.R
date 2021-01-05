@@ -43,7 +43,10 @@ coverage <- data %>%
          sex=stringr::str_to_title(sex),
          nutrient_label=paste0(nutrient, " (", nutrient_units, ")")) %>% 
   # Remove children
-  filter(sex!="Children")
+  filter(sex!="Children") %>% 
+  mutate(sex=recode(sex, 
+                    "Men"="Males",
+                    "Women"="Females"))
 
 # Plot coverage
 g <- ggplot(coverage, aes(x=age_yr, y=nutrient, fill=data_yn)) +
@@ -128,7 +131,7 @@ for(i in 1:nrow(key)){
   
   # Export plot
   fig_name <- paste0(country_do, "_", nutrient_do, ".pdf") %>% tolower()
-  ggsave(g, filename=file.path(plotdir, fig_name), 
+  ggsave(g, filename=file.path(plotdir, "raw", fig_name), 
          width=8.5, height=11, units="in", dpi=600)
   
 }

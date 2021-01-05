@@ -16,7 +16,7 @@ outputdir <- "data/intakes/output"
 plotdir <- "data/intakes/figures"
 
 # Read data
-dists <- read.csv(file=file.path(outputdir, "habitual_nutrient_intakes_by_age_sex_9countries_distribution_fits.csv"), as.is=T) %>% 
+dists <- read.csv(file=file.path(outputdir, "habitual_nutrient_intakes_by_age_sex_13countries_distribution_fits.csv"), as.is=T) %>% 
   mutate(dist_id=paste(country_final, nutrient, sex, age_group, sep="-")) %>% 
   select(dist_id, everything()) %>% 
   filter(sex!="children")
