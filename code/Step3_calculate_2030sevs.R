@@ -22,6 +22,10 @@ EAR_requirements <- openxlsx::read.xlsx('data/EAR_requirements_GBDgroups.xlsx')
 # Read distributions (micronutrients)
 dists <- readRDS(file.path("data/cosimo/processed/COSIMO_2010_2030_country_nutrient_age_sex_means_and_distributions.Rds"))
 
+# Confirm right data (new SPADE, right omega)
+sort(unique(dists$intake_group))
+range(dists$mean_cntry[dists$nutrient=="Omega-3 fatty acids"])
+
 # Read distributions (red meat)
 # dists_meat <- readRDS(file=file.path("data/cosimo/processed/COSIMO_2010_2030_country_red_meat_age_sex_means_and_distributions.Rds"))
 
@@ -104,8 +108,8 @@ dists2030 <- dists %>%
          ln_meanlog, ln_sdlog, ln_mean, ln_mean_diff) %>% 
   # Add age id and sex id
   mutate(sex_id=recode(sex, 
-                       "men"=1,
-                       "women"=2) %>% as.numeric(),
+                       "Males"=1,
+                       "Females"=2) %>% as.numeric(),
          age_id=recode(age_group,
                        "0-4"="5",
                        "5-9"="6",
@@ -130,41 +134,41 @@ dists2030 <- dists %>%
   select(-c(sex, age_group))
 
 # Merge data
-dists2030_meat <- dists_meat %>% 
-  # Reduce to 2030
-  filter(year==2030) %>%
-  # Reduce to distributions with a mean
-  filter(!is.na(mean_group)) %>% 
-  # Simplify 
-  select(country, iso3, nutrient, sex, age_group, scenario, mean_group, best_dist, 
-         g_shape, g_rate, g_mean, g_mean_diff,
-         ln_meanlog, ln_sdlog, ln_mean, ln_mean_diff) %>% 
-  # Add age id and sex id
-  mutate(sex_id=recode(sex, 
-                       "men"=1,
-                       "women"=2) %>% as.numeric(),
-         age_id=recode(age_group,
-                       "0-4"="5",
-                       "5-9"="6",
-                       "10-14"="7",
-                       "15-19"="8",
-                       "20-24"="9",
-                       "25-29"="10",
-                       "30-34"="11",
-                       "35-39"="12",
-                       "40-44"="13",
-                       "45-49"="14",
-                       "50-54"="15",
-                       "55-59"="16",
-                       "60-64"="17",
-                       "65-69"="18",
-                       "70-74"="19",
-                       "75-79"="20",
-                       "80-84"="30",
-                       "85-89"="31",
-                       "90-94"="32",
-                       "95-99"="33") %>% as.numeric()) %>% 
-  select(-c(sex, age_group))
+# dists2030_meat <- dists_meat %>% 
+#   # Reduce to 2030
+#   filter(year==2030) %>%
+#   # Reduce to distributions with a mean
+#   filter(!is.na(mean_group)) %>% 
+#   # Simplify 
+#   select(country, iso3, nutrient, sex, age_group, scenario, mean_group, best_dist, 
+#          g_shape, g_rate, g_mean, g_mean_diff,
+#          ln_meanlog, ln_sdlog, ln_mean, ln_mean_diff) %>% 
+#   # Add age id and sex id
+#   mutate(sex_id=recode(sex, 
+#                        "men"=1,
+#                        "women"=2) %>% as.numeric(),
+#          age_id=recode(age_group,
+#                        "0-4"="5",
+#                        "5-9"="6",
+#                        "10-14"="7",
+#                        "15-19"="8",
+#                        "20-24"="9",
+#                        "25-29"="10",
+#                        "30-34"="11",
+#                        "35-39"="12",
+#                        "40-44"="13",
+#                        "45-49"="14",
+#                        "50-54"="15",
+#                        "55-59"="16",
+#                        "60-64"="17",
+#                        "65-69"="18",
+#                        "70-74"="19",
+#                        "75-79"="20",
+#                        "80-84"="30",
+#                        "85-89"="31",
+#                        "90-94"="32",
+#                        "95-99"="33") %>% as.numeric()) %>% 
+#   select(-c(sex, age_group))
 
 
 

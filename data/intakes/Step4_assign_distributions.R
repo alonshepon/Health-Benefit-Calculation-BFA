@@ -33,7 +33,8 @@ age_groups <- c("0-4", "5-9", "10-14", "15-19", "20-24", "25-29", "30-34", "35-3
 prob_dists <- c(paste("Burkina Faso-Calcium-men", age_groups, sep="-"),
                 paste("Burkina Faso-Iron-men", age_groups, sep="-"),
                 paste("Burkina Faso-Zinc-men", age_groups, sep="-"),
-                paste("Burkina Faso-Zinc-women", age_groups, sep="-"))
+                paste("Burkina Faso-Zinc-women", age_groups, sep="-"),
+                paste("Bolivia-Vitamin B-12-women", age_groups, sep="-"))
 
 # Coverage
 coverage <- dists %>% 
@@ -62,6 +63,12 @@ g
 # Build key
 ################################################################################
 
+# Read 9 country key
+dist_key9 <- readxl::read_excel(file.path(outputdir, "dist_id_key_9countries.xlsx")) %>% 
+  mutate(age_group=recode(age_group, 
+                          "43960"="5-9", 
+                          "44118"="10-14"))
+
 # Expose gaps
 dist_key <- dists %>% 
   # Create full list of distributions
@@ -72,38 +79,52 @@ dist_key <- dists %>%
   mutate(dist_id=paste(country_final, nutrient, sex, age_group, sep="-")) %>% 
   # Mark available/borrowed
   left_join(coverage) %>% 
-  mutate(type=ifelse(!is.na(n), "available", "borrowed"),
-         type2=ifelse(!is.na(n), "available", "")) %>% 
+  mutate(type=ifelse(!is.na(n), "available", "borrowed")) %>% 
+  # Add distribution key to use from 9 country key
+  left_join(dist_key9 %>% select(dist_id, dist_id_use, type2)) %>% 
+  # Fill in gaps based on available data from new countries
+  mutate(type2=ifelse(!is.na(n), "available", type2),
+         dist_id_use=ifelse(type=="available", dist_id, dist_id_use)) %>% 
+  # Arrange columns
   select(-n) %>% 
-  # Add distribution key to use
-  mutate(dist_id_use=ifelse(type=="available", dist_id, ""))
+  select(country_final:type, type2, everything())
 
 # Export for manual editting
 write.csv(dist_key, file=file.path(outputdir, "dist_id_key.csv"), row.names=F)
 
-# Read eddited key
+# Read edited key
 dist_key2 <- readxl::read_excel(file.path(outputdir, "dist_id_key.xlsx")) %>% 
   mutate(age_group=recode(age_group, 
-                          "43960"="5-9", 
-                          "44118"="10-14"),
+                          "44325"="5-9", 
+                          "44483"="10-14"),
          age_group=factor(age_group, levels=age_groups)) %>% 
-  mutate(type2=recode(type2, "available"="Available"))
+  mutate(type2=recode(type2, "available"="Available"),
+         sex=recode(sex, "men"="Males", "women"="Females"),
+         country_label=recode(country_final, 
+                              "Laos & Philippines"="Laos &\nPhilippines",
+                              "Uganda & Zambia"="Uganda &\nZambia",
+                              "Italy, Romania, Bulgaria"="Italy,\nRomania,\nBulgaria"))
 
 # Plot
 g <- ggplot(dist_key2 , aes(x=age_group, y=nutrient, fill=type2)) +
-  facet_grid(country_final~sex) +
+  facet_grid(country_label~sex) +
   geom_tile() +
   # Labels
   labs(x="Age (yr)", y="") +
   scale_fill_discrete(name="Data source") +
   # Theme
   theme_bw() +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
+        axis.text = element_text(size=7),
+        axis.title=element_text(size=8),
+        legend.text = element_text(size=7),
+        legend.title=element_text(size=8),
+        strip.text = element_text(size=8))
 g
 
 # Plot key
-ggsave(g, filename=file.path(plotdir,"intake_age_sex_key_map.png"), 
-       width=8.5, height=8.5, units="in", dpi=600)
+ggsave(g, filename=file.path(plotdir,"FigSX_intake_age_sex_key_map.png"), 
+       width=8.5, height=8.5, units="in", dpi=300)
 
 
 # Stats for manuscript
@@ -117,13 +138,14 @@ sum(dist_key$type=="borrowed") / nrow(dist_key) *100
 
 # Add distributions
 dist_key3 <- dist_key2 %>% 
+  select(-country_label) %>% 
   left_join(dists %>% select(dist_id, best_dist:ln_ks), by=c("dist_id_use"="dist_id"))
 
 # Inspect data
 freeR::complete(dist_key3)
 
 # Export 
-saveRDS(dist_key3, file=file.path(outputdir, "intake_distributions_expanded_9countries.Rds"))
+saveRDS(dist_key3, file=file.path(outputdir, "intake_distributions_expanded_13countries.Rds"))
 
 
 

@@ -17,8 +17,8 @@ outputdir <- "data/cosimo_nutr_disagg/processed"
 plotdir <- "data/cosimo_nutr_disagg"
 
 # Read data
-data1_orig <- read.csv(file.path(inputdir, "Disaggregated_NutrientScen.csv"), as.is=T)
-data2_orig <- read.csv(file.path(inputdir, "Disaggregated_NutrientScen_grouped.csv"), as.is=T)
+data1_orig <- read.csv(file.path(inputdir, "Disaggregated_NutrientScen_FAO_FW.csv"), as.is=T)
+data2_orig <- read.csv(file.path(inputdir, "Disaggregated_NutrientScen_grouped_FAO_fw.csv"), as.is=T)
 
 # Build EU27 key
 eu27_key <- read.csv("data/cosimo/processed/COSIMO_AGLINK_2020_country_key.csv", as.is=T) %>% 
@@ -26,11 +26,49 @@ eu27_key <- read.csv("data/cosimo/processed/COSIMO_AGLINK_2020_country_key.csv",
   select(iso3, country, iso3_use, country_use) %>% 
   filter(country!="Czechoslovakia")
 
+# Compare Daniels' two files
+################################################################################
+
+# Data 1 sum
+data1_sum <- data1_orig %>% 
+  group_by(scenario, iso3c, nutrient, units, year) %>% 
+  summarize(nutrient_supply1=sum(nutrient_supply, na.rm=T),
+            nutrient_supply_dis1=sum(nutrient_supply_dis, na.rm=T)) %>% 
+  ungroup()
+
+# Add my calculated 
+check <- data2_orig %>% 
+  left_join(data1_sum) %>% 
+  mutate(diff1=nutrient_supply-nutrient_supply1,
+         diff2=nutrient_supply_dis-nutrient_supply_dis1)
+
+# Okay, so you can't use Daniel's grouped file b/c it double counts intakes and doesn't separate omega-3
+
+
 # Format data
 ################################################################################
 
+# Omega intakes
+data_omega <- data1_orig %>% 
+  # Reduce omegas from fish
+  filter(nutrient=="Omega-3 fatty acids" & products=="Fish") %>% 
+  select(-products)
+
+# Other intakes
+data_other <- data1_orig %>% 
+  # Reduce omegas from fish
+  filter(nutrient!="Omega-3 fatty acids" & products!="Total food") %>% 
+  # Calculate totals yourself
+  group_by(scenario, iso3c, nutrient, units, year) %>% 
+  summarize(nutrient_supply=sum(nutrient_supply),
+            nutrient_supply_dis=sum(nutrient_supply_dis)) %>% 
+  ungroup()
+
+# Merge
+data_use <- bind_rows(data_omega, data_other)
+
 # Format data
-data <- data2_orig %>% 
+data <- data_use %>% 
   # Rename columns
   rename(iso3=iso3c, intake_orig=nutrient_supply, intake=nutrient_supply_dis) %>% 
   # Add country column

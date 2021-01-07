@@ -151,8 +151,8 @@ dists2030 <- dists %>%
          ln_meanlog, ln_sdlog, ln_mean, ln_mean_diff) %>% 
   # Add age id and sex id
   mutate(sex_id=recode(sex, 
-                       "men"=1,
-                       "women"=2) %>% as.numeric(),
+                       "Males"=1,
+                       "Females"=2) %>% as.numeric(),
          age_id=recode(age_group,
                        "0-4"="5",
                        "5-9"="6",
@@ -186,8 +186,8 @@ dists2030_meat <- dists_meat %>%
          ln_meanlog, ln_sdlog, ln_mean, ln_mean_diff) %>% 
   # Add age id and sex id
   mutate(sex_id=recode(sex, 
-                       "men"=1,
-                       "women"=2) %>% as.numeric(),
+                       "Males"=1,
+                       "Females"=2) %>% as.numeric(),
          age_id=recode(age_group,
                        "0-4"="5",
                        "5-9"="6",

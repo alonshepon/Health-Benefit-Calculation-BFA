@@ -137,7 +137,7 @@ plot_boxplot2 <- function(nutrient, legend=F){
   }
   
   # Plot data
-  g <- ggplot(sdata, aes(x=age_group, y=sev_delta_cap, fill=sex)) +
+  g <- ggplot(sdata, aes(x=age_group, y=sev_delta, fill=sex)) +
     facet_wrap(~sex) +
     geom_boxplot(outlier.size = 0.3, lwd=0.1, outlier.color = "grey50", outlier.alpha = 0.3) +
     # Add horizontal line

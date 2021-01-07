@@ -40,8 +40,15 @@ EAR_requirements <- read.xlsx('data/EAR_requirements_GBDgroups.xlsx')
 # Read distributions (micronutrients)
 dists <- readRDS(file.path("data/cosimo/processed/COSIMO_2010_2030_country_nutrient_age_sex_means_and_distributions.Rds"))
 
+# Confirm right data (new SPADE, right omega)
+sort(unique(dists$intake_group))
+range(dists$mean_cntry[dists$nutrient=="Omega-3 fatty acids"])
+
 # Read distributions (red meat)
 dists_meat <- readRDS(file=file.path("data/cosimo/processed/COSIMO_2010_2030_country_red_meat_age_sex_means_and_distributions.Rds"))
+
+# Confirm right data (new SPADE)
+sort(unique(dists_meat$intake_group))
 
 # Read HDI/SDI key
 sdi_hdi_key <- readRDS("data/cosimo/processed/COSIMO_country_key_with_SDI_HDI_info.rds") %>% 
@@ -151,8 +158,8 @@ dists2030 <- dists %>%
          ln_meanlog, ln_sdlog, ln_mean, ln_mean_diff) %>% 
   # Add age id and sex id
   mutate(sex_id=recode(sex, 
-                       "men"=1,
-                       "women"=2) %>% as.numeric(),
+                       "Males"=1,
+                       "Females"=2) %>% as.numeric(),
          age_id=recode(age_group,
                        "0-4"="5",
                        "5-9"="6",
@@ -186,8 +193,8 @@ dists2030_meat <- dists_meat %>%
          ln_meanlog, ln_sdlog, ln_mean, ln_mean_diff) %>% 
   # Add age id and sex id
   mutate(sex_id=recode(sex, 
-                       "men"=1,
-                       "women"=2) %>% as.numeric(),
+                       "Males"=1,
+                       "Females"=2) %>% as.numeric(),
          age_id=recode(age_group,
                        "0-4"="5",
                        "5-9"="6",

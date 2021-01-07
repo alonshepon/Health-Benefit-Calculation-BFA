@@ -152,6 +152,24 @@ intake_scalars_exp <- bind_rows(intake_scalars_no80, intake_scalars80_exp) %>%
   arrange(iso3, nutrient, sex, age_group, scalar)
 
 
+# COSIMO data to use
+################################################################################
+
+# COSIMO omega
+cosimo_omega <- cosimo_orig %>% 
+  # Reduce to total diet
+  filter(food=="Fish" & nutrient=="Omega-3 fatty acids")
+range(cosimo_omega$value_lo, na.rm = T)
+range(cosimo_omega$value_hi, na.rm = T)
+
+# COSIMO not-omega
+cosimo_not_omega <- cosimo_orig %>% 
+  # Reduce to total diet
+  filter(food=="Total food" & nutrient!="Omega-3 fatty acids")
+
+# Merge
+cosimo_use <- bind_rows(cosimo_omega, cosimo_not_omega)
+
 # Build key for fraction of nutrients
 ################################################################################
 
@@ -162,9 +180,7 @@ cntry_sex_age_key <- expand.grid(iso3=sort(unique(cosimo_orig$iso3)),
   arrange(iso3, sex, age_group)
 
 # Build key
-data <- cosimo_orig %>% 
-  # Reduce to total diet
-  filter(food=="Total food") %>% 
+data <- cosimo_use %>% 
   # Remove comparison columns
   select(-c(value_diff, value_pdiff)) %>% 
   # Gather columns
@@ -220,12 +236,13 @@ sort(unique(check$country))
 
 # Read fits
 dists <- readRDS("data/intakes/output/intake_distributions_for_all_cosimo_countries.Rds") %>% 
-  mutate(nutrient=recode(nutrient, "Vitamin A"="Vitamin A, RAE"))
+  mutate(nutrient=recode(nutrient, "Vitamin A"="Vitamin A, RAE")) %>% 
+  mutate(age_group=as.character(age_group))
 
 # Add distribution fits
 data1 <- data %>% 
   # Recode sex for merge
-  mutate(sex=recode(sex, "Females"="women", "Males"="men")) %>% 
+  # mutate(sex=recode(sex, "Females"="women", "Males"="men")) %>% 
   # Add distribution fits
   left_join(dists, by=c("iso3"="country_iso3", "nutrient", "sex", "age_group")) %>% 
   # Add means and differences
@@ -236,6 +253,12 @@ data1 <- data %>%
 
 # Inspect
 freeR::complete(data1)
+
+# Check
+# The only rows missing values shoudl be those for uninteresting nutrients
+check2 <- data1 %>% 
+  filter(is.na(best_dist))
+sort(unique(check2$nutrient))
 
 # Export
 ################################################################################

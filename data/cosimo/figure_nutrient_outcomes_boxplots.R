@@ -21,16 +21,26 @@ data_orig <- readRDS(file.path(outputdir, "COSIMO_2010_2030_nutr_by_scenario_cnt
 # Build data
 ################################################################################
 
-# Build data
-data <- data_orig %>% 
+# Omegas
+data_omega <- data_orig %>% 
   # 2030
-  filter(year==2030 & food=="Total food") %>% 
+  filter(year==2030 & food=="Fish" & nutrient=="Omega-3 fatty acids")
+  
+# Not Omegas
+data_not_omega <- data_orig %>% 
+  # 2030
+  filter(year==2030 & food=="Total food" & nutrient!="Omega-3 fatty acids")
+
+# Build data
+data <- bind_rows(data_omega, data_not_omega) %>% 
   # Reshape
   select(-c(value_diff, value_pdiff)) %>% 
   gather(key="scenario", value="intake", 9:10) %>% 
   mutate(scenario=recode(scenario, "value_lo"="Base", "value_hi"="High")) %>% 
   # Nutrient label
-  mutate(nutrient_label=paste0(nutrient, "\n(", nutrient_units, ")"))
+  mutate(nutrient_label=paste0(nutrient, "\n(", nutrient_units, ")"),
+         nutrient_label=recode(nutrient_label,
+                               "Omega-3 fatty acids\n(g/p/d)"="Omega-3 fatty acids\nfrom aquatic foods\n(g/p/d)"))
 
 # Key
 key <- data %>% 
@@ -60,7 +70,7 @@ g <- ggplot(data, aes(x=scenario, y=intake, fill=scenario)) +
   facet_wrap(~nutrient_label, scales="free_y", ncol=4) +
   geom_boxplot(outlier.size=0.8, lwd=0.3) +
   # Reference line
-  geom_hline(key, mapping=aes(yintercept=intake)) +
+  # geom_hline(key, mapping=aes(yintercept=intake)) +
   # Labels
   labs(x="", y="Mean daily per capita intake") +
   scale_fill_discrete(name="Scenario") +

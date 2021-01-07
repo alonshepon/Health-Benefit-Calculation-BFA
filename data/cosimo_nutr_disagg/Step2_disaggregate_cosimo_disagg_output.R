@@ -210,12 +210,13 @@ sort(unique(check$country))
 
 # Read fits
 dists <- readRDS("data/intakes/output/intake_distributions_for_all_cosimo_countries.Rds") %>% 
-  mutate(nutrient=recode(nutrient, "Vitamin A"="Vitamin A, RAE"))
+  mutate(nutrient=recode(nutrient, "Vitamin A"="Vitamin A, RAE")) %>% 
+  mutate(age_group=as.character(age_group))
 
 # Add distribution fits
 data1 <- data %>% 
   # Recode sex for merge
-  mutate(sex=recode(sex, "Females"="women", "Males"="men")) %>% 
+  # mutate(sex=recode(sex, "Females"="women", "Males"="men")) %>% 
   # Add distribution fits
   left_join(dists, by=c("iso3"="country_iso3", "nutrient", "sex", "age_group")) %>% 
   # Add means and differences
@@ -226,6 +227,12 @@ data1 <- data %>%
 
 # Inspect
 freeR::complete(data1)
+
+# Check
+# The only rows missing values shoudl be those for uninteresting nutrients
+check2 <- data1 %>% 
+  filter(is.na(best_dist))
+sort(unique(check2$nutrient))
 
 # Export
 ################################################################################

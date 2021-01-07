@@ -1,0 +1,132 @@
+
+
+# Read data
+################################################################################
+
+# Clear workspace
+rm(list = ls())
+
+# Packages
+library(tidyverse)
+library(countrycode)
+
+# Directories
+outputdir <- "data/cosimo/processed"
+plotdir <- "data/cosimo/figures"
+
+# Read data
+data_orig <- readRDS(file.path(outputdir, "COSIMO_2010_2030_nutr_by_scenario_cntry_food.rds"))
+
+# World
+world <- rnaturalearth::ne_countries("small", returnclass = "sf")
+
+# Plot data
+################################################################################
+
+# Base theme
+base_theme <- theme(axis.text=element_blank(),
+                    axis.title=element_blank(),
+                    legend.text=element_text(size=4),
+                    legend.title=element_text(size=5),
+                    strip.text=element_blank(),
+                    plot.title=element_text(size=7),
+                    panel.grid.major = element_blank(), 
+                    panel.grid.minor = element_blank(),
+                    panel.background = element_blank(), 
+                    axis.line = element_line(colour = "black"),
+                    legend.background = element_rect(fill=alpha('blue', 0)),
+                    legend.position = c(0.12, 0.35))
+
+# Plot data
+# nutrient <- "Omega-3 fatty acids"
+plot_map <- function(nutrient){
+  
+  # Nutrient
+  nutrient_do <- nutrient
+  
+  # Subset data
+  if(nutrient_do=="Omega-3 fatty acids"){
+    sdata <- data_orig %>% 
+      filter(nutrient==nutrient_do & year==2030 & food=="Fish")
+    units <- sdata$nutrient_units %>% unique()
+    nutrient_label <- paste0("Omega-3-fatty acids from aquatic foods (", units, ")")
+  }else{
+    sdata <- data_orig %>% 
+      filter(nutrient==nutrient_do & year==2030 & food=="Total food")
+    units <- sdata$nutrient_units %>% unique()
+    nutrient_label <- paste0(nutrient_do, " (", units, ")")
+  }
+
+  # Spatialize
+  sdata_sf <- world %>% 
+    left_join(sdata, by=c("gu_a3"="iso3"))
+  
+  # Base
+  g1 <- ggplot(sdata_sf) +
+    geom_sf(mapping=aes(fill=value_lo), lwd=0.1, color="grey30") +
+    # Labels
+    labs(title=nutrient_label) +
+    # Crop out Antarctica
+    coord_sf(y=c(-55, NA)) +
+    # Legend
+    scale_fill_gradientn(name="Base\n2030 intake", colors=RColorBrewer::brewer.pal(9, "YlGnBu")) +
+    guides(fill = guide_colorbar(ticks.colour = "black", frame.colour = "black", barwidth = 0.4, barheight = 1.5)) +
+    # Theme
+    theme_bw() + base_theme
+  g1
+  
+  # High production
+  g2 <- ggplot(sdata_sf) +
+    geom_sf(mapping=aes(fill=value_hi), lwd=0.1, color="grey30") +
+    # Labels
+    labs(title=" ") +
+    # Crop out Antarctica
+    coord_sf(y=c(-55, NA)) +
+    # Legend
+    scale_fill_gradientn(name="High\n2030 intake", colors=RColorBrewer::brewer.pal(9, "YlGnBu")) +
+    guides(fill = guide_colorbar(ticks.colour = "black", frame.colour = "black", barwidth = 0.4, barheight = 1.5)) +
+    # Theme
+    theme_bw() + base_theme
+  g2
+  
+  # Difference
+  g3 <- ggplot(sdata_sf) +
+    geom_sf(mapping=aes(fill=value_diff), lwd=0.1, color="grey30") +
+    # Labels
+    labs(title=" ") +
+    # Crop out Antarctica
+    coord_sf(y=c(-55, NA)) +
+    # Legend
+    scale_fill_gradient2(name="Difference\n(high - base)",
+                         midpoint=0, low="darkred", high="navy", mid="white", na.value = "grey80") +
+    guides(fill = guide_colorbar(ticks.colour = "black", frame.colour = "black", barwidth = 0.4, barheight = 1.5)) +
+    # Theme
+    theme_bw() + base_theme
+  g3
+  
+  # Merge
+  g <- gridExtra::grid.arrange(g1, g2, g3, ncol=3)
+  g
+  
+}
+
+
+# Plot maps
+g1 <- plot_map("Omega-3 fatty acids")
+g2 <- plot_map("Vitamin B-12")
+g3 <- plot_map("Iron")
+g4 <- plot_map("Zinc")
+g5 <- plot_map("Calcium")
+g6 <- plot_map("Vitamin A, RAE")
+
+# Merge maps
+g <- gridExtra::grid.arrange(g1, g2, g3, g4, g5, g6, ncol=1)
+
+# Export maps
+ggsave(g, filename=file.path(plotdir, "COSIMO_2030_nutrient_outcomes_maps.png"), 
+       width=6.5, height=7, units="in", dpi=600)
+
+
+
+
+

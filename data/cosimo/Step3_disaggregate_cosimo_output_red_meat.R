@@ -90,12 +90,11 @@ sort(unique(check$country))
 
 # Read fits
 dists <- readRDS("data/intakes/output/intake_distributions_for_all_cosimo_countries.Rds") %>% 
-  filter(nutrient=="Red meat")
+  filter(nutrient=="Red meat") %>% 
+  mutate(age_group=as.character(age_group))
 
 # Add distribution fits
 data1 <- data %>% 
-  # Recode sex for merge
-  mutate(sex=recode(sex, "Females"="women", "Males"="men")) %>% 
   # Add distribution fits
   left_join(dists, by=c("iso3"="country_iso3", "sex", "age_group")) %>% 
   # Add means and differences

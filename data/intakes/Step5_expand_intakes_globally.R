@@ -19,7 +19,7 @@ plotdir <- "data/intakes/figures"
 cntry_key_orig <- read.csv("data/cosimo/processed/COSIMO_country_key.csv", as.is = T)
   
 # Read data
-dists <- readRDS(file.path(outputdir, "intake_distributions_expanded_9countries.Rds"))
+dists <- readRDS(file.path(outputdir, "intake_distributions_expanded_13countries.Rds"))
 
 # Get world
 world <- rnaturalearth::ne_countries("large", returnclass="sf")
@@ -57,23 +57,23 @@ cntry_key <- cntry_key_orig %>%
                              "Central Asia"="China",  
                              "Eastern Africa"="Uganda & Zambia", 
                              "Eastern Asia"="China", 
-                             "Eastern Europe"="Italy", 
+                             "Eastern Europe"="Italy, Romania, Bulgaria", 
                              "Melanesia"="Laos & Philippines",  
                              "Polynesia"="Laos & Philippines",
                              "Micronesia"="Laos & Philippines",
                              "Middle Africa"="Uganda & Zambia", 
-                             "Northern Africa"="Italy",  
+                             "Northern Africa"="Italy, Romania, Bulgaria",  
                              "Northern America"="United States", 
-                             "Northern Europe"="Italy",  
+                             "Northern Europe"="Italy, Romania, Bulgaria",  
                              "Seven seas (open ocean)"="N/A",  
-                             "South America"="Mexico", 
+                             "South America"="Bolivia", 
                              "South-Eastern Asia"="Laos & Philippines", 
                              "Southern Africa"="Uganda & Zambia",  
                              "Southern Asia"="China",  
-                             "Southern Europe"="Italy",  
+                             "Southern Europe"="Italy, Romania, Bulgaria",  
                              "Western Africa"="Burkina Faso",  
-                             "Western Asia"="Italy", 
-                             "Western Europe"="Italy")) %>% 
+                             "Western Asia"="Italy, Romania, Bulgaria", 
+                             "Western Europe"="Italy, Romania, Bulgaria")) %>% 
   # Make a few manual corrections
   mutate(intake_group=ifelse(country=="Sudan", "Uganda & Zambia", intake_group))
 
