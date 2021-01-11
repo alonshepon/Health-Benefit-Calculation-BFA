@@ -16,7 +16,7 @@ outputdir <- "data/intakes/output"
 plotdir <- "data/intakes/figures"
 
 # Read data
-data <- readRDS(file.path(inputdir, "habitual_nutrient_intakes_by_age_sex_9countries.Rds"))
+data <- readRDS(file.path(inputdir, "habitual_nutrient_intakes_by_age_sex_13countries.Rds"))
 
 # Combine countries
 data <- data %>% 

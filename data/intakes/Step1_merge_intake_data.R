@@ -63,7 +63,9 @@ file_key <- tibble(filename=intake_files) %>%
                                "Red meat"="g/p/d",            
                                "Vitamin A"="µg/p/d",  # µg RAE/person/day         
                                "Vitamin B-12"="µg/p/d",        
-                               "Zinc"="mg/p/d"))
+                               "Zinc"="mg/p/d")) %>% 
+  # Remove random Zambia file
+  filter(filename!="zambia_b12.csv")
 
 # Loop through intake files
 data_orig <- purrr::map_df(intake_files, function(x){

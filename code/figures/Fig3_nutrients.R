@@ -21,16 +21,22 @@ data_orig <- readRDS(file.path(outputdir, "COSIMO_nutrient_by_scenario_cntry_wit
 world <- rnaturalearth::ne_countries(scale="small", returnclass = "sf")
 
 
+# Inspect
+################################################################################
 
+# 2030 values
 val2030 <- data_orig %>% 
   filter(year==2030)
 
+# Plot 2030 values
 g <- ggplot(val2030, aes(y=intake_orig)) +
   facet_wrap(~nutrient, scale="free_y") +
   geom_boxplot()
 g
 
+# Summary for omegas
 summary(val2030$intake_orig[val2030$nutrient=="Omega-3 fatty acids"])
+
 
 # Manuscript stats
 ################################################################################
@@ -40,13 +46,13 @@ stats <- data_orig %>%
   # Calculate percent difference
   mutate(intake_pdiff=(intake-intake_orig)/intake_orig*100) %>% 
   # Reduce to base and 2030
-  filter(scenario=="Base" & year==2030) %>%
+  filter(scenario=="Base" & year==2030 & is.finite(intake_pdiff)) %>%
   # Calculate global stats
-  group_by(nutrient, units) %>% 
-  summarize(pdiff_avg=mean(intake_pdiff),
-            pdiff_med=median(intake_pdiff),
-            pdiff_min=min(intake_pdiff),
-            pdiff_max=max(intake_pdiff))
+  group_by(nutrient, nutrient_units) %>% 
+  summarize(pdiff_avg=mean(intake_pdiff, na.rm=T),
+            pdiff_med=median(intake_pdiff, na.rm=T),
+            pdiff_min=min(intake_pdiff, na.rm=T),
+            pdiff_max=max(intake_pdiff, na.rm=T))
 
 
 # Determine caps

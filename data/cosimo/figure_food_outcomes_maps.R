@@ -43,8 +43,30 @@ plot_map <- function(food){
   
   # Subset data
   food_do <- food
+  
+  # Subset data
   sdata <- data_orig %>% 
     filter(food==food_do & year==2030)
+
+  # Plot hist
+  if(food=="Fish"){
+    hist(sdata$value_lo, breaks=seq(0,1600,5))
+    abline(v=300)
+    
+    hist(sdata$value_hi, breaks=seq(0,2000,5))
+    abline(v=300)
+    
+    hist(sdata$value_diff, breaks=seq(0,120,2))
+    abline(v=20)
+    
+    sdata <- sdata %>% 
+      mutate(value_lo=pmin(value_lo, 300),
+             value_hi=pmin(value_hi, 300),
+             value_diff=pmin(value_diff, 20))
+    
+  }
+  
+  # Spatialize
   sdata_sf <- world %>% 
     left_join(sdata, by=c("gu_a3"="iso3"))
   
@@ -116,7 +138,7 @@ g11 <- plot_map("Other Oilseeds")
 g12 <- plot_map("Pulses")
 
 g13 <- plot_map("Rice")
-g14<- plot_map("Root tubers")
+g14 <- plot_map("Roots tubers")
 g15 <- plot_map("Sugar")
 g16 <- plot_map("Vegetable oils")
 g17 <- plot_map("Wheat")
@@ -124,7 +146,7 @@ g17 <- plot_map("Wheat")
 # Merge maps
 merge1 <- gridExtra::grid.arrange(g1, g2, g3, g4, g5, g6, ncol=1)
 merge2 <- gridExtra::grid.arrange(g7, g8, g9, g10, g11, g12, ncol=1)
-merge3 <- gridExtra::grid.arrange(g13, g14, g15, g16, g17, ncol=1)
+merge3 <- gridExtra::grid.arrange(g13, g14, g15, g16, g17, g1, ncol=1)
 
 # Export maps
 ggsave(merge1, filename=file.path(plotdir, "COSIMO_2030_food_outcomes_panel1.png"), 
@@ -133,5 +155,6 @@ ggsave(merge1, filename=file.path(plotdir, "COSIMO_2030_food_outcomes_panel1.png
 ggsave(merge2, filename=file.path(plotdir, "COSIMO_2030_food_outcomes_panel2.png"), 
        width=6.5, height=7, units="in", dpi=600)
 
+# Remember to cut fish panel
 ggsave(merge3, filename=file.path(plotdir, "COSIMO_2030_food_outcomes_panel3.png"), 
-       width=6.5, height=5.15, units="in", dpi=600)
+       width=6.5, height=7, units="in", dpi=600)

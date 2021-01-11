@@ -15,8 +15,8 @@ outputdir <- "output"
 plotdir <- "figures"
 
 # Read data
-# data_orig <- readRDS(file.path(outputdir, "2030_sevs_base_high_road_final.Rds"))
-data_orig <- readRDS(file.path(outputdir, "2030_sevs_base_high_road_final_diversity_disagg.Rds"))
+data_orig <- readRDS(file.path(outputdir, "2030_sevs_base_high_road_final.Rds"))
+# data_orig <- readRDS(file.path(outputdir, "2030_sevs_base_high_road_final_diversity_disagg.Rds"))
 
 # World
 world <- rnaturalearth::ne_countries("small", returnclass = "sf")
@@ -119,8 +119,8 @@ g6 <- plot_map("Vitamin A, RAE")
 g <- gridExtra::grid.arrange(g1, g2, g3, g4, g5, g6, ncol=1)
 
 # Export maps
-# ggsave(g, filename=file.path(plotdir, "FigSX_sevs_base_high_diff_maps_gnd.png"), 
-#        width=6.5, height=7, units="in", dpi=600)
-ggsave(g, filename=file.path(plotdir, "FigSX_sevs_base_high_diff_maps_diversity_disagg.png"),
+ggsave(g, filename=file.path(plotdir, "FigSX_sevs_base_high_diff_maps_gnd.png"),
        width=6.5, height=7, units="in", dpi=600)
+# ggsave(g, filename=file.path(plotdir, "FigSX_sevs_base_high_diff_maps_diversity_disagg.png"),
+#        width=6.5, height=7, units="in", dpi=600)
 
