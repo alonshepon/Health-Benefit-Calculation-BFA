@@ -33,7 +33,7 @@ range(intake_fits$best_ks, na.rm=T)
 cosimo_orig <- readRDS("data/cosimo/processed/COSIMO_2010_2030_nutr_by_scenario_cntry_food.rds")
 
 # Calculate % of nutrition from each nutrient
-stats <- cosimo_orig %>% 
+stats1 <- cosimo_orig %>% 
   # 2030
   filter(year==2030) %>% 
   # Gather
@@ -45,13 +45,32 @@ stats <- cosimo_orig %>%
   # Group by
   group_by(iso3, country, scenario, nutrient) %>% 
   summarize(intake_af=value[food=="Fish"],
-            intake_tot=sum(value),
+            intake_tot=sum(value[food!="Total food"]),
             af_perc=intake_af/intake_tot*100 %>% round(.,1)) %>% 
   ungroup() %>% 
-  # Get rid of the 50s which seem to be errors
-  filter(af_perc!=50) %>% 
   # Summarize by nutrient
   group_by(scenario, nutrient) %>% 
-  summarize(perc_min=min(af_perc, na.rm=T),
-            perc_max=max(af_perc, na.rm=T))
+  summarize(perc_max=mean(af_perc, na.rm=T)) %>% 
+  spread(key="scenario", value="perc_max")
+
+# Read data
+cosimo_nutr_orig <- read.csv("data/cosimo_nutr_disagg/raw/Disaggregated_NutrientScen_FAO_FW.csv", as.is=T)
+
+# Calculate % of nutrition from each nutrient
+stats2 <- cosimo_nutr_orig %>% 
+  # 2030
+  filter(year==2030) %>% 
+  # Format
+  select(-c(nutrient_supply)) %>% 
+  rename(intake=nutrient_supply_dis) %>% 
+  # Group by
+  group_by(iso3c, scenario, nutrient) %>% 
+  summarize(intake_af=intake[products=="Fish"],
+            intake_tot=sum(intake[products!="Total food"]),
+            af_perc=intake_af/intake_tot*100 %>% round(.,1)) %>% 
+  ungroup() %>% 
+  # Summarize by nutrient
+  group_by(scenario, nutrient) %>% 
+  summarize(perc_max=mean(af_perc, na.rm=T)) %>% 
+  spread(key="scenario", value="perc_max")
   

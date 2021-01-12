@@ -14,16 +14,13 @@ library(countrycode)
 outputdir <- "output"
 plotdir <- "figures"
 
-# Read data
-data_orig <- readRDS(file.path(outputdir, "2030_sevs_base_high_road_final.Rds"))
-# data_orig <- readRDS(file.path(outputdir, "2030_sevs_base_high_road_final_diversity_disagg.Rds"))
+
+# Plotting function
+################################################################################
 
 # World
 world <- rnaturalearth::ne_countries("small", returnclass = "sf")
 
-
-# Plot data
-################################################################################
 
 # Base theme
 base_theme <- theme(axis.text=element_blank(),
@@ -106,21 +103,40 @@ plot_map <- function(nutrient){
   
 }
 
+# Plotting function
+################################################################################
 
-# Plot maps
-g1 <- plot_map("Omega-3 fatty acids")
-g2 <- plot_map("Vitamin B-12")
-g3 <- plot_map("Iron")
-g4 <- plot_map("Zinc")
-g5 <- plot_map("Calcium")
-g6 <- plot_map("Vitamin A, RAE")
+# Datasets
+datasets <- c("gnd", "diversity")
 
-# Merge maps
-g <- gridExtra::grid.arrange(g1, g2, g3, g4, g5, g6, ncol=1)
+# Loop through datasets
+for(i in 1:length(datasets)){
+  
+  # Read data
+  dataset <- datasets[i]
+  if(dataset=="gnd"){
+    data_orig <- readRDS(file.path(outputdir, "2030_sevs_base_high_road_final.Rds")) %>% 
+      mutate(nutrient=recode(nutrient, "Omega-3 fatty acids"="DHA+EPA fatty acids"))
+    outfig <- "FigSX_sevs_base_high_diff_maps_gnd.png"
+  }else{
+    data_orig <- readRDS(file.path(outputdir, "2030_sevs_base_high_road_final_diversity_disagg.Rds")) %>% 
+      mutate(nutrient=recode(nutrient, "Omega-3 fatty acids"="DHA+EPA fatty acids"))
+    outfig <- "FigSX_sevs_base_high_diff_maps_diversity_disagg.png"
+  }
+  
+  # Plot maps
+  g1 <- plot_map("DHA+EPA fatty acids")
+  g2 <- plot_map("Vitamin B-12")
+  g3 <- plot_map("Iron")
+  g4 <- plot_map("Zinc")
+  g5 <- plot_map("Calcium")
+  g6 <- plot_map("Vitamin A, RAE")
+  
+  # Merge maps
+  g <- gridExtra::grid.arrange(g1, g2, g3, g4, g5, g6, ncol=1)
+  
+  # Export maps
+  ggsave(g, filename=file.path(plotdir, outfig),
+         width=6.5, height=7, units="in", dpi=600)
 
-# Export maps
-ggsave(g, filename=file.path(plotdir, "FigSX_sevs_base_high_diff_maps_gnd.png"),
-       width=6.5, height=7, units="in", dpi=600)
-# ggsave(g, filename=file.path(plotdir, "FigSX_sevs_base_high_diff_maps_diversity_disagg.png"),
-#        width=6.5, height=7, units="in", dpi=600)
-
+}

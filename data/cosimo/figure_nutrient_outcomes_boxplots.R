@@ -15,7 +15,9 @@ outputdir <- "data/cosimo/processed"
 plotdir <- "data/cosimo/figures"
 
 # Read data
-data_orig <- readRDS(file.path(outputdir, "COSIMO_2010_2030_nutr_by_scenario_cntry_food.rds"))
+data_orig <- readRDS(file.path(outputdir, "COSIMO_2010_2030_nutr_by_scenario_cntry_food.rds")) %>% 
+  # Recode omegas
+  mutate(nutrient=recode(nutrient, "Omega-3 fatty acids"="DHA+EPA fatty acids"))
 
 
 # Build data
@@ -38,9 +40,7 @@ data <- bind_rows(data_omega, data_not_omega) %>%
   gather(key="scenario", value="intake", 9:10) %>% 
   mutate(scenario=recode(scenario, "value_lo"="Base", "value_hi"="High")) %>% 
   # Nutrient label
-  mutate(nutrient_label=paste0(nutrient, "\n(", nutrient_units, ")"),
-         nutrient_label=recode(nutrient_label,
-                               "Omega-3 fatty acids\n(g/p/d)"="Omega-3 fatty acids\nfrom aquatic foods\n(g/p/d)"))
+  mutate(nutrient_label=paste0(nutrient, "\n(", nutrient_units, ")"))
 
 # Key
 key <- data %>% 

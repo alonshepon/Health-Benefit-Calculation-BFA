@@ -19,7 +19,8 @@ sevs <- readRDS(file.path(outputdir, "2030_sevs_base_high_road_final_diversity_d
   mutate(sev_delta_cap=pmin(sev_delta, 2) %>% pmax(., -2)) %>% 
   # Rename Vitamin A
   mutate(nutrient=recode(nutrient, 
-                         "Vitamin A, RAE"="Vitamin A"))
+                         "Vitamin A, RAE"="Vitamin A",
+                         "Omega-3 fatty acids"="DHA+EPA fatty acids"))
 
 # World
 world <- rnaturalearth::ne_countries("small", returnclass = "sf")
@@ -29,7 +30,7 @@ world <- rnaturalearth::ne_countries("small", returnclass = "sf")
 ################################################################################
 
 # Nutrient order
-nutrients <- c("Omega-3 fatty acids", "Vitamin B-12", "Iron", "Zinc", "Calcium", "Vitamin A")
+nutrients <- c("DHA+EPA fatty acids", "Vitamin B-12", "Iron", "Zinc", "Calcium", "Vitamin A")
 
 # Calculate country-level means
 c_avgs <- sevs %>% 
@@ -157,7 +158,7 @@ plot_boxplot2 <- function(nutrient, legend=F){
 }
 
 # Plot maps
-map1 <- plot_map("Omega-3 fatty acids")
+map1 <- plot_map("DHA+EPA fatty acids")
 map2 <- plot_map("Vitamin B-12")
 map3 <- plot_map("Iron")
 map4 <- plot_map("Zinc")
@@ -165,7 +166,7 @@ map5 <- plot_map("Calcium")
 map6 <- plot_map("Vitamin A")
 
 # Plot boxplots
-box1 <- plot_boxplot2("Omega-3 fatty acids")
+box1 <- plot_boxplot2("DHA+EPA fatty acids")
 box2 <- plot_boxplot2("Vitamin B-12")
 box3 <- plot_boxplot2("Iron")
 box4 <- plot_boxplot2("Zinc")

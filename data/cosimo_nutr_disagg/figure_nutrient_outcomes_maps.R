@@ -15,7 +15,11 @@ outputdir <- "data/cosimo_nutr_disagg/processed"
 plotdir <- "data/cosimo_nutr_disagg/figures"
 
 # Read data
-data_orig <- readRDS(file.path(outputdir, "COSIMO_nutrient_by_scenario_cntry_with_dissagg.Rds"))
+data_orig <- readRDS(file.path(outputdir, "COSIMO_nutrient_by_scenario_cntry_with_dissagg.Rds")) %>% 
+  # Remove Belize
+  filter(country!="Belize") %>% 
+  # Recode omegas 
+  mutate(nutrient=recode(nutrient, "Omega-3 fatty acids"="DHA+EPA fatty acids"))
 
 # World
 world <- rnaturalearth::ne_countries("small", returnclass = "sf")
@@ -53,7 +57,7 @@ plot_map <- function(nutrient){
     mutate(intake_diff=intake_high - intake_base)
   
   # If omegas
-  if(nutrient_do=="Omega-3 fatty acids"){
+  if(nutrient_do=="DHA+EPA fatty acids"){
     
     hist(sdata$intake_base, breaks=seq(0,16,0.5))
     hist(sdata$intake_high, breaks=seq(0,20,0.5))
@@ -126,7 +130,7 @@ plot_map <- function(nutrient){
 
 
 # Plot maps
-g1 <- plot_map("Omega-3 fatty acids")
+g1 <- plot_map("DHA+EPA fatty acids")
 g2 <- plot_map("Vitamin B-12")
 g3 <- plot_map("Iron")
 g4 <- plot_map("Zinc")

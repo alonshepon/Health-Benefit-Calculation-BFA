@@ -46,7 +46,9 @@ coverage <- data %>%
   filter(sex!="Children") %>% 
   mutate(sex=recode(sex, 
                     "Men"="Males",
-                    "Women"="Females"))
+                    "Women"="Females")) %>% 
+  # Format omegas
+  mutate(nutrient=recode(nutrient, "Omega-3 fatty acids"="DHA+EPA fatty acids"))
 
 # Plot coverage
 g <- ggplot(coverage, aes(x=age_yr, y=nutrient, fill=data_yn)) +

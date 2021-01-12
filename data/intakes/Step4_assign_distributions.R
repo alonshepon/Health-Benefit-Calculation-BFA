@@ -103,10 +103,16 @@ dist_key2 <- readxl::read_excel(file.path(outputdir, "dist_id_key.xlsx")) %>%
          country_label=recode(country_final, 
                               "Laos & Philippines"="Laos &\nPhilippines",
                               "Uganda & Zambia"="Uganda &\nZambia",
-                              "Italy, Romania, Bulgaria"="Italy,\nRomania,\nBulgaria"))
+                              "Italy, Romania, Bulgaria"="Italy,\nRomania,\nBulgaria")) %>% 
+  # Format omegas
+  mutate(nutrient_plot=recode(nutrient, "Omega-3 fatty acids"="DHA+EPA fatty acids")) %>% 
+  # Format sources
+  mutate(type2=recode(type2, 
+                      "From men"="From males", 
+                      "From women"="From females"))
 
 # Plot
-g <- ggplot(dist_key2 , aes(x=age_group, y=nutrient, fill=type2)) +
+g <- ggplot(dist_key2 , aes(x=age_group, y=nutrient_plot, fill=type2)) +
   facet_grid(country_label~sex) +
   geom_tile() +
   # Labels

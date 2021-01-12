@@ -11,13 +11,13 @@ library(tidyverse)
 library(countrycode)
 
 # Directories
-inputdir <- "data/cosimo/raw/v4"
+inputdir <- "data/cosimo/raw/v5"
 outputdir <- "data/cosimo/processed"
 plotdir <- "data/cosimo/figures"
 
 # Read data
-food_lo_orig <-read.csv(file.path(inputdir, "FoodConsBaseRev2.csv"), as.is=T, skip=1)
-food_hi_orig <- read.csv(file.path(inputdir, "FoodConsScenRev2.csv"), as.is=T, skip=1)
+food_lo_orig <-read.csv(file.path(inputdir, "FoodConsBaseRev3.csv"), as.is=T, skip=1)
+food_hi_orig <- read.csv(file.path(inputdir, "FoodConsScenRev3.csv"), as.is=T, skip=1)
 
 # Read country key
 eu27_key <- read.csv(file.path(outputdir, "COSIMO_AGLINK_2020_country_key.csv"), as.is=T) %>% 

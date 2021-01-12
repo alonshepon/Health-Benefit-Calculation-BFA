@@ -15,7 +15,9 @@ outputdir <- "data/cosimo/processed"
 plotdir <- "data/cosimo/figures"
 
 # Read data
-data_orig <- readRDS(file.path(outputdir, "COSIMO_2010_2030_nutr_by_scenario_cntry_food.rds"))
+data_orig <- readRDS(file.path(outputdir, "COSIMO_2010_2030_nutr_by_scenario_cntry_food.rds")) %>% 
+  # Recode omegas
+  mutate(nutrient=recode(nutrient, "Omega-3 fatty acids"="DHA+EPA fatty acids"))
 
 # World
 world <- rnaturalearth::ne_countries("small", returnclass = "sf")
@@ -45,11 +47,11 @@ plot_map <- function(nutrient){
   nutrient_do <- nutrient
   
   # Subset data
-  if(nutrient_do=="Omega-3 fatty acids"){
+  if(nutrient_do=="DHA+EPA fatty acids"){
     sdata <- data_orig %>% 
       filter(nutrient==nutrient_do & year==2030 & food=="Fish")
     units <- sdata$nutrient_units %>% unique()
-    nutrient_label <- paste0("Omega-3-fatty acids from aquatic foods (", units, ")")
+    nutrient_label <- paste0(nutrient_do, " (", units, ")")
   }else{
     sdata <- data_orig %>% 
       filter(nutrient==nutrient_do & year==2030 & food=="Total food")
@@ -112,7 +114,7 @@ plot_map <- function(nutrient){
 
 
 # Plot maps
-g1 <- plot_map("Omega-3 fatty acids")
+g1 <- plot_map("DHA+EPA fatty acids")
 g2 <- plot_map("Vitamin B-12")
 g3 <- plot_map("Iron")
 g4 <- plot_map("Zinc")

@@ -26,9 +26,9 @@ data_orig <- readRDS(file=file.path(outputdir, "2030_ndeficient_base_high_divers
 # Build stats
 stats <- data_orig %>% 
   group_by(nutrient) %>% 
-  summarize(n_better=sum(ndeficient_diff[ndeficient_diff<0], na.rm=T), 
-            n_worse=sum(ndeficient_diff[ndeficient_diff>0], na.rm=T),
-            n_net=sum(ndeficient_diff, na.rm=T)) %>% 
+  summarize(prevented=sum(ndeficient_diff[ndeficient_diff<0], na.rm=T)/1e6, 
+            new=sum(ndeficient_diff[ndeficient_diff>0], na.rm=T)/1e6,
+            net_change=sum(ndeficient_diff, na.rm=T)/1e6) %>% 
   ungroup()
 
 # Export

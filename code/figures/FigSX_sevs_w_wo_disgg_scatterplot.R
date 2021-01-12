@@ -38,7 +38,8 @@ my_theme <-  theme(axis.text=element_text(size=6),
 
 # Format data
 sevs <- sevs1_orig %>% 
-  left_join(sevs2_orig, by=c("nutrient", "country", "iso3", "sex_id", "sex", "age_id", "age_group"))
+  left_join(sevs2_orig, by=c("nutrient", "country", "iso3", "sex_id", "sex", "age_id", "age_group")) %>% 
+  mutate(nutrient=recode(nutrient, "Omega-3 fatty acids"="DHA+EPA fatty acids"))
 
 # Plot data
 g <- ggplot(sevs, aes(x=sev_high.x, y=sev_high.y, color=sex)) +

@@ -15,7 +15,11 @@ outputdir <- "data/cosimo_nutr_disagg/processed"
 plotdir <- "figures"
 
 # Read data
-data_orig <- readRDS(file.path(outputdir, "COSIMO_nutrient_by_scenario_cntry_with_dissagg.Rds"))
+data_orig <- readRDS(file.path(outputdir, "COSIMO_nutrient_by_scenario_cntry_with_dissagg.Rds")) %>% 
+  # Remove Belize
+  filter(country!="Belize") %>% 
+  # Recode omegas
+  mutate(nutrient=recode(nutrient, "Omega-3 fatty acids"="DHA+EPA fatty acids"))
 
 
 # Plot data
@@ -30,7 +34,8 @@ data <- data_orig %>%
   mutate(type=recode_factor(type, 
                             "intake_orig"="Original (GND)",
                             "intake"="Diversity disaggregation"),
-         nutrient_label=paste0(nutrient, "\n(", nutrient_units, ")"))
+         nutrient_label=paste0(nutrient, "\n(", nutrient_units, ")"),
+         nutrient_label=recode(nutrient_label, "DHA+EPA fatty acids\n(g/p/d)"="DHA+EPA\nfatty acids\n(g/p/d)"))
   
 # Theme
 my_theme <-  theme(axis.text=element_text(size=6),

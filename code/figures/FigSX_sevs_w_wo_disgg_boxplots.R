@@ -29,7 +29,8 @@ sevs <- bind_rows(sevs1_orig, sevs2_orig) %>%
   select(nutrient:age_group, type, everything()) %>% 
   gather(key="scenario", value="sev", 9:10) %>% 
   mutate(scenario=recode(scenario, "sev_base"="Base", "sev_high"="High")) %>% 
-  mutate(type=factor(type, levels=c("Original (GND)", "Diversity disaggregation")))
+  mutate(type=factor(type, levels=c("Original (GND)", "Diversity disaggregation"))) %>% 
+  mutate(nutrient=recode(nutrient, "Omega-3 fatty acids"="DHA+EPA fatty acids"))
 
 
 # Build data

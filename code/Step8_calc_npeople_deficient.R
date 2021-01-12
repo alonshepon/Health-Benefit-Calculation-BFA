@@ -20,6 +20,8 @@ sevs <- readRDS(file.path(outputdir, "2030_sevs_base_high_road_final.Rds"))
 # Read population projection
 pop_orig <- readRDS("/Users/cfree/Dropbox/Chris/UCSB/projects/nutrition/nutrient_endowment/data/population_growth/processed/UN_WPP_2019_pop_proj_by_cntry_agesex.Rds")
 
+
+
 # Build data
 ################################################################################
 
@@ -30,6 +32,9 @@ pop <- pop_orig %>%
   rename(iso3=iso3_use, age_group=age_range, npeople=pop_size_50perc) %>% 
   mutate(sex=recode(sex, "male"="Males", "female"="Females"))
 
+# Number of people in 2030
+sum(pop$npeople) / 1e9
+
 # Build data
 data <- sevs %>% 
   # Add population size
@@ -37,8 +42,8 @@ data <- sevs %>%
   # Arrange
   select(country:age_group, npeople, nutrient, everything()) %>% 
   # Calculate
-  mutate(ndeficient_base=npeople*sev_base,
-         ndeficient_high=npeople*sev_high,
+  mutate(ndeficient_base=npeople*sev_base/100,
+         ndeficient_high=npeople*sev_high/100,
          ndeficient_diff=ndeficient_high-ndeficient_base)
 
 # Export data

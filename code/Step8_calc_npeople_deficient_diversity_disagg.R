@@ -37,8 +37,8 @@ data <- sevs %>%
   # Arrange
   select(country:age_group, npeople, nutrient, everything()) %>% 
   # Calculate
-  mutate(ndeficient_base=npeople*sev_base,
-         ndeficient_high=npeople*sev_high,
+  mutate(ndeficient_base=npeople*sev_base/100,
+         ndeficient_high=npeople*sev_high/100,
          ndeficient_diff=ndeficient_high-ndeficient_base)
 
 # Export data

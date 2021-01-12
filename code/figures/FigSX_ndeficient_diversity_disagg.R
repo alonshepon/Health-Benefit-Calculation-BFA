@@ -15,7 +15,8 @@ outputdir <- "output"
 plotdir <- "figures"
 
 # Read data
-data_orig <- readRDS(file=file.path(outputdir, "2030_ndeficient_base_high_diversity_disagg.Rds"))
+data_orig <- readRDS(file=file.path(outputdir, "2030_ndeficient_base_high_diversity_disagg.Rds")) %>% 
+  mutate(nutrient=recode(nutrient, "Omega-3 fatty acids"="DHA+EPA fatty acids"))
 
 # World
 world <- rnaturalearth::ne_countries(scale="small", returnclass = "sf")
@@ -29,9 +30,10 @@ stats1 <- data_orig %>%
   group_by(nutrient, iso3, country) %>% 
   summarize(npeople=sum(ndeficient_diff, na.rm=T)) %>% 
   ungroup() %>% 
-  mutate(npeople_cap=pmax(npeople, -50*1e6) %>% pmin(., 50*1e6))
+  mutate(npeople_cap=pmax(npeople, -1*1e6) %>% pmin(., 1*1e6))
 
-hist(stats1$npeople)
+hist(stats1$npeople/1e6, breaks=seq(-35,5, 0.5))
+abline(v=-1)
 
 # Raster stats
 stats2 <- data_orig %>% 
@@ -43,7 +45,7 @@ stats2 <- data_orig %>%
   complete(nutrient, sex, age_group) %>% 
   # Recode nutrients
   mutate(nutrient=factor(nutrient,
-                         levels=c("Vitamin A, RAE", "Calcium", "Zinc", "Iron", "Vitamin B-12", "Omega-3 fatty acids"))) %>% 
+                         levels=c("Vitamin A, RAE", "Calcium", "Zinc", "Iron", "Vitamin B-12", "DHA+EPA fatty acids"))) %>% 
   # Remove 100 group
   filter(age_group!="100+")
 
@@ -98,7 +100,7 @@ plot_map <- function(nutrient){
 ################################################################################
 
 # Build maps
-g1 <- plot_map("Omega-3 fatty acids")
+g1 <- plot_map("DHA+EPA fatty acids")
 g2 <- plot_map("Vitamin B-12")
 g3 <- plot_map("Iron")
 g4 <- plot_map("Zinc")

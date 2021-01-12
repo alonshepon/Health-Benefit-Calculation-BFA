@@ -15,7 +15,8 @@ outputdir <- "data/cosimo_nutr_disagg/processed"
 plotdir <- "figures"
 
 # Read data
-data_orig <- readRDS(file.path(outputdir, "COSIMO_nutrient_by_scenario_cntry_with_dissagg.Rds"))
+data_orig <- readRDS(file.path(outputdir, "COSIMO_nutrient_by_scenario_cntry_with_dissagg.Rds")) %>% 
+  mutate(nutrient=recode(nutrient, "Omega-3 fatty acids"="DHA+EPA fatty acids"))
 
 # World
 world <- rnaturalearth::ne_countries(scale="small", returnclass = "sf")
@@ -35,7 +36,7 @@ g <- ggplot(val2030, aes(y=intake_orig)) +
 g
 
 # Summary for omegas
-summary(val2030$intake_orig[val2030$nutrient=="Omega-3 fatty acids"])
+summary(val2030$intake_orig[val2030$nutrient=="DHA+EPA fatty acids"])
 
 
 # Manuscript stats
@@ -64,18 +65,19 @@ data <- data_orig %>%
   filter(year==2030) %>% 
   # Calculate stats
   select(-c(intake_orig, intake_diff)) %>% 
+  mutate(scenario=recode(scenario, "High road"="High")) %>% 
   spread(key="scenario", value="intake") %>% 
   mutate(intake_diff=High-Base,
          intake_pdiff=(High-Base)/Base*100) %>% 
   # Add cap
   mutate(cap=recode(nutrient,
-                    "Calcium"=100,
+                    "Calcium"=40,
                     "Iron"=0.75,
-                    "Omega-3 fatty acids"=1,
-                    "Protein"=4,
-                    "Vitamin A"=10,
-                    "Vitamin B12"=3,
-                    "Zinc"=1.5) %>% as.numeric(),
+                    "DHA+EPA fatty acids"=0.15,
+                    "Protein"=3,
+                    "Vitamin A, RAE"=10,
+                    "Vitamin B-12"=1.5,
+                    "Zinc"=0.75) %>% as.numeric(),
          intake_diff_cap=pmin(intake_diff, cap))
 
 # Inspect distribution
@@ -86,19 +88,19 @@ g <- ggplot(data, aes(x=intake_diff_cap)) +
 g
 
 # Set breaks and labels
-breaks_list <- list("Calcium"=seq(-50,100,50),
+breaks_list <- list("Calcium"=seq(0,40,10),
                     "Iron"=seq(0, 0.75, 0.25),
-                    "Omega-3 fatty acids"=seq(0,1,0.25),
-                    "Vitamin A"=seq(-10,10,5),
-                    "Vitamin B12"=seq(0,3,1),
-                    "Zinc"=seq(0,1.5,0.5))
+                    "DHA+EPA fatty acids"=seq(0,0.15,0.05),
+                    "Vitamin A, RAE"=seq(-10,10,5),
+                    "Vitamin B-12"=seq(0,1.5,0.5),
+                    "Zinc"=seq(0,0.75,0.25))
 
-labels_list <- list("Calcium"=c("-50", "0", "50", "≥100"),
+labels_list <- list("Calcium"=c("0", "10", "20", "30", "≥40"),
                       "Iron"=c("0.00", "0.25", "0.50", "≥0.75"),
-                      "Omega-3 fatty acids"=c("0.00", "0.25", "0.50", "0.75", "≥1.00"),
-                      "Vitamin A"=c("-10", "-5", "0", "5", "≥10"),
-                      "Vitamin B12"=c("0", "1", "2", "≥3"),
-                      "Zinc"=c("0.0", "0.5", "1.0", "≥1.5"))
+                      "DHA+EPA fatty acids"=c("0", "0.05", "0.10", "≥0.15"),
+                      "Vitamin A, RAE"=c("-10", "-5", "0", "5", "≥10"),
+                      "Vitamin B-12"=c("0", "0.5", "1.0", "≥1.5"),
+                      "Zinc"=c("0", "0.25", "10.5", "≥-.75"))
 
 
 # Plot data
@@ -119,7 +121,7 @@ plot_map <- function(nutrient){
     left_join(sdata, by=c("gu_a3"="iso3"))
   
   # Build label
-  nutrient_label <- paste0(nutr_do, " (", unique(sdata$units), ")")
+  nutrient_label <- paste0(nutr_do, " (", unique(sdata$nutrient_units), ")")
   
   # Get breaks and labels
   breaks <- breaks_list[[nutr_do]]
@@ -166,7 +168,8 @@ plot_boxplot <- function(nutrient){
     # Cap values
     mutate(ymin=quantile(intake_diff, 0.05),
            ymax=quantile(intake_diff, 0.95),
-           intake_diff_cap=pmin(intake_diff, ymax) %>% pmax(., ymin))
+           intake_diff_cap=pmin(intake_diff, ymax) %>% pmax(., ymin)) %>% 
+    mutate(scenario=recode(scenario, "High road"="High"))
   
   # Plot data
   g <- ggplot(sdata, aes(y=intake_diff_cap, x=scenario)) +
@@ -197,20 +200,20 @@ plot_boxplot <- function(nutrient){
 
 
 # Maps
-map1 <- plot_map(nutrient="Omega-3 fatty acids")
-map2 <- plot_map(nutrient="Vitamin B12")
+map1 <- plot_map(nutrient="DHA+EPA fatty acids")
+map2 <- plot_map(nutrient="Vitamin B-12")
 map3 <- plot_map(nutrient="Iron")
 map4 <- plot_map(nutrient="Zinc")
 map5 <- plot_map(nutrient="Calcium")
-map6 <- plot_map(nutrient="Vitamin A")
+map6 <- plot_map(nutrient="Vitamin A, RAE")
 
 # Boxplots
-box1 <- plot_boxplot(nutrient="Omega-3 fatty acids")
-box2 <- plot_boxplot(nutrient="Vitamin B12")
+box1 <- plot_boxplot(nutrient="DHA+EPA fatty acids")
+box2 <- plot_boxplot(nutrient="Vitamin B-12")
 box3 <- plot_boxplot(nutrient="Iron")
 box4 <- plot_boxplot(nutrient="Zinc")
 box5 <- plot_boxplot(nutrient="Calcium")
-box6 <- plot_boxplot(nutrient="Vitamin A")
+box6 <- plot_boxplot(nutrient="Vitamin A, RAE")
 
 
 # Merge 
