@@ -15,8 +15,13 @@ outputdir <- "output"
 plotdir <- "figures"
 tabledir <- "tables"
 
+# Read problem country key
+prob_key <- read.csv("data/countries_with_bug.csv", as.is=T)
+
 # Read data
-data_orig <- readRDS(file=file.path(outputdir, "2030_ndeficient_base_high_diversity_disagg.Rds"))
+data_orig <- readRDS(file=file.path(outputdir, "2030_ndeficient_base_high_diversity_disagg.Rds")) %>% 
+  # Eliminate problem countries
+  filter(!iso3 %in% prob_key$iso)
 
 
 

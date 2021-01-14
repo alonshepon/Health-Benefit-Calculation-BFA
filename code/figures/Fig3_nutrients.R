@@ -14,9 +14,14 @@ library(countrycode)
 outputdir <- "data/cosimo_nutr_disagg/processed"
 plotdir <- "figures"
 
+# Read problem country key
+prob_key <- read.csv("data/countries_with_bug.csv", as.is=T)
+
 # Read data
 data_orig <- readRDS(file.path(outputdir, "COSIMO_nutrient_by_scenario_cntry_with_dissagg.Rds")) %>% 
-  mutate(nutrient=recode(nutrient, "Omega-3 fatty acids"="DHA+EPA fatty acids"))
+  mutate(nutrient=recode(nutrient, "Omega-3 fatty acids"="DHA+EPA fatty acids")) %>% 
+  # Eliminate problem countries
+  filter(!iso3 %in% prob_key$iso)
 
 # World
 world <- rnaturalearth::ne_countries(scale="small", returnclass = "sf")

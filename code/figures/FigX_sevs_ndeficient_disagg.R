@@ -14,17 +14,24 @@ library(countrycode)
 outputdir <- "output"
 plotdir <- "figures"
 
+# Read problem country key
+prob_key <- read.csv("data/countries_with_bug.csv", as.is=T)
+
 # Read data
 sevs <- readRDS(file.path(outputdir, "2030_sevs_base_high_road_final_diversity_disagg.Rds")) %>% 
   mutate(sev_delta_cap=pmin(sev_delta, 2) %>% pmax(., -2)) %>% 
   # Rename Vitamin A
   mutate(nutrient=recode(nutrient, 
                          "Vitamin A, RAE"="Vitamin A",
-                         "Omega-3 fatty acids"="DHA+EPA fatty acids"))
+                         "Omega-3 fatty acids"="DHA+EPA fatty acids")) %>% 
+  # Eliminate problem countries
+  filter(!iso3 %in% prob_key$iso)
 
 # Read data
 data_orig <- readRDS(file=file.path(outputdir, "2030_ndeficient_base_high_diversity_disagg.Rds")) %>% 
-  mutate(nutrient=recode(nutrient, "Omega-3 fatty acids"="DHA+EPA fatty acids"))
+  mutate(nutrient=recode(nutrient, "Omega-3 fatty acids"="DHA+EPA fatty acids")) %>% 
+  # Eliminate problem countries
+  filter(!iso3 %in% prob_key$iso)
 
 # World
 world <- rnaturalearth::ne_countries(scale="small", returnclass = "sf")
@@ -80,11 +87,11 @@ c_avgs <- sevs %>%
   # Add caps
   mutate(cap=recode(nutrient, 
                     "DHA+EPA fatty acids"=-5, 
-                    "Vitamin B-12"=-2,
-                    "Iron"=-1,
-                    "Zinc"=-2,
-                    "Calcium"=-2,
-                    "Vitamin A"=-1) %>% as.numeric(.),
+                    "Vitamin B-12"=-1,
+                    "Iron"=-0.75,
+                    "Zinc"=-0.6,
+                    "Calcium"=-1,
+                    "Vitamin A"=-0.5) %>% as.numeric(.),
          sev_delta_avg_cap=pmax(sev_delta_avg, cap))
 
 # Inspect
@@ -96,18 +103,18 @@ g
 
 # Set breaks and labels
 breaks_list <- list("DHA+EPA fatty acids"=seq(-5, 0, 1),
-                    "Vitamin B-12"=seq(-2, 0, 0.5),
-                    "Iron"=seq(-1, 0, 0.25),
-                    "Zinc"=seq(-2, 0, 0.5),
-                    "Calcium"=seq(-2, 0.5, 0.5),
+                    "Vitamin B-12"=seq(-1, 0, 0.25),
+                    "Iron"=seq(-0.75, 0, 0.25),
+                    "Zinc"=seq(-0.6, 0, 0.2),
+                    "Calcium"=seq(-1, 0.5, 0.5),
                     "Vitamin A"=seq(-0.5, 1.5, 0.5))
 
 labels_list <- list("DHA+EPA fatty acids"=c("≤ -5", "-4", "-3", "-2", "-1", "0"),
-                    "Vitamin B-12"=c("≤ -2.0", "-1.5", "-1.0", "-0.5", "0.0"),
-                    "Iron"=c("≤ -1.00", "-0.75", "-0.50", "-0.25", "0.00"),
-                    "Zinc"=c("≤ -2.0", "-1.5", "-1.0", "-0.5", "0.0"),
-                    "Calcium"=c("≤ -2.0", "-1.5", "-1.0", "-0.5", "0.0", "0.5"),
-                    "Vitamin A"=c("-0.5", "0.0", "0.5", "1.0", "1.05"))
+                    "Vitamin B-12"=c("≤ -1.0", "-0.75", "-0.50", "-0.25", "0.0"),
+                    "Iron"=c("≤ -0.75", "-0.50", "-0.25", "0.00"),
+                    "Zinc"=c("≤ -0.6", "-0..5", "-0.2", "0.0"),
+                    "Calcium"=c("≤ -1.0", "-0.5", "0.0", "0.5"),
+                    "Vitamin A"=c("-0.5", "0.0", "0.5", "1.0", "1.5"))
 
 
 
@@ -144,7 +151,7 @@ plot_map <- function(nutrient){
   
   # Plot
   g <- ggplot(c_avgs_sf) +
-    geom_sf(mapping=aes(fill=sev_delta_avg_cap), lwd=0.2) +
+    geom_sf(mapping=aes(fill=sev_delta_avg_cap), lwd=0.1) +
     # Crop out Antarctica
     coord_sf(y=c(-55, NA)) +
     # Legend and labels

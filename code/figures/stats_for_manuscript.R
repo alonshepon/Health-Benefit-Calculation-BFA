@@ -13,6 +13,8 @@ library(countrycode)
 plotdir <- "figures"
 tabledir <- "tables"
 
+# Read problem country key
+prob_key <- read.csv("data/countries_with_bug.csv", as.is=T)
 
 
 # Habitual intake distributions
@@ -36,6 +38,8 @@ cosimo_orig <- readRDS("data/cosimo/processed/COSIMO_2010_2030_nutr_by_scenario_
 stats1 <- cosimo_orig %>% 
   # 2030
   filter(year==2030) %>% 
+  # Eliminate problem countries
+  filter(!iso3 %in% prob_key$iso) %>% 
   # Gather
   select(-c(value_diff, value_pdiff)) %>% 
   gather(key="scenario", value="value", 9:ncol(.)) %>% 
@@ -60,6 +64,8 @@ cosimo_nutr_orig <- read.csv("data/cosimo_nutr_disagg/raw/Disaggregated_Nutrient
 stats2 <- cosimo_nutr_orig %>% 
   # 2030
   filter(year==2030) %>% 
+  # Eliminate problem countries
+  filter(!iso3c %in% prob_key$iso) %>% 
   # Format
   select(-c(nutrient_supply)) %>% 
   rename(intake=nutrient_supply_dis) %>% 
