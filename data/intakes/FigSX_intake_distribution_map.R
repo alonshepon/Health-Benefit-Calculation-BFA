@@ -27,6 +27,14 @@ world_intake <- world %>%
 world_intake_centroid <- world_intake %>% 
   sf::st_centroid()
 
+# Extract French Guiana
+fguiana <-world %>% 
+  sf::st_cast(to="POLYGON") %>% 
+  filter(gu_a3=="FRA") %>% 
+  mutate(id=1:n()) %>% 
+  select(id) %>% 
+  filter(id==1)
+
 
  # Read data
 ################################################################################
@@ -164,23 +172,30 @@ intake_key_df <- world %>%
                              "Western Asia"="Italy, Romania, Bulgaria", 
                              "Western Europe"="Italy, Romania, Bulgaria")) %>% 
   # Make a few manual corrections
-  mutate(intake_group=ifelse(country=="Sudan", "Uganda & Zambia", intake_group))
+  mutate(intake_group=ifelse(country=="Sudan", "Uganda & Zambia", intake_group)) %>% 
+  # Remove NA
+  filter(intake_group!="N/A")
 
 # Add to world and map
 intake_key_sf <- world %>% 
   select(gu_a3) %>% 
   rename(iso3=gu_a3) %>% 
-  left_join(intake_key_df)
+  left_join(intake_key_df) %>% 
+  filter(!is.na(intake_group))
 
 # Plot map
 g <- ggplot(intake_key_sf) +
   geom_sf(mapping=aes(fill=intake_group), color="grey30", lwd=0.2) +
+  # Plot French Guiana
+  geom_sf(data=fguiana, lwd=0.2, color="grey30", fill="white") +
   # Add points for intake countries
   geom_sf(data=world_intake_centroid, color="black", size=2) +
+  # Crop out Antarctica
+  coord_sf(y=c(-55, NA)) +
   # Labels
   labs(title="Intake group") +
   # Legend
-  scale_fill_discrete(name="Intake group") +
+  scale_fill_discrete(name="Intake group", ) +
   # Theme
   theme_bw() +
   theme(axis.text=element_text(size=6),

@@ -15,9 +15,12 @@ library(countrycode)
 outputdir <- "output"
 
 # Read data
-sevs_mn <- read.csv(file.path(outputdir, "2030_sevs_base_high_road_micronutrients_diversity_disagg.csv"), as.is=T)
-sevs_omega <- read.csv(file.path(outputdir, "2030_sevs_base_high_road_omega3s_diversity_disagg.csv"), as.is=T)
-# sevs_meat <- read.csv(file.path(outputdir, "2030_sevs_base_high_road_meat.csv"), as.is=T)
+sevs_mn <- read.csv(file.path(outputdir, "2017_sevs_base_high_road_micronutrients_diversity_disagg.csv"), as.is=T)
+sevs_omega <- read.csv(file.path(outputdir, "2017_sevs_base_high_road_omega3s_diversity_disagg.csv"), as.is=T)
+# sevs_meat <- read.csv(file.path(outputdir, "2017_sevs_base_high_road_meat.csv"), as.is=T)
+
+# Read problem country key
+prob_key <- read.csv("data/countries_with_bug.csv", as.is=T)
 
 
 # Build data
@@ -57,8 +60,15 @@ data <- bind_rows(sevs_mn, sevs_omega) %>% # sevs_meat
 ################################################################################
 
 # Export
-saveRDS(data, file.path(outputdir, "2030_sevs_base_high_road_final_diversity_disagg.Rds"))
-write.csv(data, file.path(outputdir, "2030_sevs_base_high_road_final_diversity_disagg.csv"), row.names = F)
+saveRDS(data, file.path(outputdir, "2017_sevs_base_high_road_final_diversity_disagg.Rds"))
+write.csv(data, file.path(outputdir, "2017_sevs_base_high_road_final_diversity_disagg.csv"), row.names = F)
+
+# Remove problem countres
+data_no_probs <- data %>% 
+  filter(!(iso3 %in% prob_key$iso))
+
+# Export
+write.csv(data_no_probs, file.path(outputdir, "2017_sevs_base_high_road_final_diversity_disagg_no_problem_countries.csv"), row.names = F)
 
 # For Chris Golden
 sevs_c <- data %>% 
@@ -68,7 +78,7 @@ sevs_c <- data %>%
             sev_base=mean(sev_base, na.rm=T)) %>% 
   ungroup()
 
-write.csv(sevs_c, file.path(outputdir, "2030_sevs_base_high_road_country_average_diversity_disagg.csv"), row.names = F)
+write.csv(sevs_c, file.path(outputdir, "2017_sevs_base_high_road_country_average_diversity_disagg.csv"), row.names = F)
 
 
 # Plot data

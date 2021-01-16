@@ -22,6 +22,37 @@ data_orig <- readRDS(file.path(outputdir, "COSIMO_2010_2030_food_by_scenario_cnt
 world <- rnaturalearth::ne_countries(scale="small", returnclass = "sf")
 
 
+# Extract French Guiana
+fguiana <-world %>% 
+  sf::st_cast(to="POLYGON") %>% 
+  filter(gu_a3=="FRA") %>% 
+  mutate(id=1:n()) %>% 
+  select(id) %>% 
+  filter(id==1)
+
+# Country centroids
+world_lg <- rnaturalearth::ne_countries(scale="large", returnclass = "sf") %>% 
+  mutate(area_sqkm=sf::st_area(.)/(1000*1000)) %>%
+  mutate(area_sqkm=as.numeric(area_sqkm)) %>% 
+  sf::st_centroid() %>% 
+  select(continent, subunit, su_a3, area_sqkm) %>% 
+  rename(country=subunit, iso3=su_a3)
+
+# Small nation centroids
+world_tiny <- rnaturalearth::ne_countries(type="tiny_countries", returnclass = "sf") %>% 
+  select(continent, subunit, su_a3) %>% 
+  rename(country=subunit, iso3=su_a3) %>% 
+  mutate(area_sqkm=10)
+
+# Merge centroids
+world_centers <- bind_rows(world_lg, world_tiny)
+
+# Plot centroids
+g <- ggplot(world_centers) +
+  geom_sf(mapping=aes(size=area_sqkm))
+g
+
+
 #  Build data
 ################################################################################
 
@@ -203,9 +234,20 @@ base_theme <- theme(axis.text=element_blank(),
 data_sf <- world %>% 
   left_join(data, by=c("gu_a3"="iso3"))
 
+# Spatialize tiny
+sdata_pt <- world_centers %>% 
+  left_join(data, by=c("iso3"="iso3")) %>% 
+  arrange(area_sqkm) %>% 
+  # Reduce to small
+  filter(area_sqkm<=2.5*10^4 & continent!="Europe")
+
 # Plot data
 g1 <- ggplot(data_sf) +
   geom_sf(mapping=aes(fill=fish_pdiff), lwd=0.1, color="grey30") +
+  # Plot small places
+  geom_sf(data=sdata_pt %>% filter(!is.na(fish_pdiff)), mapping=aes(fill=fish_pdiff), shape=21, size=0.9, stroke=0.3) +
+  # Plot French Guiana
+  geom_sf(data=fguiana, lwd=0.1, color="grey30", fill="grey80") +
   # Labels
   labs(title="A. Aquatic foods consumption") +
   # Legend
@@ -227,6 +269,10 @@ g1
 # Plot data
 g2 <- ggplot(data_sf) +
   geom_sf(mapping=aes(fill=meat_pdiff), lwd=0.1, color="grey30") +
+  # Plot small places
+  geom_sf(data=sdata_pt %>% filter(!is.na(meat_pdiff)), mapping=aes(fill=meat_pdiff), shape=21, size=0.9, stroke=0.3) +
+  # Plot French Guiana
+  geom_sf(data=fguiana, lwd=0.1, color="grey30", fill="grey80") +
   # Labels
   labs(title="B. Red meat consumption") +
   # Legend
@@ -247,6 +293,10 @@ g2
 # Plot data
 g3 <- ggplot(data_sf) +
   geom_sf(mapping=aes(fill=poultry_pdiff), lwd=0.1, color="grey30") +
+  # Plot small places
+  geom_sf(data=sdata_pt %>% filter(!is.na(poultry_pdiff)), mapping=aes(fill=poultry_pdiff), shape=21, size=0.9, stroke=0.3) +
+  # Plot French Guiana
+  geom_sf(data=fguiana, lwd=0.1, color="grey30", fill="grey80") +
   # Labels
   labs(title="C. Poultry consumption") +
   # Legend
@@ -267,6 +317,10 @@ g3
 # Plot data
 g4 <- ggplot(data_sf) +
   geom_sf(mapping=aes(fill=eggs_pdiff), lwd=0.1, color="grey30") +
+  # Plot small places
+  geom_sf(data=sdata_pt %>% filter(!is.na(eggs_pdiff)), mapping=aes(fill=eggs_pdiff), shape=21, size=0.9, stroke=0.3) +
+  # Plot French Guiana
+  geom_sf(data=fguiana, lwd=0.1, color="grey30", fill="grey80") +
   # Labels
   labs(title="D. Egg consumption") +
   # Legend
@@ -287,6 +341,10 @@ g4
 # Plot data
 g5 <- ggplot(data_sf) +
   geom_sf(mapping=aes(fill=dairy_pdiff), lwd=0.1, color="grey30") +
+  # Plot small places
+  geom_sf(data=sdata_pt %>% filter(!is.na(dairy_pdiff)), mapping=aes(fill=dairy_pdiff), shape=21, size=0.9, stroke=0.3) +
+  # Plot French Guiana
+  geom_sf(data=fguiana, lwd=0.1, color="grey30", fill="grey80") +
   # Labels
   labs(title="E. Dairy consumption") +
   # Legend
@@ -307,6 +365,10 @@ g5
 # Plot data
 g6 <- ggplot(data_sf) +
   geom_sf(mapping=aes(fill=dir_type), lwd=0.1, color="grey30") +
+  # Plot small places
+  geom_sf(data=sdata_pt %>% filter(!is.na(dir_type)), mapping=aes(fill=dir_type), shape=21, size=0.9, stroke=0.3, show.legend =F) +
+  # Plot French Guiana
+  geom_sf(data=fguiana, lwd=0.1, color="grey30", fill="white") +
   # Labels
   labs(title="F. Non-aquatic animal-sourced food (ASF) consumption") +
   # Legend
@@ -331,7 +393,7 @@ g <- gridExtra::grid.arrange(g1, g2,
 
 # Export
 # figname <- paste0("Fig2_diet_changes_6panel", val, ".png")
-figname <- paste0("Fig2_diet_changes_6panel.png")
+figname <- paste0("Fig3_foods.png")
 ggsave(g, filename=file.path(plotdir, figname), 
        width=6.5, height=4.5, units="in", dpi=600)
 

@@ -21,11 +21,42 @@ prob_key <- read.csv("data/countries_with_bug.csv", as.is=T)
 data_orig <- readRDS(file.path(outputdir, "COSIMO_nutrient_by_scenario_cntry_with_dissagg.Rds")) %>% 
   mutate(nutrient=recode(nutrient, "Omega-3 fatty acids"="DHA+EPA fatty acids")) %>% 
   # Eliminate problem countries
-  filter(!iso3 %in% prob_key$iso)
+  filter(!iso3 %in% prob_key$iso) %>% 
+  # Recode nutrient
+  mutate(nutrient=recode(nutrient, "Vitamin B-12"="Vitamin B12"))
 
 # World
 world <- rnaturalearth::ne_countries(scale="small", returnclass = "sf")
 
+# Extract French Guiana
+fguiana <-world %>% 
+  sf::st_cast(to="POLYGON") %>% 
+  filter(gu_a3=="FRA") %>% 
+  mutate(id=1:n()) %>% 
+  select(id) %>% 
+  filter(id==1)
+
+# Country centroids
+world_lg <- rnaturalearth::ne_countries(scale="large", returnclass = "sf") %>% 
+  mutate(area_sqkm=sf::st_area(.)/(1000*1000)) %>%
+  mutate(area_sqkm=as.numeric(area_sqkm)) %>% 
+  sf::st_centroid() %>% 
+  select(continent, subunit, su_a3, area_sqkm) %>% 
+  rename(country=subunit, iso3=su_a3)
+
+# Small nation centroids
+world_tiny <- rnaturalearth::ne_countries(type="tiny_countries", returnclass = "sf") %>% 
+  select(continent, subunit, su_a3) %>% 
+  rename(country=subunit, iso3=su_a3) %>% 
+  mutate(area_sqkm=10)
+
+# Merge centroids
+world_centers <- bind_rows(world_lg, world_tiny)
+
+# Plot centroids
+g <- ggplot(world_centers) +
+  geom_sf(mapping=aes(size=area_sqkm))
+g
 
 # Inspect
 ################################################################################
@@ -77,12 +108,12 @@ data <- data_orig %>%
   # Add cap
   mutate(cap=recode(nutrient,
                     "Calcium"=40,
-                    "Iron"=0.75,
+                    "Iron"=0.4,
                     "DHA+EPA fatty acids"=0.15,
                     "Protein"=3,
                     "Vitamin A, RAE"=10,
-                    "Vitamin B-12"=1.5,
-                    "Zinc"=0.75) %>% as.numeric(),
+                    "Vitamin B12"=0.75,
+                    "Zinc"=0.2) %>% as.numeric(),
          intake_diff_cap=pmin(intake_diff, cap))
 
 # Inspect distribution
@@ -93,25 +124,25 @@ g <- ggplot(data, aes(x=intake_diff_cap)) +
 g
 
 # Set breaks and labels
-breaks_list <- list("Calcium"=seq(0,40,10),
-                    "Iron"=seq(0, 0.75, 0.25),
-                    "DHA+EPA fatty acids"=seq(0,0.15,0.05),
-                    "Vitamin A, RAE"=seq(-10,10,5),
-                    "Vitamin B-12"=seq(0,1.5,0.5),
-                    "Zinc"=seq(0,0.75,0.25))
+breaks_list <- list("Calcium"=seq(0, 40, 10),
+                    "Iron"=seq(0, 0.4, 0.1),
+                    "DHA+EPA fatty acids"=seq(0, 0.15, 0.05),
+                    "Vitamin A, RAE"=seq(-10, 5, 5),
+                    "Vitamin B12"=seq(0, 0.75, 0.25),
+                    "Zinc"=seq(-0.05, 0.2, 0.05))
 
 labels_list <- list("Calcium"=c("0", "10", "20", "30", "≥40"),
-                      "Iron"=c("0.00", "0.25", "0.50", "≥0.75"),
+                      "Iron"=c("0.0", "0.1", "0.2", "0.3", "≥0.4"),
                       "DHA+EPA fatty acids"=c("0", "0.05", "0.10", "≥0.15"),
-                      "Vitamin A, RAE"=c("-10", "-5", "0", "5", "≥10"),
-                      "Vitamin B-12"=c("0", "0.5", "1.0", "≥1.5"),
-                      "Zinc"=c("0", "0.25", "10.5", "≥-.75"))
+                      "Vitamin A, RAE"=c("-10", "-5", "0", "5"),
+                      "Vitamin B12"=c("0.00", "0.25", "0.50", "≥0.75"),
+                      "Zinc"=c("-0.05", "0.00", "0.05", "0.10", "0.15", "≥0.20"))
 
 
 # Plot data
 ################################################################################
 
-nutrient <- "Vitamin A"
+nutrient <- "Vitamin A, RAE"
 
 # Function to plot data
 plot_map <- function(nutrient){
@@ -125,6 +156,15 @@ plot_map <- function(nutrient){
   sdata_sf <- world %>% 
     left_join(sdata, by=c("gu_a3"="iso3"))
   
+  # Spatialize tiny
+  sdata_pt <- world_centers %>% 
+    left_join(sdata, by=c("iso3"="iso3")) %>% 
+    # Reduce to ones with data
+    filter(!is.na(intake_diff)) %>% 
+    arrange(area_sqkm) %>% 
+    # Reduce to small
+    filter(area_sqkm<=2.5*10^4 & continent!="Europe")
+  
   # Build label
   nutrient_label <- paste0(nutr_do, " (", unique(sdata$nutrient_units), ")")
   
@@ -135,12 +175,19 @@ plot_map <- function(nutrient){
   # Plot
   g <- ggplot(sdata_sf) +
     geom_sf(mapping=aes(fill=intake_diff_cap), lwd=0.1, color="grey30") +
+    # Plot small places
+    geom_sf(data=sdata_pt, mapping=aes(fill=intake_diff_cap), shape=21, size=0.9, stroke=0.3) +
+    # Plot French Guiana
+    geom_sf(data=fguiana, lwd=0.1, color="grey30", fill="grey80") +
     # Labels
     labs(title = nutrient_label) +
     # Legend
     scale_fill_gradient2(name="ΔDaily per capita\nnutrient intake\n(high - base)", 
                          breaks=breaks, labels=labels,
-                         midpoint=0, low="darkred", high="navy", mid="white", na.value = "grey80") +
+                         # midpoint=0, low="#FFD947", high="#364F6B", mid="white", na.value = "grey80") + # grey gold
+                         # midpoint=0, low="#FC5185", high="#3FC1C9", mid="white", na.value = "grey80") + # blue pink
+                         # midpoint=0, low="#FC5185", high="#A9D158", mid="white", na.value = "grey80") + # green pink
+                         midpoint=0, low="darkred", high="navy", mid="white", na.value = "grey80") + # RED BLUE
     # scale_fill_gradient2(name="% difference\nin 2030 intakes\n(high vs. base)", midpoint=0, low="darkred", high="navy", mid="white", na.value = "grey80") +
     guides(fill = guide_colorbar(ticks.colour = "black", frame.colour = "black", barwidth = 0.5, barheight = 1.7)) +
     # Crop out Antarctica
@@ -180,7 +227,7 @@ plot_boxplot <- function(nutrient){
   g <- ggplot(sdata, aes(y=intake_diff_cap, x=scenario)) +
     geom_boxplot(outlier.size=0.3, lwd=0.2, fill="grey85", color="grey30") +
     # Labels
-    labs(x="Scenario", y="ΔDaily per capita nutrient intake\n(disaggregation - GND values)", title=" ") +
+    labs(x="Scenario", y="ΔDaily per capita nutrient intake\n(with - without diversity disaggregation)", title=" ") +
     # Horizontal reference line
     geom_hline(yintercept=0, lwd=0.3) +
     # Theme
@@ -206,7 +253,7 @@ plot_boxplot <- function(nutrient){
 
 # Maps
 map1 <- plot_map(nutrient="DHA+EPA fatty acids")
-map2 <- plot_map(nutrient="Vitamin B-12")
+map2 <- plot_map(nutrient="Vitamin B12")
 map3 <- plot_map(nutrient="Iron")
 map4 <- plot_map(nutrient="Zinc")
 map5 <- plot_map(nutrient="Calcium")
@@ -214,7 +261,7 @@ map6 <- plot_map(nutrient="Vitamin A, RAE")
 
 # Boxplots
 box1 <- plot_boxplot(nutrient="DHA+EPA fatty acids")
-box2 <- plot_boxplot(nutrient="Vitamin B-12")
+box2 <- plot_boxplot(nutrient="Vitamin B12")
 box3 <- plot_boxplot(nutrient="Iron")
 box4 <- plot_boxplot(nutrient="Zinc")
 box5 <- plot_boxplot(nutrient="Calcium")
@@ -229,7 +276,7 @@ g <- gridExtra::grid.arrange(map1, box1, map2, box2,
                              widths=c(0.38,0.12, 0.38, 0.12))
 
 # Export plot
-ggsave(g, filename=file.path(plotdir, "Fig3_nutrients.png"), 
+ggsave(g, filename=file.path(plotdir, "Fig2_nutrients.png"), 
        width=6.5, height=4, units="in", dpi=600)
 
 

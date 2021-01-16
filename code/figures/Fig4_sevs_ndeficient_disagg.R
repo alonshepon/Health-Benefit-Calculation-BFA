@@ -22,19 +22,52 @@ sevs <- readRDS(file.path(outputdir, "2030_sevs_base_high_road_final_diversity_d
   mutate(sev_delta_cap=pmin(sev_delta, 2) %>% pmax(., -2)) %>% 
   # Rename Vitamin A
   mutate(nutrient=recode(nutrient, 
-                         "Vitamin A, RAE"="Vitamin A",
-                         "Omega-3 fatty acids"="DHA+EPA fatty acids")) %>% 
+                         # "Vitamin A, RAE"="Vitamin A",
+                         "Omega-3 fatty acids"="DHA+EPA fatty acids",
+                         "Vitamin B-12"="Vitamin B12")) %>% 
   # Eliminate problem countries
   filter(!iso3 %in% prob_key$iso)
 
 # Read data
 data_orig <- readRDS(file=file.path(outputdir, "2030_ndeficient_base_high_diversity_disagg.Rds")) %>% 
-  mutate(nutrient=recode(nutrient, "Omega-3 fatty acids"="DHA+EPA fatty acids")) %>% 
+  mutate(nutrient=recode(nutrient, 
+                         "Omega-3 fatty acids"="DHA+EPA fatty acids",
+                         "Vitamin B-12"="Vitamin B12")) %>% 
   # Eliminate problem countries
   filter(!iso3 %in% prob_key$iso)
 
 # World
 world <- rnaturalearth::ne_countries(scale="small", returnclass = "sf")
+
+# Extract French Guiana
+fguiana <-world %>% 
+  sf::st_cast(to="POLYGON") %>% 
+  filter(gu_a3=="FRA") %>% 
+  mutate(id=1:n()) %>% 
+  select(id) %>% 
+  filter(id==1)
+
+# Country centroids
+world_lg <- rnaturalearth::ne_countries(scale="large", returnclass = "sf") %>% 
+  mutate(area_sqkm=sf::st_area(.)/(1000*1000)) %>%
+  mutate(area_sqkm=as.numeric(area_sqkm)) %>% 
+  sf::st_centroid() %>% 
+  select(continent, subunit, su_a3, area_sqkm) %>% 
+  rename(country=subunit, iso3=su_a3)
+
+# Small nation centroids
+world_tiny <- rnaturalearth::ne_countries(type="tiny_countries", returnclass = "sf") %>% 
+  select(continent, subunit, su_a3) %>% 
+  rename(country=subunit, iso3=su_a3) %>% 
+  mutate(area_sqkm=10)
+
+# Merge centroids
+world_centers <- bind_rows(world_lg, world_tiny)
+
+# Plot centroids
+g <- ggplot(world_centers) +
+  geom_sf(mapping=aes(size=area_sqkm))
+g
 
 
 # Build data
@@ -63,7 +96,7 @@ stats2 <- data_orig %>%
   complete(nutrient, sex, age_group) %>% 
   # Recode nutrients
   mutate(nutrient=factor(nutrient,
-                         levels=c("Vitamin A, RAE", "Calcium", "Zinc", "Iron", "Vitamin B-12", "DHA+EPA fatty acids"))) %>% 
+                         levels=c("Vitamin A, RAE", "Calcium", "Zinc", "Iron", "Vitamin B12", "DHA+EPA fatty acids"))) %>% 
   # Remove 100 group
   filter(age_group!="100+")
 
@@ -72,7 +105,7 @@ stats2 <- data_orig %>%
 ###################################
 
 # Nutrient order
-nutrients <- c("DHA+EPA fatty acids", "Vitamin B-12", "Iron", "Zinc", "Calcium", "Vitamin A")
+nutrients <- c("DHA+EPA fatty acids", "Vitamin B12", "Iron", "Zinc", "Calcium", "Vitamin A, RAE")
 
 # Calculate country-level means
 c_avgs <- sevs %>% 
@@ -87,11 +120,11 @@ c_avgs <- sevs %>%
   # Add caps
   mutate(cap=recode(nutrient, 
                     "DHA+EPA fatty acids"=-5, 
-                    "Vitamin B-12"=-1,
+                    "Vitamin B12"=-1,
                     "Iron"=-0.75,
                     "Zinc"=-0.6,
                     "Calcium"=-1,
-                    "Vitamin A"=-0.5) %>% as.numeric(.),
+                    "Vitamin A, RAE"=-0.5) %>% as.numeric(.),
          sev_delta_avg_cap=pmax(sev_delta_avg, cap))
 
 # Inspect
@@ -103,18 +136,18 @@ g
 
 # Set breaks and labels
 breaks_list <- list("DHA+EPA fatty acids"=seq(-5, 0, 1),
-                    "Vitamin B-12"=seq(-1, 0, 0.25),
+                    "Vitamin B12"=seq(-1, 0, 0.25),
                     "Iron"=seq(-0.75, 0, 0.25),
-                    "Zinc"=seq(-0.6, 0, 0.2),
+                    "Zinc"=seq(-0.6, 0.2, 0.2),
                     "Calcium"=seq(-1, 0.5, 0.5),
-                    "Vitamin A"=seq(-0.5, 1.5, 0.5))
+                    "Vitamin A, RAE"=seq(-0.5, 1.5, 0.5))
 
 labels_list <- list("DHA+EPA fatty acids"=c("≤ -5", "-4", "-3", "-2", "-1", "0"),
-                    "Vitamin B-12"=c("≤ -1.0", "-0.75", "-0.50", "-0.25", "0.0"),
+                    "Vitamin B12"=c("≤ -1.0", "-0.75", "-0.50", "-0.25", "0.0"),
                     "Iron"=c("≤ -0.75", "-0.50", "-0.25", "0.00"),
-                    "Zinc"=c("≤ -0.6", "-0..5", "-0.2", "0.0"),
+                    "Zinc"=c("≤ -0.6", "-0.4", "-0.2", "0.0", "0.2"),
                     "Calcium"=c("≤ -1.0", "-0.5", "0.0", "0.5"),
-                    "Vitamin A"=c("-0.5", "0.0", "0.5", "1.0", "1.5"))
+                    "Vitamin A, RAE"=c("-0.5", "0.0", "0.5", "1.0", "1.5"))
 
 
 
@@ -145,6 +178,15 @@ plot_map <- function(nutrient){
   c_avgs_sf <- world %>% 
     left_join(c_avgs %>% filter(nutrient==nutr_do), by=c("gu_a3"="iso3"))
   
+  # Spatialize tiny
+  sdata_pt <- world_centers %>% 
+    left_join(c_avgs %>% filter(nutrient==nutr_do), by=c("iso3"="iso3")) %>% 
+    # Reduce to ones with data
+    filter(!is.na(sev_delta_avg_cap)) %>% 
+    arrange(area_sqkm) %>% 
+    # Reduce to small
+    filter(area_sqkm<=2.5*10^4 & continent!="Europe")
+  
   # Get breaks and labels
   breaks <- breaks_list[[nutr_do]]
   labels <- labels_list[[nutr_do]]
@@ -152,6 +194,10 @@ plot_map <- function(nutrient){
   # Plot
   g <- ggplot(c_avgs_sf) +
     geom_sf(mapping=aes(fill=sev_delta_avg_cap), lwd=0.1) +
+    # Plot small places
+    geom_sf(data=sdata_pt, mapping=aes(fill=sev_delta_avg_cap), shape=21, size=0.9, stroke=0.3) +
+    # Plot French Guiana
+    geom_sf(data=fguiana, lwd=0.1, color="grey30", fill="grey80") +
     # Crop out Antarctica
     coord_sf(y=c(-55, NA)) +
     # Legend and labels
@@ -176,11 +222,11 @@ plot_map <- function(nutrient){
 
 # Build maps
 g1 <- plot_map("DHA+EPA fatty acids")
-g2 <- plot_map("Vitamin B-12")
+g2 <- plot_map("Vitamin B12")
 g3 <- plot_map("Iron")
 g4 <- plot_map("Zinc")
 g5 <- plot_map("Calcium")
-g6 <- plot_map("Vitamin A")
+g6 <- plot_map("Vitamin A, RAE")
 
 # Merge maps
 g <- gridExtra::grid.arrange(g1, g2,
@@ -220,5 +266,5 @@ g7
 plot2 <- gridExtra::grid.arrange(g, g7, nrow=2, heights=c(0.75,0.25))
 
 # Export
-ggsave(plot2, filename=file.path(plotdir, "FigX_sevs_ndeficient_disagg.png"), 
+ggsave(plot2, filename=file.path(plotdir, "Fig4_sevs_ndeficient_disagg.png"), 
        width=6.5, height=6.2, units="in", dpi=600)
