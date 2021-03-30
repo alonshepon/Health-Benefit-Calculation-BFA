@@ -180,7 +180,7 @@ plot_map <- function(nutrient, inset){
     leg.pos <- "none"
   }else{
     # 60 x 40 (2x)
-    xlim <- c(120,180)
+    xlim <- c(-180,-120)
     ylim <- c(-20,20) 
     nutrient_label <- " "
     leg.pos <- c(0.82,0.65)
@@ -191,6 +191,8 @@ plot_map <- function(nutrient, inset){
     geom_sf(mapping=aes(fill=intake_diff_cap), lwd=0.1, color="grey30") +
     # # Plot French Guiana
     # geom_sf(data=fguiana, lwd=0.1, color="grey30", fill="grey80") +
+    # Plot small places
+    geom_sf(data=sdata_pt, mapping=aes(fill=intake_diff_cap), shape=21, size=2, stroke=0.3) +
     # Labels
     labs(title = nutrient_label) +
     # Legend
@@ -237,8 +239,6 @@ map3p <- plot_map(nutrient="Iron", inset="Pacific")
 map4p <- plot_map(nutrient="Zinc", inset="Pacific")
 map5p <- plot_map(nutrient="Calcium", inset="Pacific")
 map6p <- plot_map(nutrient="Vitamin A, RAE", inset="Pacific")
-
-
 
 # Merge 
 g <- gridExtra::grid.arrange(map1c, map1p,

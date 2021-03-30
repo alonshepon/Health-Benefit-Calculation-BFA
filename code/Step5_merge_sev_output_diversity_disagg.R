@@ -71,7 +71,7 @@ data_no_probs <- data %>%
 write.csv(data_no_probs, file.path(outputdir, "2017_sevs_base_high_road_final_diversity_disagg_no_problem_countries.csv"), row.names = F)
 
 # For Chris Golden
-sevs_c <- data %>% 
+sevs_c <- data_no_probs %>% 
   filter(nutrient!="Red meat") %>% 
   group_by(iso3, country, nutrient) %>% 
   summarize(sev_high=mean(sev_high, na.rm=T),

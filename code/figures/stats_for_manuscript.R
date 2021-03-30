@@ -79,4 +79,56 @@ stats2 <- cosimo_nutr_orig %>%
   group_by(scenario, nutrient) %>% 
   summarize(perc_max=mean(af_perc, na.rm=T)) %>% 
   spread(key="scenario", value="perc_max")
+
+
+# SEVs t-test
+################################################################################
+
+# Read SEVs
+sevs_orig <- read.csv("output/2030_sevs_base_high_road_final_diversity_disagg_no_problem_countries.csv", as.is=T)
+
+# Format
+sevs <- sevs_orig %>% 
+  select(nutrient, country, sex, age_group, sev_delta) %>% 
+  spread(key="sex", value="sev_delta") %>% 
+  mutate(difference=Females-Males)
+
+hist(sevs$difference)
+
+# Build key
+stats3 <- sevs %>% 
+  group_by(nutrient, age_group) %>% 
+  summarize(n=n(), 
+            pvalue=NA) %>% 
+  ungroup()
+
+# Perform t-test
+for(i in 1:nrow(stats3)){
+  
+  # Subset data
+  nutr_do <- stats3$nutrient[i]
+  age_do <- stats3$age_group[i]
+  sdata <- sevs %>% 
+    filter(nutrient==nutr_do & age_group==age_do & difference!=0) 
+  
+  # Perform t-test
+  ttest <- t.test(sdata$Females, sdata$Males, paired=T)
+  
+  # Record results
+  stats3$pvalue[i] <- ttest$p.value
+  
+}
+
+# Format
+stats4 <- stats3 %>% 
+  mutate(sig=ifelse(pvalue<=0.05, "Significantly different", "Not significantly different"))
+
+# Plot
+g <- ggplot(stats4, aes(x=age_group, y=nutrient, fill=sig)) +
+  geom_raster() +
+  theme_bw()
+g
+
+
+
   
