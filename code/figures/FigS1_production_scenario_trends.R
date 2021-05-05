@@ -72,7 +72,7 @@ g <- gridExtra::grid.arrange(g1, g2, nrow=2, heights=c(0.45, 0.55))
 g
 
 # Export plot
-ggsave(g, filename=file.path(plotdir, "FigSX_production_scenarios.png"), 
+ggsave(g, filename=file.path(plotdir, "FigS1_production_scenarios.png"), 
        width=6.5, height=4.5, units="in", dpi=600)
 
 
