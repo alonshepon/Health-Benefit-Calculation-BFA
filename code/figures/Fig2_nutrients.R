@@ -19,11 +19,14 @@ prob_key <- read.csv("data/countries_with_bug.csv", as.is=T)
 
 # Read data
 data_orig <- readRDS(file.path(outputdir, "COSIMO_nutrient_by_scenario_cntry_with_dissagg.Rds")) %>% 
-  mutate(nutrient=recode(nutrient, "Omega-3 fatty acids"="DHA+EPA fatty acids")) %>% 
   # Eliminate problem countries
   filter(!iso3 %in% prob_key$iso) %>% 
-  # Recode nutrient
-  mutate(nutrient=recode(nutrient, "Vitamin B-12"="Vitamin B12"))
+  # Recode nutrients
+  mutate(nutrient=recode(nutrient, 
+                         "Vitamin B-12"="Vitamin B12",
+                         "Omega-3 fatty acids"="DHA+EPA fatty acids")) %>% 
+  # Change nutrient units
+  mutate(nutrient_units=gsub("/p", "", nutrient_units))
 
 # World
 world <- rnaturalearth::ne_countries(scale="small", returnclass = "sf")

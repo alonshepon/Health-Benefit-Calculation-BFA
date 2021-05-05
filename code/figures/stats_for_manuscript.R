@@ -31,6 +31,8 @@ range(intake_fits$best_ks, na.rm=T)
 # COSIMO intake estimates
 ################################################################################
 
+# Change 2030 to 2020 to get 2020 stats
+
 # Read data
 cosimo_orig <- readRDS("data/cosimo/processed/COSIMO_2010_2030_nutr_by_scenario_cntry_food.rds")
 
@@ -63,7 +65,7 @@ cosimo_nutr_orig <- read.csv("data/cosimo_nutr_disagg/raw/Disaggregated_Nutrient
 # Calculate % of nutrition from each nutrient
 stats2 <- cosimo_nutr_orig %>% 
   # 2030
-  filter(year==2030) %>% 
+  filter(year==2020) %>% 
   # Eliminate problem countries
   filter(!iso3c %in% prob_key$iso) %>% 
   # Format

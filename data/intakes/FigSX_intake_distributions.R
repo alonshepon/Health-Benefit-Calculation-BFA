@@ -23,7 +23,9 @@ dists <- read.csv(file.path(outputdir, "habitual_nutrient_intakes_by_age_sex_13c
 
 # Read nutrient key
 nutr_key <- readxl::read_excel(file.path(inputdir, "SPADE_nutrient_units_key.xlsx")) %>% 
-  mutate(nutrient=recode(nutrient, "Omega-3 fatty acids"="DHA+EPA fatty acids"))
+  mutate(nutrient=recode(nutrient, "Omega-3 fatty acids"="DHA+EPA fatty acids")) %>% 
+  # Change units
+  mutate(units=gsub("p/", "", units))
 
 # Read range key
 range_key <- read.csv(file=file.path(inputdir, "habitual_nutrient_intake_ranges.csv"), as.is=T) %>% 
@@ -56,7 +58,7 @@ data <- purrr::map_df(1:nrow(dists), function(i){
   # xmin <- range_key %>% filter(nutrient==nutrient_do) %>% pull(min)
   # xmax <- range_key %>% filter(nutrient==nutrient_do) %>% pull(max)
   xmin <- 0
-  xmax <- dists$cutoff[i]
+  xmax1 <- dists$cutoff[i]
   
   # If gamma
   if(dist_do=="gamma"){
@@ -66,6 +68,12 @@ data <- purrr::map_df(1:nrow(dists), function(i){
     rate <- dists$g_rate[i]
     
     # Build curve
+    xmax2 <- qgamma(0.99, shape=shape, rate=rate)
+    if(is.na(xmax2) & is.finite(xmax2)){
+      xmax <- pmin(xmax1, xmax2)
+    }else{
+      xmax <- xmax1
+    }
     x <- seq(xmin, xmax, length.out = 1000)
     y <- dgamma(x, shape=shape, rate=rate)
     # plot(y ~ x)
@@ -88,6 +96,12 @@ data <- purrr::map_df(1:nrow(dists), function(i){
     sdlog <- dists$ln_sdlog[i]
     
     # Build curve
+    xmax2 <- qlnorm(0.99, meanlog=meanlog, sdlog=sdlog)
+    if(is.na(xmax2) & is.finite(xmax2)){
+      xmax <- pmin(xmax1, xmax2)
+    }else{
+      xmax <- xmax1
+    }
     x <- seq(xmin, xmax, length.out = 200)
     y <- dlnorm(x, meanlog=meanlog, sdlog=sdlog)
     # plot(y ~ x)
@@ -125,7 +139,9 @@ data1 <- data %>%
                         "United States"="United\nStates",
                         "Italy, Romania, Bulgaria"="Italy,\nRomania,\nBulgaria",
                         "Laos & Philippines"="Laos &\nPhilippines",
-                        "Uganda & Zambia"="Uganda &\nZambia"))
+                        "Uganda & Zambia"="Uganda &\nZambia")) %>% 
+  # Add numeric age group
+  mutate(age=gsub("\\-.*", "", age_group) %>% as.numeric())
 
 
 # Plot distributions
@@ -162,14 +178,15 @@ for(i in 1:length(nutrients)){
 
   # Plot distributions
   xlabel <- paste0("Habitual intake (", units, ")")
-  g <- ggplot(sdata, aes(x=intake, y=density, color=age_group1)) +
+  g <- ggplot(sdata, aes(x=intake, y=density, color=age, group=age)) +
     facet_grid(country ~ sex, scales="free_y") +
     geom_line() +
     # xlim(0, cutoff) +
     # Labels
     labs(x=xlabel, y="Density", title=nutrient_do) +
     # Legend
-    scale_color_discrete(name="Age group") +
+    scale_color_gradientn(name="Age group", colors=RColorBrewer::brewer.pal(9, "YlOrRd")[2:9]) +
+    guides(color = guide_colorbar(ticks.colour = "black", frame.colour = "black")) +
     # Theme
     theme_bw() + my_theme
   g

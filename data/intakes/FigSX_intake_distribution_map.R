@@ -183,11 +183,20 @@ intake_key_sf <- world %>%
   left_join(intake_key_df) %>% 
   filter(!is.na(intake_group))
 
+# Build UN subregion key
+unsub <- world %>% 
+  sf::st_buffer(.00001) %>% 
+  group_by(subregion) %>% 
+  summarize() %>% 
+  sf::st_make_valid()
+
 # Plot map
 g <- ggplot(intake_key_sf) +
   geom_sf(mapping=aes(fill=intake_group), color="grey30", lwd=0.2) +
   # Plot French Guiana
   geom_sf(data=fguiana, lwd=0.2, color="grey30", fill="white") +
+  # Plot UN subregions
+  geom_sf(data=unsub, fill=NA, color="black", lwd=0.3) +
   # Add points for intake countries
   geom_sf(data=world_intake_centroid, color="black", size=2) +
   # Crop out Antarctica

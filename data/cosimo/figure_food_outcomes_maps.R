@@ -146,9 +146,9 @@ g17 <- plot_map("Wheat")
 # Merge maps
 merge1 <- gridExtra::grid.arrange(g1, g2, g3, g4, g5, g6, ncol=1)
 merge2 <- gridExtra::grid.arrange(g7, g8, g9, g10, g11, g12, ncol=1)
-merge3 <- gridExtra::grid.arrange(g13, g14, g15, g16, g17, g1, ncol=1)
+merge3 <- gridExtra::grid.arrange(g13, g14, g15, g16, g17, ncol=1)
 
-# Export maps
+ # Export maps
 ggsave(merge1, filename=file.path(plotdir, "COSIMO_2030_food_outcomes_panel1.png"), 
        width=6.5, height=7, units="in", dpi=600)
 
@@ -157,4 +157,4 @@ ggsave(merge2, filename=file.path(plotdir, "COSIMO_2030_food_outcomes_panel2.png
 
 # Remember to cut fish panel
 ggsave(merge3, filename=file.path(plotdir, "COSIMO_2030_food_outcomes_panel3.png"), 
-       width=6.5, height=7, units="in", dpi=600)
+       width=6.5, height=5.8, units="in", dpi=600)
