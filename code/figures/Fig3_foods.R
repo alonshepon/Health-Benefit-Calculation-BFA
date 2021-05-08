@@ -394,7 +394,7 @@ g6 <- ggplot(data_sf) +
   # Plot French Guiana
   geom_sf(data=fguiana, lwd=0.1, color="grey30", fill="grey80") +
   # Labels
-  labs(title="F. Non-aquatic animal-sourced food (ASF) consumption") +
+  labs(title="F. Non-aquatic animal-source food (ASF) consumption") +
   # Legend
   scale_fill_gradient2(name="% difference\nin 2030 intake\n(high vs. base)", 
                        midpoint=0, low="darkred", high="navy", mid="white", na.value = "grey80") +
