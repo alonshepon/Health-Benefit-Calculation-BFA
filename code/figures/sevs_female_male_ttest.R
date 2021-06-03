@@ -50,7 +50,9 @@ stats3 <- sevs %>%
             sev_delta_avg_f=mean(Females),
             sev_delta_m_f_diff_avg=mean(difference)) %>% # postive mean female larger, negatv
   ungroup() %>% 
-  mutate(pvalue=NA)
+  mutate(df=NA,
+         tstat=NA,
+         pvalue=NA)
 
 # Perform t-test
 for(i in 1:nrow(stats3)){
@@ -65,6 +67,8 @@ for(i in 1:nrow(stats3)){
   ttest <- t.test(sdata$Females, sdata$Males, paired=T)
   
   # Record results
+  stats3$tstat[i] <- ttest$statistic
+  stats3$df[i] <- ttest$parameter
   stats3$pvalue[i] <- ttest$p.value
   
 }
@@ -113,3 +117,6 @@ ggsave(g, filename=file.path(plotdir, "FigSX_delta_sevs_males_v_females.png"),
 
 # Export data
 write.csv(stats4, file=file.path(outputdir, "2030_delta_sev_male_v_female_comparison.csv"), row.names = F)
+
+# Export data
+write.csv(stats4, file=file.path(tabledir, "TableSX_2030_delta_sev_male_v_female_comparison.csv"), row.names = F)
