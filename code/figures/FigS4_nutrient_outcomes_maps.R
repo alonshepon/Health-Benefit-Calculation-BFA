@@ -12,14 +12,16 @@ library(countrycode)
 
 # Directories
 outputdir <- "data/cosimo_nutr_disagg/processed"
-plotdir <- "data/cosimo_nutr_disagg/figures"
+plotdir <- "figures"
 
 # Read data
 data_orig <- readRDS(file.path(outputdir, "COSIMO_nutrient_by_scenario_cntry_with_dissagg.Rds")) %>% 
   # Remove Belize
   filter(country!="Belize") %>% 
   # Recode omegas 
-  mutate(nutrient=recode(nutrient, "Omega-3 fatty acids"="DHA+EPA fatty acids"))
+  mutate(nutrient=recode(nutrient, "Omega-3 fatty acids"="DHA+EPA fatty acids")) %>% 
+  # Format nutrients
+  mutate(nutrient_units=gsub("/p/d", "/d", nutrient_units))
 
 # World
 world <- rnaturalearth::ne_countries("small", returnclass = "sf")
@@ -141,7 +143,7 @@ g6 <- plot_map("Vitamin A, RAE")
 g <- gridExtra::grid.arrange(g1, g2, g3, g4, g5, g6, ncol=1)
 
 # Export maps
-ggsave(g, filename=file.path(plotdir, "COSIMO_2030_nutrient_outcomes_diversity_disagg.png"), 
+ggsave(g, filename=file.path(plotdir, "FigS4_COSIMO_2030_nutrient_outcomes_diversity_disagg.png"), 
        width=6.5, height=7, units="in", dpi=600)
 
 
