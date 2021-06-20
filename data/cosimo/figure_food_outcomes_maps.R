@@ -12,7 +12,7 @@ library(countrycode)
 
 # Directories
 outputdir <- "data/cosimo/processed"
-plotdir <- "data/cosimo/figures"
+plotdir <- "figures"
 
 # Read data
 data_orig <- readRDS(file.path(outputdir, "COSIMO_2010_2030_food_by_scenario_cntry.rds"))
@@ -74,7 +74,7 @@ plot_map <- function(food){
   g1 <- ggplot(sdata_sf) +
     geom_sf(mapping=aes(fill=value_lo), lwd=0.1, color="grey30") +
     # Labels
-    labs(title=paste0(food,  " (g/p/d)")) +
+    labs(title=paste0(food,  " (g/d)")) +
     # Crop out Antarctica
     coord_sf(y=c(-55, NA)) +
     # Legend
@@ -149,12 +149,12 @@ merge2 <- gridExtra::grid.arrange(g7, g8, g9, g10, g11, g12, ncol=1)
 merge3 <- gridExtra::grid.arrange(g13, g14, g15, g16, g17, ncol=1)
 
  # Export maps
-ggsave(merge1, filename=file.path(plotdir, "COSIMO_2030_food_outcomes_panel1.png"), 
+ggsave(merge1, filename=file.path(plotdir, "FigS3a_COSIMO_2030_food_outcomes_panel1.png"), 
        width=6.5, height=7, units="in", dpi=600)
 
-ggsave(merge2, filename=file.path(plotdir, "COSIMO_2030_food_outcomes_panel2.png"), 
+ggsave(merge2, filename=file.path(plotdir, "FigS3b_COSIMO_2030_food_outcomes_panel2.png"), 
        width=6.5, height=7, units="in", dpi=600)
 
 # Remember to cut fish panel
-ggsave(merge3, filename=file.path(plotdir, "COSIMO_2030_food_outcomes_panel3.png"), 
+ggsave(merge3, filename=file.path(plotdir, "FigS3c_COSIMO_2030_food_outcomes_panel3.png"), 
        width=6.5, height=5.8, units="in", dpi=600)
