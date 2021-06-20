@@ -151,8 +151,8 @@ eggs <- data_orig %>%
          eggs_diff=value_diff, 
          eggs_pdiff=value_diff_perc)
 
-# Eggs
-other <- data_orig %>% 
+# Poultry/eggs/dairy merged
+ped <- data_orig %>% 
   # Reduce to 2030
   filter(year==2030 & food %in% c("Eggs", "Poultry", "Butter", "Milk and Dairy")) %>% 
   # Simplify
@@ -166,10 +166,10 @@ other <- data_orig %>%
          value_diff=value_hi-value_lo,
          value_diff_perc=(value_hi-value_lo)/value_lo*100) %>% 
   # Rename
-  rename(other_lo=value_lo, 
-         other_hi=value_hi, 
-         other_diff=value_diff, 
-         other_pdiff=value_diff_perc)
+  rename(ped_lo=value_lo, 
+         ped_hi=value_hi, 
+         ped_diff=value_diff, 
+         ped_pdiff=value_diff_perc)
 
 # All non-aquatic ASF
 all_asf_nonaq <- data_orig %>% 
@@ -206,7 +206,7 @@ data <- fish %>%
   # Add dairy
   left_join(dairy %>% select(-c(country, food)), by="iso3") %>% 
   # Add poultry-eggs-dairy merged
-  left_join(other %>% select(-c(country, food)), by="iso3") %>% 
+  left_join(ped %>% select(-c(country, food)), by="iso3") %>% 
   # Add all non-aquatic ASF 
   left_join(all_asf_nonaq, select(-c(country, food)), by="iso3") %>% 
   # Quantify directions
@@ -214,11 +214,11 @@ data <- fish %>%
                          ifelse(fish_pdiff < -1*val, "down", "stable")),
          meat_dir=ifelse(meat_pdiff > val, "up",
                          ifelse(meat_pdiff < -1*val, "down", "stable")),
-         other_dir=ifelse(other_pdiff > val, "up",
-                         ifelse(other_pdiff < -1*val, "down", "stable")),
+         ped_dir=ifelse(ped_pdiff > val, "up",
+                         ifelse(ped_pdiff < -1*val, "down", "stable")),
          nonaq_asf_dir=ifelse(nonaq_asf_pdiff > val, "up",
                           ifelse(nonaq_asf_pdiff < -1*val, "down", "stable")),
-         dir_type=paste(meat_dir, other_dir, sep="-")) %>% 
+         dir_type=paste(meat_dir, ped_dir, sep="-")) %>% 
   # Reclassify directions
   mutate(dir_type=recode(dir_type,
                          "down-up"="",
@@ -335,7 +335,7 @@ g3 <- ggplot(data_sf) +
   theme(legend.position = c(0.10,0.40))
 g3
 
-# Plot dairy
+# Plot eggs
 #############################
 
 # Plot data
@@ -394,7 +394,7 @@ g6 <- ggplot(data_sf) +
   # Plot French Guiana
   geom_sf(data=fguiana, lwd=0.1, color="grey30", fill="grey80") +
   # Labels
-  labs(title="F. Non-aquatic animal-source food (ASF) consumption") +
+  labs(title="F. Non-aquatic animal-source food consumption") +
   # Legend
   scale_fill_gradient2(name="% difference\nin 2030 intake\n(high vs. base)", 
                        midpoint=0, low="darkred", high="navy", mid="white", na.value = "grey80") +
