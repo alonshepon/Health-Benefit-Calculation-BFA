@@ -88,10 +88,16 @@ make_plot <- function(nutrient){
   nutr_do <- nutrient
   ear <- ears$ear[ears$nutrient==nutr_do]
   
+  # Isolate Norway
+  nor <- data %>% 
+    filter(country=="Norway" & nutrient==nutr_do)
+  
   # Plot
   g <- ggplot(data %>% filter(nutrient==nutr_do), aes(x=intake_diff, y=intake_base, fill=sev_delta, size=sev_base)) +
     facet_wrap(~label, scales="free") +
     geom_point(pch=21, stroke=0.2) +
+    # Highlight Norway
+    geom_point(data= nor, mapping=aes(x=intake_diff, y=intake_base), inherit.aes = F, size=2) +
     # Lines
     geom_hline(yintercept=ear, linetype="dashed") +
     geom_vline(xintercept=0) +
@@ -142,7 +148,9 @@ g <- gridExtra::grid.arrange(g1, g2,
 ggsave(g, filename=file.path(plotdir, "FigS19_sev_outcomes_based_on_base.png"), 
        width=6.5, height=6.5, units="in", dpi=600)
 
-
+# Export Norway
+ggsave(g6, filename=file.path(plotdir, "FigS19_sev_outcomes_based_on_base_norway_vitA.png"), 
+       width=4.5, height=4, units="in", dpi=600)
 
 
 # Other strategies
