@@ -169,7 +169,15 @@ plot_map <- function(nutrient){
     filter(area_sqkm<=2.5*10^4 & continent!="Europe")
   
   # Build label
-  nutrient_label <- paste0(nutr_do, " (", unique(sdata$nutrient_units), ")")
+  nutr_do_use <- nutr_do
+  nutrient_label <- paste0(nutr_do_use, " (", unique(sdata$nutrient_units), ")")
+  if(nutr_do=="Vitamin A, RAE"){
+    nutr_do_use <- "Vitamin A"
+    nutrient_label <- paste0(nutr_do_use, " (", unique(sdata$nutrient_units), ")")
+  }
+  if(nutr_do=="Vitamin B12"){
+    nutrient_label <- expression("Vitamin B"["12"]*" (ug/d)")
+  }
   
   # Get breaks and labels
   breaks <- breaks_list[[nutr_do]]
