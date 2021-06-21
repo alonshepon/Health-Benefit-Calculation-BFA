@@ -95,8 +95,9 @@ stats2 <- data_orig %>%
   # Complete set to fill NAs
   complete(nutrient, sex, age_group) %>% 
   # Recode nutrients
+  mutate(nutrient=recode(nutrient, "Vitamin A, RAE"="Vitamin A")) %>% 
   mutate(nutrient=factor(nutrient,
-                         levels=c("Vitamin A, RAE", "Calcium", "Zinc", "Iron", "Vitamin B12", "DHA+EPA fatty acids"))) %>% 
+                         levels=c("Vitamin A", "Calcium", "Zinc", "Iron", "Vitamin B12", "DHA+EPA fatty acids"))) %>%
   # Remove 100 group
   filter(age_group!="100+")
 
@@ -191,6 +192,15 @@ plot_map <- function(nutrient){
   breaks <- breaks_list[[nutr_do]]
   labels <- labels_list[[nutr_do]]
   
+  # Build title
+  nutr_do_use <- nutr_do
+  if(nutr_do=="Vitamin A, RAE"){
+    nutr_do_use <- "Vitamin A"
+  }
+  if(nutr_do=="Vitamin B12"){
+    nutr_do_use <- expression("Vitamin B"["12"])
+  }
+  
   # Plot
   g <- ggplot(c_avgs_sf) +
     geom_sf(mapping=aes(fill=sev_delta_avg_cap), lwd=0.1) +
@@ -201,7 +211,7 @@ plot_map <- function(nutrient){
     # Crop out Antarctica
     coord_sf(y=c(-55, NA)) +
     # Legend and labels
-    labs(title=nutr_do) +
+    labs(title=nutr_do_use) +
     scale_fill_gradient2(name="ΔSEVs (%)\n(high - base)", 
                          breaks=breaks, labels=labels,
                          low="navy", high="darkred", mid="white", midpoint=0) +
@@ -246,6 +256,8 @@ g7 <- ggplot(stats2, aes(x=age_group, y=nutrient, fill=npeople/1e6)) +
   scale_fill_gradient2(name="ΔMillions of people\nwith deficiencies\n(high - base)",
                        midpoint=0, low="navy", mid="white", high="darkred", na.value="grey80") +
   guides(fill = guide_colorbar(ticks.colour = "black", frame.colour = "black",  barwidth = 1, barheight = 4)) +
+  # Y-axis values
+  scale_y_discrete(labels=c("Vitamin A", "Calcium", "Zinc", "Iron", expression("Vitamin B"["12"]), "DHA+EPA fatty acids")) +
   # Theme
   theme_bw() + 
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
