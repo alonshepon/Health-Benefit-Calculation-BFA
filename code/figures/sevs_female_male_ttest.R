@@ -85,6 +85,22 @@ stats4 <- stats3 %>%
                       "Significant-Greater improvements for females"="Signficantly greater\nΔSEVS for females",
                       "Significant-Greater improvements for males"="Signficantly greater\nΔSEVS for males"))
 
+# Stats for manuscript
+sum(stats4$label=="Signficantly greater\nΔSEVS for females")
+sum(stats4$direction=="Greater improvements for females")
+
+# Mean % of countries w/ greater for females
+stats4 %>% 
+  filter(label=="Signficantly greater\nΔSEVS for females") %>% 
+  pull(p_f_lower) %>% 
+  mean()
+
+# Mean % of countries w/ greater for males
+stats4 %>% 
+  filter(label=="Signficantly greater\nΔSEVS for males") %>% 
+  pull(p_f_lower) %>% 
+  mean()
+
 # Plot
 g <- ggplot(stats4, aes(x=age_group, y=nutrient, fill=label)) +
   geom_raster() +
