@@ -253,7 +253,7 @@ g7 <- ggplot(stats2, aes(x=age_group, y=nutrient, fill=npeople/1e6)) +
   geom_raster() +
   # Labels
   labs(x="Age group", y="") +
-  scale_fill_gradient2(name="ΔMillions of people\nwith deficiencies\n(high - base)",
+  scale_fill_gradient2(name="ΔMillions of people\nwith inadequate intakes\n(high - base)",
                        midpoint=0, low="navy", mid="white", high="darkred", na.value="grey80") +
   guides(fill = guide_colorbar(ticks.colour = "black", frame.colour = "black",  barwidth = 1, barheight = 4)) +
   # Y-axis values
