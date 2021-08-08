@@ -23,7 +23,7 @@ sevs <- readRDS(file.path(outputdir, "2030_sevs_base_high_road_final_diversity_d
   # Rename Vitamin A
   mutate(nutrient=recode(nutrient, 
                          # "Vitamin A, RAE"="Vitamin A",
-                         "Omega-3 fatty acids"="DHA+EPA fatty acids",
+                         "Omega-3 fatty acids"="DHA+EPA",
                          "Vitamin B-12"="Vitamin B12")) %>% 
   # Eliminate problem countries
   filter(!iso3 %in% prob_key$iso)
@@ -31,7 +31,7 @@ sevs <- readRDS(file.path(outputdir, "2030_sevs_base_high_road_final_diversity_d
 # Read data
 data_orig <- readRDS(file=file.path(outputdir, "2030_ndeficient_base_high_diversity_disagg.Rds")) %>% 
   mutate(nutrient=recode(nutrient, 
-                         "Omega-3 fatty acids"="DHA+EPA fatty acids",
+                         "Omega-3 fatty acids"="DHA+EPA",
                          "Vitamin B-12"="Vitamin B12")) %>% 
   # Eliminate problem countries
   filter(!iso3 %in% prob_key$iso)
@@ -97,7 +97,7 @@ stats2 <- data_orig %>%
   # Recode nutrients
   mutate(nutrient=recode(nutrient, "Vitamin A, RAE"="Vitamin A")) %>% 
   mutate(nutrient=factor(nutrient,
-                         levels=c("Vitamin A", "Calcium", "Zinc", "Iron", "Vitamin B12", "DHA+EPA fatty acids"))) %>%
+                         levels=c("Vitamin A", "Calcium", "Zinc", "Iron", "Vitamin B12", "DHA+EPA"))) %>%
   # Remove 100 group
   filter(age_group!="100+")
 
@@ -106,7 +106,7 @@ stats2 <- data_orig %>%
 ###################################
 
 # Nutrient order
-nutrients <- c("DHA+EPA fatty acids", "Vitamin B12", "Iron", "Zinc", "Calcium", "Vitamin A, RAE")
+nutrients <- c("DHA+EPA", "Vitamin B12", "Iron", "Zinc", "Calcium", "Vitamin A, RAE")
 
 # Calculate country-level means
 c_avgs <- sevs %>% 
@@ -120,7 +120,7 @@ c_avgs <- sevs %>%
   mutate(nutrient=factor(nutrient, levels=nutrients)) %>% 
   # Add caps
   mutate(cap=recode(nutrient, 
-                    "DHA+EPA fatty acids"=-5, 
+                    "DHA+EPA"=-5, 
                     "Vitamin B12"=-1,
                     "Iron"=-0.75,
                     "Zinc"=-0.6,
@@ -136,14 +136,14 @@ g <- ggplot(c_avgs, aes(x=sev_delta_avg_cap)) +
 g
 
 # Set breaks and labels
-breaks_list <- list("DHA+EPA fatty acids"=seq(-5, 0, 1),
+breaks_list <- list("DHA+EPA"=seq(-5, 0, 1),
                     "Vitamin B12"=seq(-1, 0, 0.25),
                     "Iron"=seq(-0.75, 0, 0.25),
                     "Zinc"=seq(-0.6, 0.2, 0.2),
                     "Calcium"=seq(-1, 0.5, 0.5),
                     "Vitamin A, RAE"=seq(-0.5, 1.5, 0.5))
 
-labels_list <- list("DHA+EPA fatty acids"=c("≤ -5", "-4", "-3", "-2", "-1", "0"),
+labels_list <- list("DHA+EPA"=c("≤ -5", "-4", "-3", "-2", "-1", "0"),
                     "Vitamin B12"=c("≤ -1.0", "-0.75", "-0.50", "-0.25", "0.0"),
                     "Iron"=c("≤ -0.75", "-0.50", "-0.25", "0.00"),
                     "Zinc"=c("≤ -0.6", "-0.4", "-0.2", "0.0", "0.2"),
@@ -231,7 +231,7 @@ plot_map <- function(nutrient){
 ################################################################################
 
 # Build maps
-g1 <- plot_map("DHA+EPA fatty acids")
+g1 <- plot_map("DHA+EPA")
 g2 <- plot_map("Vitamin B12")
 g3 <- plot_map("Iron")
 g4 <- plot_map("Zinc")
@@ -257,7 +257,7 @@ g7 <- ggplot(stats2, aes(x=age_group, y=nutrient, fill=npeople/1e6)) +
                        midpoint=0, low="navy", mid="white", high="darkred", na.value="grey80") +
   guides(fill = guide_colorbar(ticks.colour = "black", frame.colour = "black",  barwidth = 1, barheight = 4)) +
   # Y-axis values
-  scale_y_discrete(labels=c("Vitamin A", "Calcium", "Zinc", "Iron", expression("Vitamin B"["12"]), "DHA+EPA fatty acids")) +
+  scale_y_discrete(labels=c("Vitamin A", "Calcium", "Zinc", "Iron", expression("Vitamin B"["12"]), "DHA+EPA")) +
   # Theme
   theme_bw() + 
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),

@@ -41,7 +41,7 @@ sevs <- sevs_orig %>%
   # Recode nutrients
   mutate(nutrient=recode(nutrient, 
                          # "Vitamin A, RAE"="Vitamin A",
-                         "Omega-3 fatty acids"="DHA+EPA fatty acids",
+                         "Omega-3 fatty acids"="DHA+EPA",
                          "Vitamin B-12"="Vitamin B12")) %>% 
   # Calculate average by country
   group_by(nutrient, country, iso3) %>% 
@@ -55,7 +55,7 @@ nutrs <- nutr_orig %>%
   # Recode nutrients
   mutate(nutrient=recode(nutrient, 
                          "Vitamin B-12"="Vitamin B12",
-                         "Omega-3 fatty acids"="DHA+EPA fatty acids")) %>% 
+                         "Omega-3 fatty acids"="DHA+EPA")) %>% 
   # Change nutrient units
   mutate(nutrient_units=gsub("/p", "", nutrient_units)) %>% 
   # Reduce to 2030
@@ -132,7 +132,7 @@ make_plot <- function(nutrient){
 }
 
 # Plot data
-g1 <- make_plot("DHA+EPA fatty acids")
+g1 <- make_plot("DHA+EPA")
 g2 <- make_plot("Vitamin B12")
 g3 <- make_plot("Iron")
 g4 <- make_plot("Zinc")
@@ -189,3 +189,4 @@ ggsave(g6, filename=file.path(plotdir, "FigS19_sev_outcomes_based_on_base_norway
 #   # Theme
 #   theme_bw()
 # g
+

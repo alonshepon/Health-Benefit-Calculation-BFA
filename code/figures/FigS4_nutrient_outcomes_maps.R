@@ -19,7 +19,7 @@ data_orig <- readRDS(file.path(outputdir, "COSIMO_nutrient_by_scenario_cntry_wit
   # Remove Belize
   filter(country!="Belize") %>% 
   # Recode omegas 
-  mutate(nutrient=recode(nutrient, "Omega-3 fatty acids"="DHA+EPA fatty acids")) %>% 
+  mutate(nutrient=recode(nutrient, "Omega-3 fatty acids"="DHA+EPA")) %>% 
   # Format nutrients
   mutate(nutrient_units=gsub("/p/d", "/d", nutrient_units))
 
@@ -59,7 +59,7 @@ plot_map <- function(nutrient){
     mutate(intake_diff=intake_high - intake_base)
   
   # If omegas
-  if(nutrient_do=="DHA+EPA fatty acids"){
+  if(nutrient_do=="DHA+EPA"){
     
     hist(sdata$intake_base, breaks=seq(0,16,0.5))
     hist(sdata$intake_high, breaks=seq(0,20,0.5))
@@ -132,7 +132,7 @@ plot_map <- function(nutrient){
 
 
 # Plot maps
-g1 <- plot_map("DHA+EPA fatty acids")
+g1 <- plot_map("DHA+EPA")
 g2 <- plot_map("Vitamin B-12")
 g3 <- plot_map("Iron")
 g4 <- plot_map("Zinc")

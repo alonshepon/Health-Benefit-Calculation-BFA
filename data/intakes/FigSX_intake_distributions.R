@@ -19,20 +19,20 @@ plotdir <- "data/intakes/figures"
 # Read data
 dists <- read.csv(file.path(outputdir, "habitual_nutrient_intakes_by_age_sex_13countries_distribution_fits.csv"), as.is=T) %>% 
   filter(!is.na(best_dist) & sex!="children") %>% 
-  mutate(nutrient=recode(nutrient, "Omega-3 fatty acids"="DHA+EPA fatty acids"))
+  mutate(nutrient=recode(nutrient, "Omega-3 fatty acids"="DHA+EPA"))
 
 # Read nutrient key
 nutr_key <- readxl::read_excel(file.path(inputdir, "SPADE_nutrient_units_key.xlsx")) %>% 
-  mutate(nutrient=recode(nutrient, "Omega-3 fatty acids"="DHA+EPA fatty acids")) %>% 
+  mutate(nutrient=recode(nutrient, "Omega-3 fatty acids"="DHA+EPA")) %>% 
   # Change units
   mutate(units=gsub("p/", "", units))
 
 # Read range key
 range_key <- read.csv(file=file.path(inputdir, "habitual_nutrient_intake_ranges.csv"), as.is=T) %>% 
-  mutate(nutrient=recode(nutrient, "Omega-3 fatty acids"="DHA+EPA fatty acids"))
+  mutate(nutrient=recode(nutrient, "Omega-3 fatty acids"="DHA+EPA"))
 
 # Cutoff key 
-cutoff_key <- tibble(nutrient=c("Calcium", "Iron", "DHA+EPA fatty acids", "Red meat", "Vitamin A", "Vitamin B-12", "Zinc"),
+cutoff_key <- tibble(nutrient=c("Calcium", "Iron", "DHA+EPA", "Red meat", "Vitamin A", "Vitamin B-12", "Zinc"),
                      cutoff= c(2000, 80, 0.3, 300, 3000, 20, 50))
 
 # Add cutoff to dist
