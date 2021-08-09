@@ -438,7 +438,7 @@ g <- gridExtra::grid.arrange(g1, g2,
                              g5, g6, ncol=2)
 
 # Export
-figname <- paste0("Fig3_foods_continuous.png")
+figname <- paste0("Fig3_foods_continuous.pdf")
 ggsave(g, filename=file.path(plotdir, figname), 
        width=6.5, height=4.5, units="in", dpi=600)
 

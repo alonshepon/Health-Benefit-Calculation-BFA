@@ -287,7 +287,7 @@ g <- gridExtra::grid.arrange(map1, box1, map2, box2,
                              widths=c(0.38,0.12, 0.38, 0.12))
 
 # Export plot
-ggsave(g, filename=file.path(plotdir, "Fig2_nutrients.png"), 
+ggsave(g, filename=file.path(plotdir, "Fig2_nutrients.pdf"), 
        width=6.5, height=4, units="in", dpi=600)
 
 

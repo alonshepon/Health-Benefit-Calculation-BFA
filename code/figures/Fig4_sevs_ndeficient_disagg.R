@@ -278,5 +278,5 @@ g7
 plot2 <- gridExtra::grid.arrange(g, g7, nrow=2, heights=c(0.75,0.25))
 
 # Export
-ggsave(plot2, filename=file.path(plotdir, "Fig4_sevs_ndeficient_disagg.png"), 
+ggsave(plot2, filename=file.path(plotdir, "Fig4_sevs_ndeficient_disagg.pdf"), 
        width=6.5, height=6.2, units="in", dpi=600)
