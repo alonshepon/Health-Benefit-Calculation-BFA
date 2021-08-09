@@ -250,7 +250,7 @@ g <- gridExtra::grid.arrange(g1, g2,
 # Plot raster
 g7 <- ggplot(stats2, aes(x=age_group, y=nutrient, fill=npeople/1e6)) +
   facet_wrap(~sex) +
-  geom_raster() +
+  geom_tile() +
   # Labels
   labs(x="Age group", y="") +
   scale_fill_gradient2(name="ΔMillions of people\nwith inadequate intakes\n(high - base)",
@@ -279,4 +279,4 @@ plot2 <- gridExtra::grid.arrange(g, g7, nrow=2, heights=c(0.75,0.25))
 
 # Export
 ggsave(plot2, filename=file.path(plotdir, "Fig4_sevs_ndeficient_disagg.pdf"), 
-       width=6.5, height=6.2, units="in", dpi=600)
+       width=6.5, height=6.2, units="in", dpi=600, device=cairo_pdf)
