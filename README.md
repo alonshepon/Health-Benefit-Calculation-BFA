@@ -1,4 +1,4 @@
-# Health impacts of increased production of aquatic foods
+# Health impacts of increased aquatic foods production
 
 ## Overview
 
