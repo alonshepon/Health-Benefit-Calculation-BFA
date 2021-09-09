@@ -5,3 +5,7 @@
 
 # Ignore large files folder
 data/intakes/processed/
+
+# Ignore private folders
+shiny
+drafts
