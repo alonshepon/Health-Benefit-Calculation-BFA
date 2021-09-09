@@ -1,4 +1,30 @@
-# Health-Benefit-Calculation-BFA
+# Health impacts of increased production of aquatic foods
+
+## Overview
+
+The is the GitHub repository for the health impacts analysis for the following paper:
+
+* Golden CD*, Koehn JZ*, Shepon A*, Passarelli S*, Free CM*, Viana DF*, Matthey H, Eurich JG, Gephart JA, Fluet-Chouinnard E, Nyboer EA, Lynch AJ, Kjellevold M, Bromage S, Charlebois P, Barange M, Vannuccini S, Cao L, Kleisner KM, Rimm EB, Danaei G, DeSisto C, Kelahan H, Fiorella KJ, Little DC, Allison EH, Fanzo J, Thilsted SH (2021) **Aquatic foods to nourish nations.** In press at _Nature_. * Contributed equally
+
+Please contact Chris Golden (golden@hsph.harvard.edu) with questions about the paper and Chris Free (cfree14@gmail.com) or Alon Shepon (alonshepon@tauex.tau.ac.il) with questions about the repository.
+
+## Repository structure
+
+The repository is organized using the following structure:
+
+* data.............. folder containing intake distributions and other key data
+* code............. folder containing code to fit, describe, and compare intake distributions
+* figures.......... folder containing figures for the manuscript
+* tables........... folder containing tables for the manuscript
+
+## Other resources
+
+The other GitHub repositories in support of this paper are availble here:
+
+* Diversity disaggregation: https://github.com/cg0lden/Fisheries-Nutrition-Modeling
+* SPADE analysis: https://github.com/cg0lden/subnational_distributions_BFA
+
+## Methods overview
 Calculation of Burden of disease for changes in fish consumption
 The GBD project is the most comprehensive methodology to assess health burden across countries, age and sex groups and various forms of disease and risks. The GBD project has calculated the burden of malnutrition for vitamin A, zinc, iron (and other nutrient deficiencies) and low seafood consumption (PUFA->heart disease) (Murray 2020, Afshin 2019 and James 2018) - four risk factors associated with fish. While not comprehensive of all outcomes associated with consuming fish (in the health literature) e.g. omega n-3 impact on child development), it seems to include both micronutrient contribution and low omega n-3 derived from fish. Using the DALYs metrics, our results can be compared to other GBD global metrics results, enabling us to assess the magnitude of health burdens associated with reduced or increased fish consumption in future alternatives. Last, because fish is an important animal sourced food, increased consumption of fish is likely to result in changes in red meat consumption. Red meat consumption constitutes an important health burden, which can also be assessed in order to capture the full burdens of the above analysis
 
