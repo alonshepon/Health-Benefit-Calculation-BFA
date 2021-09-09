@@ -7,5 +7,5 @@
 data/intakes/processed/
 
 # Ignore private folders
-shiny
-drafts
+shiny/
+drafts/
