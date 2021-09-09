@@ -12,10 +12,13 @@ Please contact Chris Golden (golden@hsph.harvard.edu) with questions about the p
 
 The repository is organized using the following structure:
 
-* data.............. folder containing intake distributions and other key data
-* code............. folder containing code to fit, describe, and compare intake distributions
+* data.............. folder containing the data to support the health impacts analysis
+* code............. folder containing code to fit intake distributions and calculate inadequate intakes (SEVs)
+* output........... folder containing the output of the health impacts analysis
 * figures.......... folder containing figures for the manuscript
 * tables........... folder containing tables for the manuscript
+
+The following folder of data is not posted due to its large size: "data/intakes/processed/". Email Chris Free (cfree14@gmail.com) if you require access.
 
 ## Other resources
 
