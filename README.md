@@ -24,10 +24,13 @@ The following folder of data is not posted due to its large size: "data/intakes/
 
 The other GitHub repositories in support of this paper are availble here:
 
+* Aquatic foods nutrient database: https://github.com/zachkoehn/aquatic_foods_nutrient_database
 * Diversity disaggregation: https://github.com/cg0lden/Fisheries-Nutrition-Modeling
+* Subnational distribution data: https://github.com/cg0lden/subnational_distributions_BFA
 * SPADE analysis: https://github.com/cg0lden/subnational_distributions_BFA
 
 ## Methods overview
+
 Calculation of Burden of disease for changes in fish consumption
 The GBD project is the most comprehensive methodology to assess health burden across countries, age and sex groups and various forms of disease and risks. The GBD project has calculated the burden of malnutrition for vitamin A, zinc, iron (and other nutrient deficiencies) and low seafood consumption (PUFA->heart disease) (Murray 2020, Afshin 2019 and James 2018) - four risk factors associated with fish. While not comprehensive of all outcomes associated with consuming fish (in the health literature) e.g. omega n-3 impact on child development), it seems to include both micronutrient contribution and low omega n-3 derived from fish. Using the DALYs metrics, our results can be compared to other GBD global metrics results, enabling us to assess the magnitude of health burdens associated with reduced or increased fish consumption in future alternatives. Last, because fish is an important animal sourced food, increased consumption of fish is likely to result in changes in red meat consumption. Red meat consumption constitutes an important health burden, which can also be assessed in order to capture the full burdens of the above analysis
 
