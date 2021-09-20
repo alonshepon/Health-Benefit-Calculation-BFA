@@ -4,7 +4,7 @@
 
 The is the GitHub repository for the health impacts analysis for the following paper:
 
-* Golden CD*, Koehn JZ*, Shepon A*, Passarelli S*, Free CM*, Viana DF*, Matthey H, Eurich JG, Gephart JA, Fluet-Chouinnard E, Nyboer EA, Lynch AJ, Kjellevold M, Bromage S, Charlebois P, Barange M, Vannuccini S, Cao L, Kleisner KM, Rimm EB, Danaei G, DeSisto C, Kelahan H, Fiorella KJ, Little DC, Allison EH, Fanzo J, Thilsted SH (2021) **Aquatic foods to nourish nations.** In press at _Nature_. * Contributed equally
+* Golden CD*, Koehn JZ*, Shepon A*, Passarelli S*, Free CM*, Viana DF*, Matthey H, Eurich JG, Gephart JA, Fluet-Chouinnard E, Nyboer EA, Lynch AJ, Kjellevold M, Bromage S, Charlebois P, Barange M, Vannuccini S, Cao L, Kleisner KM, Rimm EB, Danaei G, DeSisto C, Kelahan H, Fiorella KJ, Little DC, Allison EH, Fanzo J, Thilsted SH (2021) **Aquatic foods to nourish nations.** Nature: https://doi.org/10.1038/s41586-021-03917-1. * Contributed equally
 
 Please contact Chris Golden (golden@hsph.harvard.edu) with questions about the paper and Chris Free (cfree14@gmail.com) or Alon Shepon (alonshepon@tauex.tau.ac.il) with questions about the repository.
 
